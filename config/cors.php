@@ -12,7 +12,7 @@ return [
      |
      */
     'supportsCredentials' => false,
-    'allowedOrigins' => ['http://localhost:8081', 'http://localhost:8082', 'http://wnyfe.com', 'http://wnyfe2.com'],
+    'allowedOrigins' => ['http://localhost:8081', 'http://localhost:8082', 'http://wnyfe.com', 'http://wnyfe2.com', 'http://framework.pp.ua'],
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],
     'exposedHeaders' => [],
