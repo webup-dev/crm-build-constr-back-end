@@ -131,8 +131,15 @@ class BookController extends Controller
             throw new NotFoundHttpException;
 
         if ($book->delete())
-            return $this->response->noContent();
+        {
+            $response = [
+                'message' => 'Books retrieved successfully.'
+            ];
+            return response()->json($response, 200);
+        }
         else
+        {
             return $this->response->error('could_not_delete_book', 500);
+        }
     }
 }
