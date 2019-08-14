@@ -3,6 +3,8 @@
 namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\User;
+use Illuminate\Support\Facades\Validator;
 use JWTAuth;
 use App\Book;
 use Dingo\Api\Routing\Helpers;
@@ -38,6 +40,33 @@ class BookController extends Controller
 
     public function store(Request $request)
     {
+        $rules = array(
+            'title'       => 'required|string',
+            'author_name' => 'required|string',
+            'pages_count' => 'required|integer'
+        );
+
+        $messages = array(
+            'title.required'       => 'Please enter a title.',
+            'title.string'         => 'Title must be a string',
+            'author_name.required' => 'Please enter Author Name.',
+            'author_name.string'   => 'Author Name must be a string',
+            'pages_count.required' => 'Please enter Pages Count.',
+            'pages_count.integer'  => 'Pages Count must be integer.',
+        );
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
+            $errors   = $messages->all();
+            return $errors;
+            $string = '';
+            foreach ($errors as $error) {
+                $string += ' ' . $error;
+            }
+            return $this->response->error($string, 500);
+        }
+
         $currentUser = JWTAuth::parseToken()->authenticate();
 
         $book = new Book;
@@ -47,9 +76,10 @@ class BookController extends Controller
         $book->pages_count = $request->get('pages_count');
 
         if ($currentUser->books()->save($book))
-            return $this->response->created();
-        else
-            return $this->response->error('could_not_create_book', 500);
+            if ($book->save())
+                return $this->response->created();
+            else
+                return $this->response->error('could_not_create_book', 500);
     }
 
     public function show($id)
@@ -58,10 +88,21 @@ class BookController extends Controller
 
         $book = $currentUser->books()->find($id);
 
+        $user_name=User::find($book->user_id)->name;
+        $book->user_name = $user_name;
+
         if (!$book)
             throw new NotFoundHttpException;
 
-        return $book;
+        $data  = $book->toArray();
+
+        $response = [
+            'success' => false,
+            'data'    => $data,
+            'message' => 'Books retrieved successfully.'
+        ];
+
+        return response()->json($response, 200);
     }
 
     public function update(Request $request, $id)

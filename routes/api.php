@@ -45,6 +45,7 @@ $api->version('v1', function (Router $api) {
     });
 
     $api->get('book', 'App\Api\V1\Controllers\BookController@index');
+//    $api->post('book', 'App\Api\V1\Controllers\BookController@store');
 
     $api->get('hello', function() {
         return response()->json([
