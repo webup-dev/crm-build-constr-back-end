@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.0.3] - 2019-08-15
+### Changed
+- Demo module Books. Delete book with specific ID. Response is changed.
+
 ## [0.0.2] - 2019-08-13
 ### Changed
 - Changelog.md => CHANGELOG.md.
