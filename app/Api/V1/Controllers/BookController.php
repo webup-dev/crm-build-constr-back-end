@@ -74,17 +74,17 @@ class BookController extends Controller
         $book->title       = $request->get('title');
         $book->author_name = $request->get('author_name');
         $book->pages_count = $request->get('pages_count');
+        $book->user_id     = $currentUser->id;
 
-        if ($currentUser->books()->save($book))
-            if ($book->save()) {
-                $response = [
-                    'success' => true,
-                    'message' => 'New Book created successfully.'
-                ];
-                return response()->json($response, 200);
-            } else {
-                return $this->response->error('could_not_create_book', 500);
-            }
+        if ($book->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'New Book created successfully.'
+            ];
+            return response()->json($response, 200);
+        } else {
+            return $this->response->error('could_not_create_book', 500);
+        }
     }
 
     public function show($id)
@@ -102,7 +102,7 @@ class BookController extends Controller
         $data = $book->toArray();
 
         $response = [
-            'success' => false,
+            'success' => true,
             'data'    => $data,
             'message' => 'Books retrieved successfully.'
         ];
@@ -114,16 +114,28 @@ class BookController extends Controller
     {
         $currentUser = JWTAuth::parseToken()->authenticate();
 
-        $book = $currentUser->books()->find($id);
-        if (!$book)
-            throw new NotFoundHttpException;
+        $book = Book::whereId($id)->first();
+        if (!$book){
+            $response = [
+                'success' => false,
+                'message' => 'Book does not exist.'
+            ];
+
+            return response()->json($response, 401);
+        }
 
         $book->fill($request->all());
 
-        if ($book->save())
-            return $this->response->noContent();
-        else
+        if ($book->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'Books updated successfully.'
+            ];
+
+            return response()->json($response, 200);
+        } else {
             return $this->response->error('could_not_update_book', 500);
+        }
     }
 
     public function destroy($id)
