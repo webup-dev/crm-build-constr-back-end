@@ -3,7 +3,7 @@
 namespace App\Api\V1\Controllers;
 
 use Config;
-use App\User;
+use App\Models\User;
 use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
 use App\Api\V1\Requests\SignUpRequest;

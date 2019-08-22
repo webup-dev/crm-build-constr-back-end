@@ -1,0 +1,18 @@
+Issue Type,Summary,Story Point Estimate
+Task,Create new Branch,0.5
+Task,Planning,1
+Task,Create migration,0.5
+Task,Create Model,0.5
+Task,Create seed,0.5
+Task,Create Specifications,1
+Task,Create routes,0.5
+Task,Create Controller,0.5
+Task,Create module documentation,2
+Task,Create file of tests,0.5
+Task,Create Tests Documentation,1
+Task,Create PHP test functions,2
+Task,Create Postman tests,2
+Task,Create API functions,5
+Task,Make Postman tests,2
+Task,Make PHP test functions,2
+Task,Deployment,1

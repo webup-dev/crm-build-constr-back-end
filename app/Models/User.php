@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Hash;
 use Illuminate\Notifications\Notifiable;
@@ -62,6 +62,6 @@ class User extends Authenticatable implements JWTSubject
 
     public function books()
     {
-        return $this->hasMany('App\Book');
+        return $this->hasMany('App\Models\Book');
     }
 }

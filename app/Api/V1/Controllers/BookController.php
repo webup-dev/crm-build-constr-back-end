@@ -3,10 +3,10 @@
 namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use JWTAuth;
-use App\Book;
+use App\Models\Book;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -21,7 +21,7 @@ class BookController extends Controller
         $data  = $books->toArray();
 
         $response = [
-            'success' => false,
+            'success' => true,
             'data'    => $data,
             'message' => 'Books retrieved successfully.'
         ];
@@ -76,10 +76,15 @@ class BookController extends Controller
         $book->pages_count = $request->get('pages_count');
 
         if ($currentUser->books()->save($book))
-            if ($book->save())
-                return $this->response->created();
-            else
+            if ($book->save()) {
+                $response = [
+                    'success' => true,
+                    'message' => 'New Book created successfully.'
+                ];
+                return response()->json($response, 200);
+            } else {
                 return $this->response->error('could_not_create_book', 500);
+            }
     }
 
     public function show($id)
@@ -88,13 +93,13 @@ class BookController extends Controller
 
         $book = $currentUser->books()->find($id);
 
-        $user_name=User::find($book->user_id)->name;
+        $user_name       = User::find($book->user_id)->name;
         $book->user_name = $user_name;
 
         if (!$book)
             throw new NotFoundHttpException;
 
-        $data  = $book->toArray();
+        $data = $book->toArray();
 
         $response = [
             'success' => false,
@@ -130,15 +135,12 @@ class BookController extends Controller
         if (!$book)
             throw new NotFoundHttpException;
 
-        if ($book->delete())
-        {
+        if ($book->delete()) {
             $response = [
                 'message' => 'Books retrieved successfully.'
             ];
             return response()->json($response, 200);
-        }
-        else
-        {
+        } else {
             return $this->response->error('could_not_delete_book', 500);
         }
     }
