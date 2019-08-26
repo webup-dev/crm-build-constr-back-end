@@ -1,0 +1,578 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Reference</title>
+
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/all.js"></script>
+
+
+          <script>
+        $(function() {
+            setupLanguages(["bash","javascript"]);
+        });
+      </script>
+      </head>
+
+  <body class="">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+        <img src="images/logo.png" />
+                    <div class="lang-selector">
+                                  <a href="#" data-language-name="bash">bash</a>
+                                  <a href="#" data-language-name="javascript">javascript</a>
+                            </div>
+                            <div class="search">
+              <input type="text" class="search" id="input-search" placeholder="Search">
+            </div>
+            <ul class="search-results"></ul>
+              <div id="toc">
+      </div>
+                    <ul class="toc-footer">
+                                  <li><a href='http://github.com/mpociot/documentarian'>Documentation Powered by Documentarian</a></li>
+                            </ul>
+            </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+          <!-- START_INFO -->
+<h1>Info</h1>
+<p>Welcome to the generated API reference.
+<a href="http://wny2.com/docs/collection.json">Get Postman Collection</a></p>
+<!-- END_INFO -->
+<h1>Books</h1>
+<!-- START_5aa83249c70fc4682eb6e7c338c176d4 -->
+<h2>Get index of books</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET -G "http://wny2.com/api/book" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/book");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">[
+    {
+        "id": 1,
+        "name": "Department 1",
+        "description": "Description 1",
+        "parent_id": null,
+        "created_at": "2019-06-24 07:12:03",
+        "updated_at": "2019-06-24 07:12:03"
+    },
+    {
+        "id": 4,
+        "name": "Department 2",
+        "description": "Description 2",
+        "parent_id": 1,
+        "created_at": "2019-06-24 07:12:03",
+        "updated_at": "2019-06-24 07:12:03"
+    }
+]</code></pre>
+<blockquote>
+<p>Example response (404):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "Departments not found."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET /api/book</code></p>
+<!-- END_5aa83249c70fc4682eb6e7c338c176d4 -->
+<!-- START_c2dd6dd5a208acd6b81bc81de3cc6aa6 -->
+<h2>/api/book/{id}</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET -G "http://wny2.com/api/book/1" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/book/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (401):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "Wrong number of segments",
+        "status_code": 401
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET /api/book/{id}</code></p>
+<!-- END_c2dd6dd5a208acd6b81bc81de3cc6aa6 -->
+<!-- START_c1820a26a881003f80a51e3744e29783 -->
+<h2>/api/book</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST "http://wny2.com/api/book" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/book");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (401):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "Wrong number of segments",
+        "status_code": 401
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST /api/book</code></p>
+<!-- END_c1820a26a881003f80a51e3744e29783 -->
+<!-- START_8d6a6d440a728e82bef78eda6f7929ca -->
+<h2>/api/book/{id}</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X PUT "http://wny2.com/api/book/1" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/book/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "PUT",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (401):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "Wrong number of segments",
+        "status_code": 401
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>PUT /api/book/{id}</code></p>
+<!-- END_8d6a6d440a728e82bef78eda6f7929ca -->
+<!-- START_9b8146842203975d47b3ae0c2ec3d0e7 -->
+<h2>/api/book/{id}</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X DELETE "http://wny2.com/api/book/1" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/book/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "DELETE",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (401):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "Wrong number of segments",
+        "status_code": 401
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>DELETE /api/book/{id}</code></p>
+<!-- END_9b8146842203975d47b3ae0c2ec3d0e7 -->
+<h1>Users</h1>
+<!-- START_e9607afa368380b4c34066ca777ef25e -->
+<h2>Get the authenticated User</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET -G "http://wny2.com/api/auth/me" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/auth/me");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "name": "Super User",
+        "email": "superuser@admin.com",
+        "created_at": "2019-12-08 13:25:36",
+        "updated_at": "2019-12-08 13:25:36"
+    },
+    "message": "User retrieved successfully."
+}</code></pre>
+<blockquote>
+<p>Example response (404):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": false,
+    "data": "Empty",
+    "message": "User not found."
+}</code></pre>
+<blockquote>
+<p>Example response (401):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "The token has been blacklisted",
+        "status_code": 401
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET /api/auth/me</code></p>
+<!-- END_e9607afa368380b4c34066ca777ef25e -->
+<!-- START_5e71b6bfe676d9132ff093a42227a094 -->
+<h2>Delete user</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X DELETE "http://wny2.com/api/users/1" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/users/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "DELETE",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": true,
+    "message": "User deleted successfully."
+}</code></pre>
+<blockquote>
+<p>Example response (500):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": false,
+    "message": "Can not get User."
+}</code></pre>
+<blockquote>
+<p>Example response (500):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": false,
+    "message": "User did not delete."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>DELETE /api/users/{id}</code></p>
+<!-- END_5e71b6bfe676d9132ff093a42227a094 -->
+<h1>general</h1>
+<!-- START_03d29f415a921367ef8611a608633ffb -->
+<h2>/api/auth/signup</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST "http://wny2.com/api/auth/signup" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/auth/signup");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (422):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "422 Unprocessable Entity",
+        "errors": {
+            "name": [
+                "The name field is required."
+            ],
+            "email": [
+                "The email field is required."
+            ],
+            "password": [
+                "The password field is required."
+            ]
+        },
+        "status_code": 422
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST /api/auth/signup</code></p>
+<!-- END_03d29f415a921367ef8611a608633ffb -->
+<!-- START_7ba029714012cd9c08cc50ae4dee9d7a -->
+<h2>Log the user in</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST "http://wny2.com/api/auth/login" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/auth/login");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (422):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "422 Unprocessable Entity",
+        "errors": {
+            "email": [
+                "The email field is required."
+            ],
+            "password": [
+                "The password field is required."
+            ]
+        },
+        "status_code": 422
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST /api/auth/login</code></p>
+<!-- END_7ba029714012cd9c08cc50ae4dee9d7a -->
+<!-- START_b706911fc2143359a27a47586522c8c7 -->
+<h2>/api/auth/recovery</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST "http://wny2.com/api/auth/recovery" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/auth/recovery");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (422):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "422 Unprocessable Entity",
+        "errors": {
+            "email": [
+                "The email field is required."
+            ]
+        },
+        "status_code": 422
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST /api/auth/recovery</code></p>
+<!-- END_b706911fc2143359a27a47586522c8c7 -->
+<!-- START_bac19b6778c34ade7c9006a863aed43c -->
+<h2>/api/auth/reset</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST "http://wny2.com/api/auth/reset" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/auth/reset");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (422):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "422 Unprocessable Entity",
+        "errors": {
+            "token": [
+                "The token field is required."
+            ],
+            "email": [
+                "The email field is required."
+            ],
+            "password": [
+                "The password field is required."
+            ]
+        },
+        "status_code": 422
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST /api/auth/reset</code></p>
+<!-- END_bac19b6778c34ade7c9006a863aed43c -->
+<!-- START_5868c9422bc3266cef6569c8b841eb06 -->
+<h2>Log the user out (Invalidate the token)</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST "http://wny2.com/api/auth/logout" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/auth/logout");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (401):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "Wrong number of segments",
+        "status_code": 401
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST /api/auth/logout</code></p>
+<!-- END_5868c9422bc3266cef6569c8b841eb06 -->
+<!-- START_c4738b8f9d87493a71d28c323a50e0dc -->
+<h2>Refresh a token.</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST "http://wny2.com/api/auth/refresh" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/auth/refresh");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (500):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "Token could not be parsed from the request.",
+        "status_code": 500
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST /api/auth/refresh</code></p>
+<!-- END_c4738b8f9d87493a71d28c323a50e0dc -->
+      </div>
+      <div class="dark-box">
+                        <div class="lang-selector">
+                                    <a href="#" data-language-name="bash">bash</a>
+                                    <a href="#" data-language-name="javascript">javascript</a>
+                              </div>
+                </div>
+    </div>
+  </body>
+</html>

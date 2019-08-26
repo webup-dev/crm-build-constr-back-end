@@ -11,10 +11,38 @@ use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+/**
+ * @group Books
+ */
 class BookController extends Controller
 {
     use Helpers;
 
+    /**
+     * Get index of books
+     *
+     * @response 200 [{
+     *  "id": 1,
+     *  "name": "Department 1",
+     *  "description": "Description 1",
+     *  "parent_id": null,
+     *  "created_at": "2019-06-24 07:12:03",
+     *  "updated_at": "2019-06-24 07:12:03"
+     * },
+     * {
+     *  "id": 4,
+     *  "name": "Department 2",
+     *  "description": "Description 2",
+     *  "parent_id": 1,
+     *  "created_at": "2019-06-24 07:12:03",
+     *  "updated_at": "2019-06-24 07:12:03"
+     * }]
+     * @response 404 {
+     *  "message": "Departments not found."
+     * }
+     *
+     * @return Response
+     */
     public function index()
     {
         $books = Book::all();

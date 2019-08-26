@@ -4,7 +4,7 @@ namespace App\Functional\Api\V1\ToBeRemoved;
 
 
 use App\TestCase;
-use App\User;
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class BoilerplateTest extends TestCase
