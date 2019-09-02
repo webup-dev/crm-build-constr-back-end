@@ -46,6 +46,14 @@ $api->version('v1', function (Router $api) {
         $api->delete('users/{id}', 'App\Api\V1\Controllers\UserController@destroy');
     });
 
+    $api->group(['middleware' => 'api.auth'], function (Router $api) {
+        $api->get('roles', 'App\Api\V1\Controllers\RolesController@index');
+        $api->get('roles/{id}', 'App\Api\V1\Controllers\RolesController@show');
+        $api->post('role', 'App\Api\V1\Controllers\RolesController@store');
+        $api->put('roles/{id}', 'App\Api\V1\Controllers\RolesController@update');
+        $api->delete('roles/{id}', 'App\Api\V1\Controllers\RolesController@destroy');
+    });
+
     $api->get('book', 'App\Api\V1\Controllers\BookController@index');
 //    $api->post('book', 'App\Api\V1\Controllers\BookController@store');
 

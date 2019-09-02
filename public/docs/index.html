@@ -232,6 +232,240 @@ fetch(url, {
 <h3>HTTP Request</h3>
 <p><code>DELETE /api/book/{id}</code></p>
 <!-- END_9b8146842203975d47b3ae0c2ec3d0e7 -->
+<h1>Roles</h1>
+<!-- START_00b123a24f57975f1ff56074f353059b -->
+<h2>Get index of roles</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET -G "http://wny2.com/api/roles" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/roles");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "name": "Role 1",
+            "description": "Description 1",
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        },
+        {
+            "id": 2,
+            "name": "Role 2",
+            "description": "Description 2",
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        }
+    ],
+    "message": "Roles retrieved successfully"
+}</code></pre>
+<blockquote>
+<p>Example response (404):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "Roles not found."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET /api/roles</code></p>
+<!-- END_00b123a24f57975f1ff56074f353059b -->
+<!-- START_71f1350a1bb462cc6e110a211979d5f0 -->
+<h2>Display the specified Role.</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET -G "http://wny2.com/api/roles/1" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/roles/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "Role 1",
+        "description": "Description 1",
+        "created_at": "2019-12-08 13:25:36",
+        "updated_at": "2019-12-08 13:25:36"
+    },
+    "message": "Role retrieved successfully."
+}</code></pre>
+<blockquote>
+<p>Example response (204):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": false,
+    "data": "Empty",
+    "message": "Role not found."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET /api/roles/{id}</code></p>
+<!-- END_71f1350a1bb462cc6e110a211979d5f0 -->
+<!-- START_147daf04c8a9ea230fd0ad2a14bd08bc -->
+<h2>Store a newly created Role in storage.</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST "http://wny2.com/api/role" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/role");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": true,
+    "message": "New Book created successfully."
+}</code></pre>
+<blockquote>
+<p>Example response (500):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "Could not create Role",
+        "status_code": 500
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST /api/role</code></p>
+<!-- END_147daf04c8a9ea230fd0ad2a14bd08bc -->
+<!-- START_e6d6fdb729f9aa7cfdc37472d5fc7679 -->
+<h2>Update the specified resource in storage.</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X PUT "http://wny2.com/api/roles/1" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/roles/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "PUT",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "Role Updated",
+        "description": "Description Updated",
+        "created_at": "2019-12-08 13:25:36",
+        "updated_at": "2019-12-09 13:25:36"
+    },
+    "message": "Role is updated successfully."
+}</code></pre>
+<blockquote>
+<p>Example response (500):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "Could not update Role",
+        "status_code": 500
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>PUT /api/roles/{id}</code></p>
+<!-- END_e6d6fdb729f9aa7cfdc37472d5fc7679 -->
+<!-- START_a9614a0542e74547304d6003a0b27af2 -->
+<h2>Remove the specified resource from storage.</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X DELETE "http://wny2.com/api/roles/1" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/roles/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "DELETE",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": true,
+    "message": "Role is deleted successfully"
+}</code></pre>
+<blockquote>
+<p>Example response (204):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": false,
+    "message": "Could not find Role."
+}</code></pre>
+<blockquote>
+<p>Example response (500):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "error": {
+        "message": "Could not update Role",
+        "status_code": 500
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>DELETE /api/roles/{id}</code></p>
+<!-- END_a9614a0542e74547304d6003a0b27af2 -->
 <h1>Users</h1>
 <!-- START_e9607afa368380b4c34066ca777ef25e -->
 <h2>Get the authenticated User</h2>
@@ -258,22 +492,11 @@ fetch(url, {
 <p>Example response (200):</p>
 </blockquote>
 <pre><code class="language-json">{
-    "success": true,
-    "data": {
-        "name": "Super User",
-        "email": "superuser@admin.com",
-        "created_at": "2019-12-08 13:25:36",
-        "updated_at": "2019-12-08 13:25:36"
-    },
-    "message": "User retrieved successfully."
-}</code></pre>
-<blockquote>
-<p>Example response (404):</p>
-</blockquote>
-<pre><code class="language-json">{
-    "success": false,
-    "data": "Empty",
-    "message": "User not found."
+    "id": 1,
+    "name": "Super User",
+    "email": "superuser@admin.com",
+    "created_at": "2019-12-08 13:25:36",
+    "updated_at": "2019-12-08 13:25:36"
 }</code></pre>
 <blockquote>
 <p>Example response (401):</p>

@@ -111,7 +111,7 @@ class BookController extends Controller
             ];
             return response()->json($response, 200);
         } else {
-            return $this->response->error('could_not_create_book', 500);
+            return $this->response->error('Could not create book', 500);
         }
     }
 

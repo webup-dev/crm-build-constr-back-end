@@ -261,6 +261,306 @@ fetch(url, {
 
 <!-- END_9b8146842203975d47b3ae0c2ec3d0e7 -->
 
+#Roles
+<!-- START_00b123a24f57975f1ff56074f353059b -->
+## Get index of roles
+
+> Example request:
+
+```bash
+curl -X GET -G "http://wny2.com/api/roles" \
+    -H "Authorization: Bearer {token}"
+```
+
+```javascript
+const url = new URL("http://wny2.com/api/roles");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response => response.json())
+    .then(json => console.log(json));
+```
+
+
+> Example response (200):
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "name": "Role 1",
+            "description": "Description 1",
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        },
+        {
+            "id": 2,
+            "name": "Role 2",
+            "description": "Description 2",
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        }
+    ],
+    "message": "Roles retrieved successfully"
+}
+```
+> Example response (404):
+
+```json
+{
+    "message": "Roles not found."
+}
+```
+
+### HTTP Request
+`GET /api/roles`
+
+
+<!-- END_00b123a24f57975f1ff56074f353059b -->
+
+<!-- START_71f1350a1bb462cc6e110a211979d5f0 -->
+## Display the specified Role.
+
+> Example request:
+
+```bash
+curl -X GET -G "http://wny2.com/api/roles/1" \
+    -H "Authorization: Bearer {token}"
+```
+
+```javascript
+const url = new URL("http://wny2.com/api/roles/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response => response.json())
+    .then(json => console.log(json));
+```
+
+
+> Example response (200):
+
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "Role 1",
+        "description": "Description 1",
+        "created_at": "2019-12-08 13:25:36",
+        "updated_at": "2019-12-08 13:25:36"
+    },
+    "message": "Role retrieved successfully."
+}
+```
+> Example response (204):
+
+```json
+{
+    "success": false,
+    "data": "Empty",
+    "message": "Role not found."
+}
+```
+
+### HTTP Request
+`GET /api/roles/{id}`
+
+
+<!-- END_71f1350a1bb462cc6e110a211979d5f0 -->
+
+<!-- START_147daf04c8a9ea230fd0ad2a14bd08bc -->
+## Store a newly created Role in storage.
+
+> Example request:
+
+```bash
+curl -X POST "http://wny2.com/api/role" \
+    -H "Authorization: Bearer {token}"
+```
+
+```javascript
+const url = new URL("http://wny2.com/api/role");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+})
+    .then(response => response.json())
+    .then(json => console.log(json));
+```
+
+
+> Example response (200):
+
+```json
+{
+    "success": true,
+    "message": "New Book created successfully."
+}
+```
+> Example response (500):
+
+```json
+{
+    "error": {
+        "message": "Could not create Role",
+        "status_code": 500
+    }
+}
+```
+
+### HTTP Request
+`POST /api/role`
+
+
+<!-- END_147daf04c8a9ea230fd0ad2a14bd08bc -->
+
+<!-- START_e6d6fdb729f9aa7cfdc37472d5fc7679 -->
+## Update the specified resource in storage.
+
+> Example request:
+
+```bash
+curl -X PUT "http://wny2.com/api/roles/1" \
+    -H "Authorization: Bearer {token}"
+```
+
+```javascript
+const url = new URL("http://wny2.com/api/roles/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "PUT",
+    headers: headers,
+})
+    .then(response => response.json())
+    .then(json => console.log(json));
+```
+
+
+> Example response (200):
+
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "Role Updated",
+        "description": "Description Updated",
+        "created_at": "2019-12-08 13:25:36",
+        "updated_at": "2019-12-09 13:25:36"
+    },
+    "message": "Role is updated successfully."
+}
+```
+> Example response (500):
+
+```json
+{
+    "error": {
+        "message": "Could not update Role",
+        "status_code": 500
+    }
+}
+```
+
+### HTTP Request
+`PUT /api/roles/{id}`
+
+
+<!-- END_e6d6fdb729f9aa7cfdc37472d5fc7679 -->
+
+<!-- START_a9614a0542e74547304d6003a0b27af2 -->
+## Remove the specified resource from storage.
+
+> Example request:
+
+```bash
+curl -X DELETE "http://wny2.com/api/roles/1" \
+    -H "Authorization: Bearer {token}"
+```
+
+```javascript
+const url = new URL("http://wny2.com/api/roles/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "DELETE",
+    headers: headers,
+})
+    .then(response => response.json())
+    .then(json => console.log(json));
+```
+
+
+> Example response (200):
+
+```json
+{
+    "success": true,
+    "message": "Role is deleted successfully"
+}
+```
+> Example response (204):
+
+```json
+{
+    "success": false,
+    "message": "Could not find Role."
+}
+```
+> Example response (500):
+
+```json
+{
+    "error": {
+        "message": "Could not update Role",
+        "status_code": 500
+    }
+}
+```
+
+### HTTP Request
+`DELETE /api/roles/{id}`
+
+
+<!-- END_a9614a0542e74547304d6003a0b27af2 -->
+
 #Users
 <!-- START_e9607afa368380b4c34066ca777ef25e -->
 ## Get the authenticated User
@@ -294,23 +594,11 @@ fetch(url, {
 
 ```json
 {
-    "success": true,
-    "data": {
-        "name": "Super User",
-        "email": "superuser@admin.com",
-        "created_at": "2019-12-08 13:25:36",
-        "updated_at": "2019-12-08 13:25:36"
-    },
-    "message": "User retrieved successfully."
-}
-```
-> Example response (404):
-
-```json
-{
-    "success": false,
-    "data": "Empty",
-    "message": "User not found."
+    "id": 1,
+    "name": "Super User",
+    "email": "superuser@admin.com",
+    "created_at": "2019-12-08 13:25:36",
+    "updated_at": "2019-12-08 13:25:36"
 }
 ```
 > Example response (401):
