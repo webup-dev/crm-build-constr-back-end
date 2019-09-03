@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.0.4] - 2019-09-02
+### Added
+- Module Roles.
+
 ## [0.0.3] - 2019-08-15
 ### Changed
 - Demo module Books. Delete book with specific ID. Response is changed.

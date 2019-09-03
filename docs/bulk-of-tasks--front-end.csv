@@ -4,8 +4,14 @@ Task,Planning,1
 Task,Create routes,0.5
 Task,Create link in menu,0.5
 Task,Create links in other components,0.5
-Task,Create static component,2
-Task,Interaction with API server,2
-Task,Validation,1
+Task,Create static component Index,1
+Task,Create static component Create,2
+Task,Create static component Edit,2
+Task,Create static component Delete,0.5
+Task,Interaction with API server. Index,1
+Task,Interaction with API server. Create,2
+Task,Interaction with API server. Edit,2
+Task,Interaction with API server. Delete,0.5
+Task,Validation,2
 Task,Create other buttons in the component,1
-Task,Deployment,2
+Task,Deployment,3
