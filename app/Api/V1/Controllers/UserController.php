@@ -2,7 +2,12 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
+use App\Models\User_role;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
@@ -48,22 +53,6 @@ class UserController extends Controller
      */
     public function me()
     {
-//        $data = response()->json(Auth::guard()->user());
-//
-//        if (is_null($data)) {
-//            $response = [
-//                'success' => false,
-//                'data'    => 'Empty',
-//                'message' => 'User not found.'
-//            ];
-//            return response()->json($response, 404);
-//        }
-//        $response = [
-//            'success' => true,
-//            'data'    => $data,
-//            'message' => 'User retrieved successfully.'
-//        ];
-
         return response()->json(Auth::guard()->user());
     }
 
@@ -115,5 +104,332 @@ class UserController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
+
+    /**
+     * Get index of user-roles
+     *
+     * @response 200 {
+     *  "success": true,
+     *  "data": [{
+     *    "id": 1,
+     *    "user_id": 1,
+     *    "role_id": 1,
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03"
+     *   },
+     *   {
+     *    "id": 2,
+     *    "user_id": 1,
+     *    "role_id": 2,
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03"
+     *   }],
+     *  "message": "User-roles retrieved successfully"
+     * }
+     * @response 404 {
+     *  "message": "User-roles not found."
+     * }
+     *
+     * @return Response
+     */
+    public function userRolesIndex()
+    {
+        $user_roles = User_role::all();
+
+        if ($user_roles->count() === 0) {
+            $response = [
+                'success' => false,
+                'message' => 'User-roles not found.'
+            ];
+
+            return response()->json($response, 404);
+        }
+
+        $data = $user_roles->toArray();
+
+        $response = [
+            'success' => true,
+            'data'    => $data,
+            'message' => 'Roles retrieved successfully'
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * Get index of user-roles for specified user
+     *
+     * @response 200 {
+     *  "success": true,
+     *  "data": [{
+     *    "id": 1,
+     *    "user_id": 1,
+     *    "role_id": 1,
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03"
+     *   },
+     *   {
+     *    "id": 2,
+     *    "user_id": 1,
+     *    "role_id": 2,
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03"
+     *   }],
+     *  "message": "User-roles retrieved successfully"
+     * }
+     * @response 404 {
+     *  "message": "User-roles not found."
+     * }
+     *
+     * @param int $id
+     * @return void
+     */
+    public function specifiedUserRolesIndex($id)
+    {
+
+    }
+
+    /**
+     * Store a newly created Roles for User in storage.
+     *
+     * @response 200 {
+     *  "success": true,
+     *  "message": "New Roles for User created successfully."
+     * }
+     *
+     * @response 406 {
+     *  "success": false,
+     *  "message": "Creating is impossible. User has roles already."
+     * }
+     *
+     * @response 422 {
+     *  "success": false,
+     *  "message": "Creating is impossible. User does not exist."
+     * }
+     *
+     * @response 500 {
+     *  "error": {
+     *      "message": "Could not create Roles for User",
+     *      "status_code": 500
+     *    }
+     * }
+     *
+     * @param Request $request
+     * @param int $id
+     * @return array|\Illuminate\Http\JsonResponse
+     */
+    public function userRolesStore(Request $request, $id)
+    {
+        $rules = array(
+            'user_id' => 'required|integer',
+            'role_id' => 'required',
+        );
+
+        $messages = array(
+            'user_id.required'   => 'Please select a user.',
+            'role_id.required'   => 'Please select roles.',
+            'description.string' => 'Description must be a string.',
+        );
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
+            $errors   = $messages->all();
+            return $errors;
+        }
+
+        $user_id = $request->get('user_id');
+        $user = User::find($user_id);
+
+        // Check does user exist?
+        if (!$user) {
+            $response = [
+                'success' => false,
+                'message' => "Creating is impossible. User does not exist."
+            ];
+            return response()->json($response, 422);
+        }
+
+        // Check does user have roles already?
+        $roles      = $user->roles()->get();
+        $rolesCount = $roles->count();
+        if ($rolesCount != 0) {
+            $response = [
+                'success' => false,
+                'message' => "Creating is impossible. User has roles already."
+            ];
+            return response()->json($response, 406);
+        }
+
+        $roleIds = $request->get('role_id'); //array
+
+        $user->roles()->attach($roleIds);
+
+        $roles      = $user->roles()->get();
+        $rolesCount = $roles->count();
+
+        if ($rolesCount != 0) {
+            $response = [
+                'success' => true,
+                'message' => 'New Roles for User created successfully.'
+            ];
+            return response()->json($response, 200);
+        } else {
+            return $this->response->error('Could not create roles', 500);
+        }
+    }
+
+    /**
+     * Update the roles of the user in storage.
+     *
+     * @response 200 {
+     *  "success": true,
+     *  "message": "Roles for User are updated successfully."
+     * }
+     *
+     * @response 406 {
+     *  "success": false,
+     *  "message": "Updating is impossible. User does not have roles yet."
+     * }
+     *
+     * @response 422 {
+     *  "success": false,
+     *  "message": "Updating is impossible. User does not exist."
+     * }
+     *
+     * @response 500 {
+     *  "error": {
+     *      "message": "Could not update Roles of User",
+     *      "status_code": 500
+     *    }
+     * }
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function userRolesUpdate(Request $request, $id)
+    {
+        $rules = array(
+            'user_id' => 'required|integer',
+            'role_id' => 'required',
+        );
+
+        $messages = array(
+            'user_id.required'   => 'Please select a user.',
+            'role_id.required'   => 'Please select roles.',
+            'description.string' => 'Description must be a string.',
+        );
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
+            $errors   = $messages->all();
+            return $errors;
+        }
+
+        $user_id = $request->get('user_id');
+        $user    = User::find($user_id);
+
+        // Check does user exist?
+        if (!$user) {
+            $response = [
+                'success' => false,
+                'message' => "Updating is impossible. User does not exist."
+            ];
+            return response()->json($response, 422);
+        }
+
+        // Check does user have roles already?
+        $roles      = $user->roles()->get();
+        if ($roles->count() === 0) {
+            $response = [
+                'success' => false,
+                'message' => "Updating is impossible. User does not have roles yet."
+            ];
+            return response()->json($response, 406);
+        }
+
+        $roleIds = $request->get('role_id'); //array
+
+        $user->roles()->sync($roleIds);
+
+        $roles      = $user->roles()->get();
+        $rolesCount = $roles->count();
+
+        if ($rolesCount != 0) {
+            $response = [
+                'success' => true,
+                'message' => 'Roles for User are updated successfully.'
+            ];
+            return response()->json($response, 200);
+        } else {
+            return $this->response->error('Could not update roles', 500);
+        }
+    }
+
+    /**
+     * Remove the roles of the user from storage.
+     *
+     * @response 200 {
+     *  "success": true,
+     *  "message": "User Roles are deleted successfully."
+     * }
+     *
+     * @response 406 {
+     *  "success": false,
+     *  "message": "It is impossible to delete Roles. User does not have roles."
+     * }
+     *
+     * @response 422 {
+     *  "success": false,
+     *  "message": "It is impossible to delete Roles. User does not exist."
+     * }
+     *
+     * @response 500 {
+     *  "error": {
+     *      "message": "Could not delete User Roles.",
+     *      "status_code": 500
+     *    }
+     * }
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function userRolesDestroy($id)
+    {
+        $user = User::find($id);
+
+        // Check does user exist?
+        if (!$user) {
+            $response = [
+                'success' => false,
+                'message' => "It is impossible to delete Roles. User does not exist."
+            ];
+            return response()->json($response, 422);
+        }
+
+        // Check does user have roles already?
+        $roles      = $user->roles()->get();
+        if ($roles->count() === 0) {
+            $response = [
+                'success' => false,
+                'message' => "It is impossible to delete Roles. User does not have roles."
+            ];
+            return response()->json($response, 406);
+        }
+
+        if ($user->roles()->detach()) {
+            $response = [
+                'success' => true,
+                'message' => "User Roles are deleted successfully."
+            ];
+
+            return response()->json($response, 200);
+        } else {
+            return $this->response->error('Could not delete User Roles.', 500);
+        }
     }
 }

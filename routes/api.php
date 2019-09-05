@@ -54,8 +54,15 @@ $api->version('v1', function (Router $api) {
         $api->delete('roles/{id}', 'App\Api\V1\Controllers\RolesController@destroy');
     });
 
+    $api->group(['middleware' => 'api.auth'], function (Router $api) {
+        $api->get('user-roles', 'App\Api\V1\Controllers\UserController@userRolesIndex');
+        $api->get('user-roles/{id}', 'App\Api\V1\Controllers\UserController@specifiedUserRolesIndex');
+        $api->post('user-roles/{id}', 'App\Api\V1\Controllers\UserController@userRolesStore');
+        $api->put('user-roles/{id}', 'App\Api\V1\Controllers\UserController@userRolesUpdate');
+        $api->delete('user-roles/{id}', 'App\Api\V1\Controllers\UserController@userRolesDestroy');
+    });
+
     $api->get('book', 'App\Api\V1\Controllers\BookController@index');
-//    $api->post('book', 'App\Api\V1\Controllers\BookController@store');
 
     $api->get('hello', function() {
         return response()->json([

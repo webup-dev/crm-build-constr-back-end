@@ -677,6 +677,361 @@ fetch(url, {
 
 <!-- END_5e71b6bfe676d9132ff093a42227a094 -->
 
+<!-- START_24b8274254a6ba52c458497886843fc2 -->
+## Get index of user-roles
+
+> Example request:
+
+```bash
+curl -X GET -G "http://wny2.com/api/user-roles" \
+    -H "Authorization: Bearer {token}"
+```
+
+```javascript
+const url = new URL("http://wny2.com/api/user-roles");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response => response.json())
+    .then(json => console.log(json));
+```
+
+
+> Example response (200):
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "role_id": 1,
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        },
+        {
+            "id": 2,
+            "user_id": 1,
+            "role_id": 2,
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        }
+    ],
+    "message": "User-roles retrieved successfully"
+}
+```
+> Example response (404):
+
+```json
+{
+    "message": "User-roles not found."
+}
+```
+
+### HTTP Request
+`GET /api/user-roles`
+
+
+<!-- END_24b8274254a6ba52c458497886843fc2 -->
+
+<!-- START_52947d4abf46ce9a01a7336f48dfc4c3 -->
+## Get index of user-roles for specified user
+
+> Example request:
+
+```bash
+curl -X GET -G "http://wny2.com/api/user-roles/1" \
+    -H "Authorization: Bearer {token}"
+```
+
+```javascript
+const url = new URL("http://wny2.com/api/user-roles/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response => response.json())
+    .then(json => console.log(json));
+```
+
+
+> Example response (200):
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "role_id": 1,
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        },
+        {
+            "id": 2,
+            "user_id": 1,
+            "role_id": 2,
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        }
+    ],
+    "message": "User-roles retrieved successfully"
+}
+```
+> Example response (404):
+
+```json
+{
+    "message": "User-roles not found."
+}
+```
+
+### HTTP Request
+`GET /api/user-roles/{id}`
+
+
+<!-- END_52947d4abf46ce9a01a7336f48dfc4c3 -->
+
+<!-- START_c62f889cf08174385af991ee9ed266f9 -->
+## Store a newly created Roles for User in storage.
+
+> Example request:
+
+```bash
+curl -X POST "http://wny2.com/api/user-roles/1" \
+    -H "Authorization: Bearer {token}"
+```
+
+```javascript
+const url = new URL("http://wny2.com/api/user-roles/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+})
+    .then(response => response.json())
+    .then(json => console.log(json));
+```
+
+
+> Example response (200):
+
+```json
+{
+    "success": true,
+    "message": "New Roles for User created successfully."
+}
+```
+> Example response (406):
+
+```json
+{
+    "success": false,
+    "message": "Creating is impossible. User has roles already."
+}
+```
+> Example response (422):
+
+```json
+{
+    "success": false,
+    "message": "Creating is impossible. User does not exist."
+}
+```
+> Example response (500):
+
+```json
+{
+    "error": {
+        "message": "Could not create Roles for User",
+        "status_code": 500
+    }
+}
+```
+
+### HTTP Request
+`POST /api/user-roles/{id}`
+
+
+<!-- END_c62f889cf08174385af991ee9ed266f9 -->
+
+<!-- START_2cd51c94025ec0205b0977e05970d29f -->
+## Update the roles of the user in storage.
+
+> Example request:
+
+```bash
+curl -X PUT "http://wny2.com/api/user-roles/1" \
+    -H "Authorization: Bearer {token}"
+```
+
+```javascript
+const url = new URL("http://wny2.com/api/user-roles/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "PUT",
+    headers: headers,
+})
+    .then(response => response.json())
+    .then(json => console.log(json));
+```
+
+
+> Example response (200):
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "role_id": 1,
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        },
+        {
+            "id": 2,
+            "user_id": 1,
+            "role_id": 2,
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        }
+    ],
+    "message": "Roles of User are updated successfully."
+}
+```
+> Example response (406):
+
+```json
+{
+    "success": false,
+    "message": "Updating is impossible. User does not have roles yet."
+}
+```
+> Example response (422):
+
+```json
+{
+    "success": false,
+    "message": "Updating is impossible. User does not exist."
+}
+```
+> Example response (500):
+
+```json
+{
+    "error": {
+        "message": "Could not update Roles of User",
+        "status_code": 500
+    }
+}
+```
+
+### HTTP Request
+`PUT /api/user-roles/{id}`
+
+
+<!-- END_2cd51c94025ec0205b0977e05970d29f -->
+
+<!-- START_430af72c006c718f2dd54d431ea66623 -->
+## Remove the roles of the user from storage.
+
+> Example request:
+
+```bash
+curl -X DELETE "http://wny2.com/api/user-roles/1" \
+    -H "Authorization: Bearer {token}"
+```
+
+```javascript
+const url = new URL("http://wny2.com/api/user-roles/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "DELETE",
+    headers: headers,
+})
+    .then(response => response.json())
+    .then(json => console.log(json));
+```
+
+
+> Example response (200):
+
+```json
+{
+    "success": true,
+    "message": "Roles of User are deleted successfully"
+}
+```
+> Example response (406):
+
+```json
+{
+    "success": false,
+    "message": "It is impossible to delete Roles. User does not have roles."
+}
+```
+> Example response (422):
+
+```json
+{
+    "success": false,
+    "message": "It is impossible to delete Roles. User does not exist."
+}
+```
+> Example response (500):
+
+```json
+{
+    "error": {
+        "message": "Could not delete Roles of User",
+        "status_code": 500
+    }
+}
+```
+
+### HTTP Request
+`DELETE /api/user-roles/{id}`
+
+
+<!-- END_430af72c006c718f2dd54d431ea66623 -->
+
 #general
 <!-- START_03d29f415a921367ef8611a608633ffb -->
 ## /api/auth/signup

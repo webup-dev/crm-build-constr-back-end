@@ -21,8 +21,17 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
  */
 class Role extends Model
 {
     protected $fillable = ['name', 'description'];
+
+    /**
+     * The users that belong to the role .
+     */
+    public function users()
+    {
+        return $this->belongsToMany('App\Models\User', 'user_roles')->withTimestamps();
+    }
 }

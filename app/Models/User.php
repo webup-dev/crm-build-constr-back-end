@@ -30,6 +30,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -87,5 +88,13 @@ class User extends Authenticatable implements JWTSubject
     public function books()
     {
         return $this->hasMany('App\Models\Book');
+    }
+
+    /**
+     * The roles that belong to the user.
+     */
+    public function roles()
+    {
+        return $this->belongsToMany('App\Models\Role', 'user_roles')->withTimestamps();
     }
 }

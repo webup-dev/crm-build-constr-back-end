@@ -254,7 +254,6 @@ class RolesController extends Controller
                 'message' => 'Could not find Role.'
             ];
 
-//            print_r(response()->json($response, 204));
             return response()->json($response, 204);
         }
 
