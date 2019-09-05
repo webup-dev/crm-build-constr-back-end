@@ -730,7 +730,7 @@ class UserControllerTest extends TestCase
         // Deleting of all user_roles
         $this->delete('api/user-roles/1?token=' . $token, []);
         $this->delete('api/user-roles/2?token=' . $token, []);
-        
+
         $response = $this->get('api/user-roles?token=' . $token, []);
 
         // Check response status
