@@ -677,6 +677,96 @@ fetch(url, {
 
 <!-- END_5e71b6bfe676d9132ff093a42227a094 -->
 
+<!-- START_8caf3f34a23efcdc7c3e0369635def44 -->
+## Get index of user-roles with full data
+
+> Example request:
+
+```bash
+curl -X GET -G "http://wny2.com/api/user-roles/full" \
+    -H "Authorization: Bearer {token}"
+```
+
+```javascript
+const url = new URL("http://wny2.com/api/user-roles/full");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response => response.json())
+    .then(json => console.log(json));
+```
+
+
+> Example response (200):
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "user_name": "Joe Dow",
+            "role_ids": [
+                1,
+                2
+            ],
+            "role_names": "superadmin, admin",
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        },
+        {
+            "id": 2,
+            "user_id": 2,
+            "user_name": "Jon Pace",
+            "role_ids": [
+                1,
+                2
+            ],
+            "role_names": "superadmin, admin",
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        }
+    ],
+    "message": "Data is formed successfully."
+}
+```
+> Example response (422):
+
+```json
+{
+    "message": "Users do not exist."
+}
+```
+> Example response (422):
+
+```json
+{
+    "message": "Roles do not exist."
+}
+```
+> Example response (422):
+
+```json
+{
+    "message": "User-Roles do not exist."
+}
+```
+
+### HTTP Request
+`GET /api/user-roles/full`
+
+
+<!-- END_8caf3f34a23efcdc7c3e0369635def44 -->
+
 <!-- START_24b8274254a6ba52c458497886843fc2 -->
 ## Get index of user-roles
 
@@ -911,23 +1001,7 @@ fetch(url, {
 ```json
 {
     "success": true,
-    "data": [
-        {
-            "id": 1,
-            "user_id": 1,
-            "role_id": 1,
-            "created_at": "2019-06-24 07:12:03",
-            "updated_at": "2019-06-24 07:12:03"
-        },
-        {
-            "id": 2,
-            "user_id": 1,
-            "role_id": 2,
-            "created_at": "2019-06-24 07:12:03",
-            "updated_at": "2019-06-24 07:12:03"
-        }
-    ],
-    "message": "Roles of User are updated successfully."
+    "message": "Roles for User are updated successfully."
 }
 ```
 > Example response (406):
@@ -996,7 +1070,7 @@ fetch(url, {
 ```json
 {
     "success": true,
-    "message": "Roles of User are deleted successfully"
+    "message": "User Roles are deleted successfully."
 }
 ```
 > Example response (406):
@@ -1020,7 +1094,7 @@ fetch(url, {
 ```json
 {
     "error": {
-        "message": "Could not delete Roles of User",
+        "message": "Could not delete User Roles.",
         "status_code": 500
     }
 }
