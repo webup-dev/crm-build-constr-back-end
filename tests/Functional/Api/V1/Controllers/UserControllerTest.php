@@ -6,6 +6,34 @@
  *    Create 3 roles
  *    Create 2 roles for user #1
  *
+ * Test User Roles Index Full:
+ *    Check login (user #1)
+ *    Get index
+ *       Check response status
+ *       Check response structure
+ *       Check role #2
+ *
+ * Test User Roles Index Full when users are absent:
+ *    Check login (user #1)
+ *    Get index
+ *       Check response status
+ *       Check response structure
+ *       Check data
+ *
+ * Test User Roles Index Full when roles are absent:
+ *    Check login (user #1)
+ *    Get index
+ *       Check response status
+ *       Check response structure
+ *       Check data
+ *
+ * Test User Roles Index Full when user-roles are absent:
+ *    Check login (user #1)
+ *    Get index
+ *       Check response status
+ *       Check response structure
+ *       Check data
+ *
  * Test User Roles Index:
  *    Check login (user #1)
  *    Get index
@@ -187,6 +215,109 @@ class UserControllerTest extends TestCase
     }
 
     /**
+     * Test User Roles Index Full:
+     *    Check login (user #1)
+     *    Get index
+     *       Check response status
+     *       Check response structure
+     *       Check number of users
+     *       Check user_id #1
+     *       Check role_ids of user #1
+     */
+    public function testUserRolesIndexFull()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'test1@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'Test',
+            'email' => 'test1@email.com'
+        ])->isOk();
+
+        $response = $this->get('api/user-roles/full?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'data' => [],
+                'message'
+            ]
+        );
+        $responseJSON = json_decode($response->getContent(), true);
+        $data         = $responseJSON['data'];  // array
+
+        $this->assertEquals(count($data), 3);
+        $this->assertEquals($data[1]['user_id'], 1);
+        $this->assertEquals($data[1]['role_ids'], [1, 2]);
+        $success      = $responseJSON['success'];
+        $message      = $responseJSON['message'];
+        $this->assertEquals($success, true);
+        $this->assertEquals($message, 'Data is formed successfully.');
+    }
+
+
+        /**
+     * Test User Roles Index Full when user-roles are absent:
+     *    Check login (user #1)
+     *    Get index
+     *       Check response status
+     *       Check response structure
+     *       Check data
+     */
+    public function testUserRolesIndexFullWhenUserRolesAreAbsent()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'test1@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'Test',
+            'email' => 'test1@email.com'
+        ])->isOk();
+
+        $this->delete('api/user-roles/1?token=' . $token, []);
+        $this->delete('api/user-roles/2?token=' . $token, []);
+        $response = $this->get('api/user-roles/full?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(422);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'message'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $message      = $responseJSON['message'];  // array
+        $this->assertEquals(false, $success);
+        $this->assertEquals('User-Roles do not exist.', $message);
+    }
+
+    /**
      * Test User Roles Index:
      *    Check login (user #1)
      *    Get index
@@ -326,7 +457,7 @@ class UserControllerTest extends TestCase
         ])->isOk();
 
         // Store a new roles for User
-        $data     = [
+        $data = [
             "user_id" => 1,
             "role_id" => [1, 2]
         ];
@@ -377,7 +508,7 @@ class UserControllerTest extends TestCase
         ])->isOk();
 
         // Store a new role for User
-        $data     = [
+        $data = [
             "user_id" => 33,
             "role_id" => [1, 2]
         ];
@@ -433,7 +564,7 @@ class UserControllerTest extends TestCase
         ])->isOk();
 
         // Update roles for User
-        $data     = [
+        $data = [
             "user_id" => 1,
             "role_id" => [2, 3]
         ];
@@ -484,7 +615,7 @@ class UserControllerTest extends TestCase
         ])->isOk();
 
         // Update roles for User
-        $data     = [
+        $data = [
             "user_id" => 3,
             "role_id" => [2, 3]
         ];
@@ -536,7 +667,7 @@ class UserControllerTest extends TestCase
         ])->isOk();
 
         // Update roles for User
-        $data     = [
+        $data = [
             "user_id" => 33,
             "role_id" => [1, 2]
         ];
@@ -745,8 +876,8 @@ class UserControllerTest extends TestCase
         );
         $responseJSON = json_decode($response->getContent(), true);
 
-        $success      = $responseJSON['success'];  // array
-        $message      = $responseJSON['message'];  // array
+        $success = $responseJSON['success'];  // array
+        $message = $responseJSON['message'];  // array
 
         $this->assertEquals($success, false);
         $this->assertEquals($message, "User-roles not found.");

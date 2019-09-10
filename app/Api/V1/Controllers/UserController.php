@@ -191,6 +191,139 @@ class UserController extends Controller
     }
 
     /**
+     * Get index of user-roles with full data
+     *
+     * @response 200 {
+     *  "success": true,
+     *  "data": [{
+     *    "id": 1,
+     *    "user_id": 1,
+     *    "user_name": "Joe Dow",
+     *    "role_ids": [1, 2],
+     *    "role_names": "superadmin, admin",
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03"
+     *   },
+     *   {
+     *    "id": 2,
+     *    "user_id": 2,
+     *    "user_name": "Jon Pace",
+     *    "role_ids": [1, 2],
+     *    "role_names": "superadmin, admin",
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03"
+     *   }],
+     *  "message": "Data is formed successfully."
+     * }
+     * @response 422 {
+     *  "message": "Users do not exist."
+     * }
+     * @response 422 {
+     *  "message": "Roles do not exist."
+     * }
+     * @response 422 {
+     *  "message": "User-Roles do not exist."
+     * }
+     *
+     * @return Response
+     */
+    public function userRolesIndexFull()
+    {
+        $users = User::all()->keyBy('id');
+        if (count($users) === 0) {
+            $response = [
+                'success' => false,
+                'message' => 'Users do not exist.'
+            ];
+
+            return response()->json($response, 422);
+        }
+
+        $roles = Role::all()->keyBy('id');
+        if (count($roles) === 0) {
+            $response = [
+                'success' => false,
+                'message' => 'Roles do not exist.'
+            ];
+
+            return response()->json($response, 422);
+        }
+
+        $user_roles = User_role::all()->groupBy('user_id')->toArray();
+
+        if (count($user_roles) === 0) {
+            $response = [
+                'success' => false,
+                'message' => 'User-Roles do not exist.'
+            ];
+
+            return response()->json($response, 422);
+        }
+
+        $user_roles_formatted = $this->pluckRoleId($user_roles);
+
+        $dataFormatted = $this->formData($users, $roles, $user_roles_formatted);
+
+        $response = [
+            'success' => true,
+            'data'    => $dataFormatted,
+            'message' => 'Data is formed successfully.'
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    private function formData($users, $roles, $user_roles_formatted)
+    {
+        $array = [];
+        foreach ($users as $user_id => $user) {
+            if (!isset($user_roles_formatted[$user_id])) {
+                $array[$user_id]['user_id']    = $user_id;
+                $array[$user_id]['user_name']  = $user->name;
+                $array[$user_id]['role_ids']   = [];
+                $array[$user_id]['role_names'] = "";
+                continue;
+            }
+
+            $array[$user_id]['user_id']   = $user_id;
+            $array[$user_id]['user_name'] = $user->name;
+
+            $user_rolesTemp = $user_roles_formatted[$user_id];
+            $array[$user_id]['role_ids'] = $user_rolesTemp;
+
+            $names = "";
+            $l     = count($user_rolesTemp);
+            $i     = 0;
+            foreach ($user_rolesTemp as $id) {
+                $names .= $roles[$id]->name;
+
+                if ($i < $l - 1) {
+                    $names .= ", ";
+                }
+                $i++;
+            }
+
+            $array[$user_id]['role_names'] = $names;
+        }
+
+        return $array;
+    }
+
+    private function pluckRoleId($userRoles)
+    {
+        $arrayResult = [];
+        foreach ($userRoles as $key1 => $arrayInternal) {
+            $arrayResult[$key1] = [];
+            foreach ($arrayInternal as $key2 => $item) {
+                $arrayResult[$key1][] = $item['role_id'];
+            }
+            $arrayInternal[$key1] = array_unique($arrayInternal[$key1]);
+        }
+
+        return $arrayResult;
+    }
+
+    /**
      * Store a newly created Roles for User in storage.
      *
      * @response 200 {
@@ -240,7 +373,7 @@ class UserController extends Controller
         }
 
         $user_id = $request->get('user_id');
-        $user = User::find($user_id);
+        $user    = User::find($user_id);
 
         // Check does user exist?
         if (!$user) {
@@ -342,7 +475,7 @@ class UserController extends Controller
         }
 
         // Check does user have roles already?
-        $roles      = $user->roles()->get();
+        $roles = $user->roles()->get();
         if ($roles->count() === 0) {
             $response = [
                 'success' => false,
@@ -412,7 +545,7 @@ class UserController extends Controller
         }
 
         // Check does user have roles already?
-        $roles      = $user->roles()->get();
+        $roles = $user->roles()->get();
         if ($roles->count() === 0) {
             $response = [
                 'success' => false,

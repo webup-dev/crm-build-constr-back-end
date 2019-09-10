@@ -555,6 +555,81 @@ fetch(url, {
 <h3>HTTP Request</h3>
 <p><code>DELETE /api/users/{id}</code></p>
 <!-- END_5e71b6bfe676d9132ff093a42227a094 -->
+<!-- START_8caf3f34a23efcdc7c3e0369635def44 -->
+<h2>Get index of user-roles with full data</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET -G "http://wny2.com/api/user-roles/full" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/user-roles/full");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "user_name": "Joe Dow",
+            "role_ids": [
+                1,
+                2
+            ],
+            "role_names": "superadmin, admin",
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        },
+        {
+            "id": 2,
+            "user_id": 2,
+            "user_name": "Jon Pace",
+            "role_ids": [
+                1,
+                2
+            ],
+            "role_names": "superadmin, admin",
+            "created_at": "2019-06-24 07:12:03",
+            "updated_at": "2019-06-24 07:12:03"
+        }
+    ],
+    "message": "Data is formed successfully."
+}</code></pre>
+<blockquote>
+<p>Example response (422):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "Users do not exist."
+}</code></pre>
+<blockquote>
+<p>Example response (422):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "Roles do not exist."
+}</code></pre>
+<blockquote>
+<p>Example response (422):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "User-Roles do not exist."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET /api/user-roles/full</code></p>
+<!-- END_8caf3f34a23efcdc7c3e0369635def44 -->
 <!-- START_24b8274254a6ba52c458497886843fc2 -->
 <h2>Get index of user-roles</h2>
 <blockquote>
@@ -741,23 +816,7 @@ fetch(url, {
 </blockquote>
 <pre><code class="language-json">{
     "success": true,
-    "data": [
-        {
-            "id": 1,
-            "user_id": 1,
-            "role_id": 1,
-            "created_at": "2019-06-24 07:12:03",
-            "updated_at": "2019-06-24 07:12:03"
-        },
-        {
-            "id": 2,
-            "user_id": 1,
-            "role_id": 2,
-            "created_at": "2019-06-24 07:12:03",
-            "updated_at": "2019-06-24 07:12:03"
-        }
-    ],
-    "message": "Roles of User are updated successfully."
+    "message": "Roles for User are updated successfully."
 }</code></pre>
 <blockquote>
 <p>Example response (406):</p>
@@ -811,7 +870,7 @@ fetch(url, {
 </blockquote>
 <pre><code class="language-json">{
     "success": true,
-    "message": "Roles of User are deleted successfully"
+    "message": "User Roles are deleted successfully."
 }</code></pre>
 <blockquote>
 <p>Example response (406):</p>
@@ -832,7 +891,7 @@ fetch(url, {
 </blockquote>
 <pre><code class="language-json">{
     "error": {
-        "message": "Could not delete Roles of User",
+        "message": "Could not delete User Roles.",
         "status_code": 500
     }
 }</code></pre>
