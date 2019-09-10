@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.0.6] - 2019-09-10
+### Added
+- Module User-Roles. Function index/full is added (users, roles, user-roles by 1 request).
+
 ## [0.0.5] - 2019-09-05
 ### Added
 - Module User-Roles is added. API documentation is added (http://.../api-documentation)
