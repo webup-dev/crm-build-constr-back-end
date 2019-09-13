@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\User_role;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tymon\JWTAuth\JWTAuth;
@@ -163,23 +164,20 @@ class UserController extends Controller
      * @response 200 {
      *  "success": true,
      *  "data": [{
-     *    "id": 1,
-     *    "user_id": 1,
      *    "role_id": 1,
-     *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "name": "superadmin"
      *   },
      *   {
-     *    "id": 2,
-     *    "user_id": 1,
      *    "role_id": 2,
-     *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "name": "admin"
      *   }],
      *  "message": "User-roles retrieved successfully"
      * }
-     * @response 404 {
-     *  "message": "User-roles not found."
+     * @response 422 {
+     *  "message": "User does not exist."
+     * }
+     * @response 422 {
+     *  "message": "User-Roles do not exist."
      * }
      *
      * @param int $id
@@ -187,7 +185,59 @@ class UserController extends Controller
      */
     public function specifiedUserRolesIndex($id)
     {
+        $user = User::whereId($id)->get();
+        if ($user->count() === 0) {
+            $response = [
+                'success' => false,
+                'message' => "User does not exist."
+            ];
 
+            return response()->json($response, 422);
+        }
+
+        $user_roles = User_role::select('role_id')->where('user_id', $id)->get();
+
+        if ($user_roles->count() === 0) {
+            $response = [
+                'success' => false,
+                'message' => "User-Roles do not exist."
+            ];
+
+            return response()->json($response, 422);
+        }
+
+        $roles = Role::all()->keyBy('id');
+
+        $user_roles = $this->formData2($user_roles, $roles);
+
+        $data = $user_roles->toArray();
+
+        $response = [
+            'success' => true,
+            'data'    => $data,
+            'message' => 'User-Roles retrieved successfully'
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * Form User-Roles collection for response
+     *
+     * @param $user_roles
+     * @param $roles
+     * @return
+     */
+    private function formData2($user_roles, $roles)
+    {
+        // add name
+        foreach ($user_roles as $item) {
+            $roleId = $item->role_id;
+            $item->name = $roles[$roleId]->name;
+            $item->id = $roleId;
+        }
+
+        return $user_roles;
     }
 
     /**
@@ -229,7 +279,7 @@ class UserController extends Controller
      */
     public function userRolesIndexFull()
     {
-        $users = User::all()->keyBy('id');
+        $users = User::all();
         if (count($users) === 0) {
             $response = [
                 'success' => false,
@@ -275,21 +325,15 @@ class UserController extends Controller
 
     private function formData($users, $roles, $user_roles_formatted)
     {
-        $array = [];
-        foreach ($users as $user_id => $user) {
-            if (!isset($user_roles_formatted[$user_id])) {
-                $array[$user_id]['user_id']    = $user_id;
-                $array[$user_id]['user_name']  = $user->name;
-                $array[$user_id]['role_ids']   = [];
-                $array[$user_id]['role_names'] = "";
+        foreach ($users as $user) {
+            if (!isset($user_roles_formatted[$user->id])) {
+                $user->role_ids   = [];
+                $user->role_names = "";
                 continue;
             }
 
-            $array[$user_id]['user_id']   = $user_id;
-            $array[$user_id]['user_name'] = $user->name;
-
-            $user_rolesTemp = $user_roles_formatted[$user_id];
-            $array[$user_id]['role_ids'] = $user_rolesTemp;
+            $user_rolesTemp = $user_roles_formatted[$user->id];
+            $user->role_ids = json_encode($user_rolesTemp);
 
             $names = "";
             $l     = count($user_rolesTemp);
@@ -303,10 +347,10 @@ class UserController extends Controller
                 $i++;
             }
 
-            $array[$user_id]['role_names'] = $names;
+            $user->role_names = $names;
         }
 
-        return $array;
+        return $users->toArray();
     }
 
     private function pluckRoleId($userRoles)
@@ -317,7 +361,7 @@ class UserController extends Controller
             foreach ($arrayInternal as $key2 => $item) {
                 $arrayResult[$key1][] = $item['role_id'];
             }
-            $arrayInternal[$key1] = array_unique($arrayInternal[$key1]);
+            $arrayResult[$key1] = array_unique($arrayResult[$key1]);
         }
 
         return $arrayResult;
@@ -325,6 +369,9 @@ class UserController extends Controller
 
     /**
      * Store a newly created Roles for User in storage.
+     *
+     * @bodyParam user_id int required User ID
+     * @bodyParam role_ids array required [['id'=>1],['id'=>2]], id is role ID
      *
      * @response 200 {
      *  "success": true,
@@ -356,13 +403,12 @@ class UserController extends Controller
     {
         $rules = array(
             'user_id' => 'required|integer',
-            'role_id' => 'required',
+            'role_ids' => 'required',
         );
 
         $messages = array(
             'user_id.required'   => 'Please select a user.',
-            'role_id.required'   => 'Please select roles.',
-            'description.string' => 'Description must be a string.',
+            'role_ids.required'   => 'Please select roles.',
         );
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -395,9 +441,14 @@ class UserController extends Controller
             return response()->json($response, 406);
         }
 
-        $roleIds = $request->get('role_id'); //array
+        $roleIds = $request->get('role_ids'); //array
 
-        $user->roles()->attach($roleIds);
+        $role_ids_arr = [];
+        foreach ($roleIds as $item) {
+            $role_ids_arr[] = $item['id'];
+        }
+
+        $user->roles()->attach($role_ids_arr);
 
         $roles      = $user->roles()->get();
         $rolesCount = $roles->count();
@@ -415,6 +466,9 @@ class UserController extends Controller
 
     /**
      * Update the roles of the user in storage.
+     *
+     * @bodyParam user_id int required User ID
+     * @bodyParam role_ids array required [['role_id'=>1],['role_id'=>2]], id is role ID
      *
      * @response 200 {
      *  "success": true,
@@ -446,13 +500,12 @@ class UserController extends Controller
     {
         $rules = array(
             'user_id' => 'required|integer',
-            'role_id' => 'required',
+            'role_ids' => 'required',
         );
 
         $messages = array(
             'user_id.required'   => 'Please select a user.',
-            'role_id.required'   => 'Please select roles.',
-            'description.string' => 'Description must be a string.',
+            'role_ids.required'   => 'Please select roles.',
         );
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -484,9 +537,13 @@ class UserController extends Controller
             return response()->json($response, 406);
         }
 
-        $roleIds = $request->get('role_id'); //array
+        $roleIds = $request->get('role_ids');
+        $role_ids_arr = [];
+        foreach ($roleIds as $item) {
+            $role_ids_arr[] = $item['id'];
+        }
 
-        $user->roles()->sync($roleIds);
+        $user->roles()->sync($role_ids_arr);
 
         $roles      = $user->roles()->get();
         $rolesCount = $roles->count();

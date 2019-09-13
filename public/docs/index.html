@@ -711,27 +711,27 @@ fetch(url, {
     "success": true,
     "data": [
         {
-            "id": 1,
-            "user_id": 1,
             "role_id": 1,
-            "created_at": "2019-06-24 07:12:03",
-            "updated_at": "2019-06-24 07:12:03"
+            "name": "superadmin"
         },
         {
-            "id": 2,
-            "user_id": 1,
             "role_id": 2,
-            "created_at": "2019-06-24 07:12:03",
-            "updated_at": "2019-06-24 07:12:03"
+            "name": "admin"
         }
     ],
     "message": "User-roles retrieved successfully"
 }</code></pre>
 <blockquote>
-<p>Example response (404):</p>
+<p>Example response (422):</p>
 </blockquote>
 <pre><code class="language-json">{
-    "message": "User-roles not found."
+    "message": "User does not exist."
+}</code></pre>
+<blockquote>
+<p>Example response (422):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "User-Roles do not exist."
 }</code></pre>
 <h3>HTTP Request</h3>
 <p><code>GET /api/user-roles/{id}</code></p>
@@ -742,18 +742,27 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X POST "http://wny2.com/api/user-roles/1" \
-    -H "Authorization: Bearer {token}"</code></pre>
+    -H "Authorization: Bearer {token}" \
+    -H "Content-Type: application/json" \
+    -d '{"user_id":20,"role_ids":[]}'
+</code></pre>
 <pre><code class="language-javascript">const url = new URL("http://wny2.com/api/user-roles/1");
 
 let headers = {
     "Authorization": "Bearer {token}",
-    "Accept": "application/json",
     "Content-Type": "application/json",
+    "Accept": "application/json",
+}
+
+let body = {
+    "user_id": 20,
+    "role_ids": []
 }
 
 fetch(url, {
     method: "POST",
     headers: headers,
+    body: body
 })
     .then(response =&gt; response.json())
     .then(json =&gt; console.log(json));</code></pre>
@@ -789,6 +798,31 @@ fetch(url, {
 }</code></pre>
 <h3>HTTP Request</h3>
 <p><code>POST /api/user-roles/{id}</code></p>
+<h4>Body Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>user_id</td>
+<td>integer</td>
+<td>required</td>
+<td>User ID</td>
+</tr>
+<tr>
+<td>role_ids</td>
+<td>array</td>
+<td>required</td>
+<td>[['id'=&gt;1],['id'=&gt;2]], id is role ID</td>
+</tr>
+</tbody>
+</table>
 <!-- END_c62f889cf08174385af991ee9ed266f9 -->
 <!-- START_2cd51c94025ec0205b0977e05970d29f -->
 <h2>Update the roles of the user in storage.</h2>
@@ -796,18 +830,27 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X PUT "http://wny2.com/api/user-roles/1" \
-    -H "Authorization: Bearer {token}"</code></pre>
+    -H "Authorization: Bearer {token}" \
+    -H "Content-Type: application/json" \
+    -d '{"user_id":2,"role_ids":[]}'
+</code></pre>
 <pre><code class="language-javascript">const url = new URL("http://wny2.com/api/user-roles/1");
 
 let headers = {
     "Authorization": "Bearer {token}",
-    "Accept": "application/json",
     "Content-Type": "application/json",
+    "Accept": "application/json",
+}
+
+let body = {
+    "user_id": 2,
+    "role_ids": []
 }
 
 fetch(url, {
     method: "PUT",
     headers: headers,
+    body: body
 })
     .then(response =&gt; response.json())
     .then(json =&gt; console.log(json));</code></pre>
@@ -843,6 +886,31 @@ fetch(url, {
 }</code></pre>
 <h3>HTTP Request</h3>
 <p><code>PUT /api/user-roles/{id}</code></p>
+<h4>Body Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>user_id</td>
+<td>integer</td>
+<td>required</td>
+<td>User ID</td>
+</tr>
+<tr>
+<td>role_ids</td>
+<td>array</td>
+<td>required</td>
+<td>[['id'=&gt;1],['id'=&gt;2]], id is role ID</td>
+</tr>
+</tbody>
+</table>
 <!-- END_2cd51c94025ec0205b0977e05970d29f -->
 <!-- START_430af72c006c718f2dd54d431ea66623 -->
 <h2>Remove the roles of the user from storage.</h2>
@@ -1132,6 +1200,51 @@ fetch(url, {
 <h3>HTTP Request</h3>
 <p><code>POST /api/auth/refresh</code></p>
 <!-- END_c4738b8f9d87493a71d28c323a50e0dc -->
+<!-- START_3b97466783ba4cc88c5f96834d629a45 -->
+<h2>Get the specified User.</h2>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET -G "http://wny2.com/api/profiles/1" \
+    -H "Authorization: Bearer {token}"</code></pre>
+<pre><code class="language-javascript">const url = new URL("http://wny2.com/api/profiles/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "Jon Daw",
+        "created_at": "2019-12-08 13:25:36",
+        "updated_at": "2019-12-08 13:25:36"
+    },
+    "message": "User retrieved successfully."
+}</code></pre>
+<blockquote>
+<p>Example response (204):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "success": false,
+    "data": "Empty",
+    "message": "User not found."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET /api/profiles/{id}</code></p>
+<!-- END_3b97466783ba4cc88c5f96834d629a45 -->
       </div>
       <div class="dark-box">
                         <div class="lang-selector">

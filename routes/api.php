@@ -61,6 +61,8 @@ $api->version('v1', function (Router $api) {
         $api->post('user-roles/{id}', 'App\Api\V1\Controllers\UserController@userRolesStore');
         $api->put('user-roles/{id}', 'App\Api\V1\Controllers\UserController@userRolesUpdate');
         $api->delete('user-roles/{id}', 'App\Api\V1\Controllers\UserController@userRolesDestroy');
+
+        $api->get('profiles/{id}', 'App\Api\V1\Controllers\ProfilesController@getUser');
     });
 
     $api->get('book', 'App\Api\V1\Controllers\BookController@index');

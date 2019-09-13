@@ -868,28 +868,29 @@ fetch(url, {
     "success": true,
     "data": [
         {
-            "id": 1,
-            "user_id": 1,
             "role_id": 1,
-            "created_at": "2019-06-24 07:12:03",
-            "updated_at": "2019-06-24 07:12:03"
+            "name": "superadmin"
         },
         {
-            "id": 2,
-            "user_id": 1,
             "role_id": 2,
-            "created_at": "2019-06-24 07:12:03",
-            "updated_at": "2019-06-24 07:12:03"
+            "name": "admin"
         }
     ],
     "message": "User-roles retrieved successfully"
 }
 ```
-> Example response (404):
+> Example response (422):
 
 ```json
 {
-    "message": "User-roles not found."
+    "message": "User does not exist."
+}
+```
+> Example response (422):
+
+```json
+{
+    "message": "User-Roles do not exist."
 }
 ```
 
@@ -906,7 +907,10 @@ fetch(url, {
 
 ```bash
 curl -X POST "http://wny2.com/api/user-roles/1" \
-    -H "Authorization: Bearer {token}"
+    -H "Authorization: Bearer {token}" \
+    -H "Content-Type: application/json" \
+    -d '{"user_id":20,"role_ids":[]}'
+
 ```
 
 ```javascript
@@ -914,13 +918,19 @@ const url = new URL("http://wny2.com/api/user-roles/1");
 
 let headers = {
     "Authorization": "Bearer {token}",
-    "Accept": "application/json",
     "Content-Type": "application/json",
+    "Accept": "application/json",
+}
+
+let body = {
+    "user_id": 20,
+    "role_ids": []
 }
 
 fetch(url, {
     method: "POST",
     headers: headers,
+    body: body
 })
     .then(response => response.json())
     .then(json => console.log(json));
@@ -965,6 +975,12 @@ fetch(url, {
 ### HTTP Request
 `POST /api/user-roles/{id}`
 
+#### Body Parameters
+
+Parameter | Type | Status | Description
+--------- | ------- | ------- | ------- | -----------
+    user_id | integer |  required  | User ID
+    role_ids | array |  required  | [['id'=>1],['id'=>2]], id is role ID
 
 <!-- END_c62f889cf08174385af991ee9ed266f9 -->
 
@@ -975,7 +991,10 @@ fetch(url, {
 
 ```bash
 curl -X PUT "http://wny2.com/api/user-roles/1" \
-    -H "Authorization: Bearer {token}"
+    -H "Authorization: Bearer {token}" \
+    -H "Content-Type: application/json" \
+    -d '{"user_id":2,"role_ids":[]}'
+
 ```
 
 ```javascript
@@ -983,13 +1002,19 @@ const url = new URL("http://wny2.com/api/user-roles/1");
 
 let headers = {
     "Authorization": "Bearer {token}",
-    "Accept": "application/json",
     "Content-Type": "application/json",
+    "Accept": "application/json",
+}
+
+let body = {
+    "user_id": 2,
+    "role_ids": []
 }
 
 fetch(url, {
     method: "PUT",
     headers: headers,
+    body: body
 })
     .then(response => response.json())
     .then(json => console.log(json));
@@ -1034,6 +1059,12 @@ fetch(url, {
 ### HTTP Request
 `PUT /api/user-roles/{id}`
 
+#### Body Parameters
+
+Parameter | Type | Status | Description
+--------- | ------- | ------- | ------- | -----------
+    user_id | integer |  required  | User ID
+    role_ids | array |  required  | [['id'=>1],['id'=>2]], id is role ID
 
 <!-- END_2cd51c94025ec0205b0977e05970d29f -->
 
@@ -1408,5 +1439,63 @@ fetch(url, {
 
 
 <!-- END_c4738b8f9d87493a71d28c323a50e0dc -->
+
+<!-- START_3b97466783ba4cc88c5f96834d629a45 -->
+## Get the specified User.
+
+> Example request:
+
+```bash
+curl -X GET -G "http://wny2.com/api/profiles/1" \
+    -H "Authorization: Bearer {token}"
+```
+
+```javascript
+const url = new URL("http://wny2.com/api/profiles/1");
+
+let headers = {
+    "Authorization": "Bearer {token}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response => response.json())
+    .then(json => console.log(json));
+```
+
+
+> Example response (200):
+
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "Jon Daw",
+        "created_at": "2019-12-08 13:25:36",
+        "updated_at": "2019-12-08 13:25:36"
+    },
+    "message": "User retrieved successfully."
+}
+```
+> Example response (204):
+
+```json
+{
+    "success": false,
+    "data": "Empty",
+    "message": "User not found."
+}
+```
+
+### HTTP Request
+`GET /api/profiles/{id}`
+
+
+<!-- END_3b97466783ba4cc88c5f96834d629a45 -->
 
 
