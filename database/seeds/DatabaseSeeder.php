@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
          $this->call(UsersSeeder::class);
          $this->call(RolesSeeder::class);
          $this->call(UserRolesSeeder::class);
-         $this->call(ActionRolesSeeder::class);
+         $this->call(VcontrollersSeeder::class);
+//         $this->call(ActionRolesSeeder::class);
     }
 }

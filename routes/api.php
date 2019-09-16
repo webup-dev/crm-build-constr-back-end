@@ -55,6 +55,13 @@ $api->version('v1', function (Router $api) {
     });
 
     $api->group(['middleware' => 'api.auth'], function (Router $api) {
+        $api->get('controllers', 'App\Api\V1\Controllers\VcontrollersController@index');
+        $api->post('controllers', 'App\Api\V1\Controllers\VcontrollersController@store');
+        $api->put('controllers/{id}', 'App\Api\V1\Controllers\VcontrollersController@update');
+        $api->delete('controllers/{id}', 'App\Api\V1\Controllers\VcontrollersController@destroy');
+    });
+
+    $api->group(['middleware' => 'api.auth'], function (Router $api) {
         $api->get('action-roles', 'App\Api\V1\Controllers\ActionRolesController@index');
         $api->get('action-roles/{id}', 'App\Api\V1\Controllers\ActionRolesController@show');
         $api->post('action-roles', 'App\Api\V1\Controllers\ActionRolesController@store');
