@@ -21,3 +21,5 @@ Route::get('/', function () {
 });
 
 Route::get("/api-documentation", function() { return Redirect::to("docs/index.html"); });
+
+Route::get('actions', 'ActionsController@index');

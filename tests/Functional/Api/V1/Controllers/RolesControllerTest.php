@@ -332,15 +332,8 @@ class RolesControllerTest extends TestCase
         // Delete not existing role
         $response = $this->delete('api/roles/' . $failRoleId . '?token=' . $token, []);
 
-//        print_r($response);
         $response->assertStatus(204);
 
-//        $responseJSON = json_decode($response->getContent(), true);
-//        $success      = $responseJSON['success'];
-//        $message      = $responseJSON['message'];
-//
-//        $this->assertEquals(false, $success);
-//        $this->assertEquals("Could not find Role.", $message );
 
         // Delete the last role
         $response = $this->delete('api/roles/' . $lastRoleId . '?token=' . $token, []);

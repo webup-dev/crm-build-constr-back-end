@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User_role whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User_role whereUserId($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Role $role
+ * @property-read \App\Models\User $user
  */
 class User_role extends Model
 {
