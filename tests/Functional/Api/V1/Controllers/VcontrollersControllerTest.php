@@ -32,6 +32,20 @@
  *   Check response structure
  *   Check response data
  *
+ * Check show:
+ *   Check login
+ *   Update the controller 2
+ *   Check response status
+ *   Check response structure
+ *   Check response data
+ *
+ * Check show If Controller Id Is Wrong:
+ *   Check login
+ *   Update the controller 2
+ *   Check response status
+ *   Check response structure
+ *   Check response data
+ *
  * Check update If Controller Id Is Wrong:
  *   Check login
  *   Update the controller
@@ -385,6 +399,115 @@ class VcontrollersControllerTest extends TestCase
         $this->assertEquals($success, false);
         $this->assertEquals($message, "Controller does not exist.");
     }
+
+    /** Check show:
+     *   Check login
+     *   Get the controller 2
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testShow()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'test@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'Test',
+            'email' => 'test@email.com'
+        ])->isOk();
+
+        // Request
+        $response = $this->get('api/controllers/2?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'data' =>
+                    [
+                        'id',
+                        'name',
+                        'created_at',
+                        'updated_at'
+                    ],
+                'message'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $message      = $responseJSON['message'];  // array
+        $data         = $responseJSON['data'];  // array
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals('Controller retrieved successfully.', $message);
+        $this->assertEquals('Controller2', $data['name']);
+    }
+
+    /** Check show If Controller Id Is Wrong:
+     *   Check login
+     *   Get the controller 2
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testShowIfControllerIdIsWrong()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'test@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'Test',
+            'email' => 'test@email.com'
+        ])->isOk();
+
+        // Request
+        $response = $this->get('api/controllers/33?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(422);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'data',
+                'message'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $message      = $responseJSON['message'];  // array
+        $data         = $responseJSON['data'];  // array
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals('Controller not found.', $message);
+        $this->assertEquals('Empty', $data);
+    }
+
 
     /** Delete:
      *    Check login

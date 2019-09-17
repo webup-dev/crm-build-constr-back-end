@@ -5,12 +5,12 @@ Story,Create routes,0.5
 Story,Create link in menu,0.5
 Story,Create links in other components,0.5
 Story,Create static component Index,2
-Story,Create static component Create,3
-Story,Create static component Edit,3
+Story,Create static component Create,2
+Story,Create static component Edit,2
 Story,Create static component Delete,1
-Story,Interaction with API server. Index,3
-Story,Interaction with API server. Create,5
-Story,Interaction with API server. Edit,5
+Story,Interaction with API server. Index,2
+Story,Interaction with API server. Create,2
+Story,Interaction with API server. Edit,2
 Story,Interaction with API server. Delete,1
 Story,Validation,2
 Story,Create other buttons in the component,1

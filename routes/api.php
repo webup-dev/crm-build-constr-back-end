@@ -56,6 +56,7 @@ $api->version('v1', function (Router $api) {
 
     $api->group(['middleware' => 'api.auth'], function (Router $api) {
         $api->get('controllers', 'App\Api\V1\Controllers\VcontrollersController@index');
+        $api->get('controllers/{id}', 'App\Api\V1\Controllers\VcontrollersController@show');
         $api->post('controllers', 'App\Api\V1\Controllers\VcontrollersController@store');
         $api->put('controllers/{id}', 'App\Api\V1\Controllers\VcontrollersController@update');
         $api->delete('controllers/{id}', 'App\Api\V1\Controllers\VcontrollersController@destroy');

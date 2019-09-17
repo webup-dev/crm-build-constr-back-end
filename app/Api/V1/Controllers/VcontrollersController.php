@@ -113,6 +113,53 @@ class VcontrollersController extends Controller
     }
 
     /**
+     * Display the specified Controller.
+     *
+     * @response 200 {
+     *  "success": true,
+     *  "data": {
+     *       "id": 1,
+     *       "name": "ControllerA",
+     *       "created_at": "2019-12-08 13:25:36",
+     *       "updated_at": "2019-12-08 13:25:36"
+     *     },
+     *  "message": "Controller retrieved successfully."
+     * }
+     *
+     * @response 204 {
+     *    "success": false,
+     *    "data": "Empty",
+     *    "message": "Controller not found."
+     * }
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $controller = Vcontroller::whereId($id)->first();
+        if (!$controller) {
+            $response = [
+                'success' => false,
+                'data'    => "Empty",
+                'message' => "Controller not found."
+            ];
+
+            return response()->json($response, 422);
+        }
+
+        $data = $controller->toArray();
+
+        $response = [
+            'success' => true,
+            'data'    => $data,
+            'message' => 'Controller retrieved successfully.'
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
      * Update the specified Controller in storage.
      *
      * @queryParam id required Controller ID

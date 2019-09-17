@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.7.1] - 2019-09-17
+### Added method "show" in the module Controllers.
+- Method "show" in the module Controllers. 
+
 ## [0.0.7] - 2019-09-16
 ### Added
 - Module Controllers. 
