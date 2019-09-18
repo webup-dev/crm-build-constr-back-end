@@ -24,4 +24,12 @@ class Vcontroller extends Model
 {
     protected $table = 'controllers';
     protected $fillable = ['name'];
+
+    /**
+     * Get the methods for the controller.
+     */
+    public function methods()
+    {
+        return $this->hasMany('App\Models\Method');
+    }
 }

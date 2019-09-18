@@ -63,6 +63,14 @@ $api->version('v1', function (Router $api) {
     });
 
     $api->group(['middleware' => 'api.auth'], function (Router $api) {
+        $api->get('methods/{id}', 'App\Api\V1\Controllers\MethodsController@index');
+        $api->get('methods/{id}/show', 'App\Api\V1\Controllers\MethodsController@show');
+        $api->post('methods/{id}', 'App\Api\V1\Controllers\MethodsController@store');
+        $api->put('methods/{id}', 'App\Api\V1\Controllers\MethodsController@update');
+        $api->delete('methods/{id}', 'App\Api\V1\Controllers\MethodsController@destroy');
+    });
+
+    $api->group(['middleware' => 'api.auth'], function (Router $api) {
         $api->get('action-roles', 'App\Api\V1\Controllers\ActionRolesController@index');
         $api->get('action-roles/{id}', 'App\Api\V1\Controllers\ActionRolesController@show');
         $api->post('action-roles', 'App\Api\V1\Controllers\ActionRolesController@store');
