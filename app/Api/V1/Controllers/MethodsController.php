@@ -183,6 +183,9 @@ class MethodsController extends Controller
             return response()->json($response, 204);
         }
 
+        $controller = Vcontroller::whereId($method->controller_id)->first();
+        $method->controller_name = $controller->name;
+
         $data = $method->toArray();
 
         $response = [

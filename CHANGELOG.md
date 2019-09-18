@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.8.1] - 2019-09-18
+### Added
+- Module Methods. Method "show" is changed. 
+
 ## [0.8.0] - 2019-09-18
 ### Added
 - Module Methods is added. 

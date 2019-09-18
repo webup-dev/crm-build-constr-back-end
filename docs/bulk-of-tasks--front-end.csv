@@ -3,7 +3,7 @@ Story,Create new Branch,0.5
 Story,Planning,1
 Story,Create routes,0.5
 Story,Create link in menu,0.5
-Story,Create links in other components,0.5
+Story,Create links in Controllers,2
 Story,Create static component Index,2
 Story,Create static component Create,2
 Story,Create static component Edit,2
@@ -14,5 +14,5 @@ Story,Interaction with API server. Edit,2
 Story,Interaction with API server. Delete,1
 Story,Validation,2
 Story,Create other buttons in the component,1
-Story,Test boundary conditions,5
+Story,Test boundary conditions,3
 Story,Deployment,3
