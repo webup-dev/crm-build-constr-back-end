@@ -89,6 +89,15 @@ $api->version('v1', function (Router $api) {
         $api->get('profiles/{id}', 'App\Api\V1\Controllers\ProfilesController@getUser');
     });
 
+    $api->group(['middleware' => 'api.auth'], function (Router $api) {
+        $api->get('method-role/{id}', 'App\Api\V1\Controllers\MethodRolesController@show');
+        $api->get('method-roles/{id}', 'App\Api\V1\Controllers\MethodRolesController@getRoles');
+        $api->post('method-roles', 'App\Api\V1\Controllers\MethodRolesController@store');
+        $api->put('method-roles/{id}', 'App\Api\V1\Controllers\MethodRolesController@update');
+        $api->delete('method-role/{id}', 'App\Api\V1\Controllers\MethodRolesController@destroy');
+        $api->delete('method-roles/{id}', 'App\Api\V1\Controllers\MethodRolesController@destroyRoles');
+    });
+
     $api->get('book', 'App\Api\V1\Controllers\BookController@index');
 
     $api->get('hello', function() {

@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereUpdatedAt($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Method[] $methods
  */
 class Role extends Model
 {
@@ -33,5 +34,13 @@ class Role extends Model
     public function users()
     {
         return $this->belongsToMany('App\Models\User', 'user_roles')->withTimestamps();
+    }
+
+    /**
+     * The methods that belong to the role .
+     */
+    public function methods()
+    {
+        return $this->belongsToMany('App\Models\Method', 'method_roles')->withTimestamps();
     }
 }

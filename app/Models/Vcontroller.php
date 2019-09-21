@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vcontroller whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vcontroller whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Method[] $methods
  */
 class Vcontroller extends Model
 {

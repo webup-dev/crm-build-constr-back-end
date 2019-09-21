@@ -4,11 +4,12 @@ namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Method;
+use App\Models\Method_role;
+use App\Models\Role;
 use App\Models\Vcontroller;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use JWTAuth;
-use App\Models\Book;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -32,6 +33,8 @@ class MethodsController extends Controller
      *    "id": 1,
      *    "name": "methodA",
      *    "controller_id": 1,
+     *    "role_ids": [1,2],
+     *    "role_names": "superadmin, admin",
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
      *   },
@@ -39,6 +42,8 @@ class MethodsController extends Controller
      *    "id": 2,
      *    "name": "methodB",
      *    "controller_id": 1,
+     *    "role_ids": [1,2],
+     *    "role_names": "superadmin, admin",
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
      *   }],
@@ -47,17 +52,45 @@ class MethodsController extends Controller
      *
      * @response 204 {
      *  "success": true,
-     *  "data": [],
      *  "message": "Methods are absent."
      * }
      *
+     * @response 422 {
+     *  "success": false,
+     *  "message": "Roles do not exist."
+     * }
+     *
+     * @param $id
      * @return Response
      */
     public function index($id)
     {
-        $methods = Method::whereControllerId($id)->get();
+        $methods     = Method::whereControllerId($id)->get();
+        $methodRoles = Method_role::all()->groupBy('method_id')->toArray();
+        $roles       = Role::all()->keyBy('id');
 
-        $data = $methods->toArray();
+        if ($methods->count() === 0) {
+            $response = [
+                'success' => false,
+                'message' => 'Methods do not exist.'
+            ];
+
+            return response()->json($response, 204);
+        }
+
+        if ($roles->count() === 0) {
+            $response = [
+                'success' => false,
+                'message' => 'Roles do not exist.'
+            ];
+
+            return response()->json($response, 204);
+        }
+
+        $data = $this->formData($methods, $methodRoles, $roles);
+//        echo "data: \r\n";
+//        print_r($data);
+//        exit();
 
         $response = [
             'success' => true,
@@ -66,6 +99,32 @@ class MethodsController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
+
+    private function formData($methods, $methodRoles, $roles)
+    {
+        foreach ($methods as $n => $method) {
+            $id       = $method->id;
+            $idsArray = [];
+            $names    = '';
+
+            if (isset($methodRoles[$id])) {
+                $l        = count($methodRoles[$id]);
+                $i        = 0;
+                foreach ($methodRoles[$id] as $key => $array) {
+                    $role_id    = $array['role_id'];
+                    $idsArray[] = $array['role_id'];
+                    $names      .= $roles[$role_id]->name;
+                    if ($i < ($l - 1)) {
+                        $names .= ', ';
+                    }
+                    $i++;
+                }
+            }
+            $method->role_ids   = $idsArray;
+            $method->role_names = $names;
+        }
+        return $methods->toArray();
     }
 
     /**
@@ -104,9 +163,9 @@ class MethodsController extends Controller
         );
 
         $messages = array(
-            'name.required' => 'Please enter a name.',
-            'name.string'   => 'Name must be a string.',
-            'controller_id.required'   => 'Please select a controller.',
+            'name.required'          => 'Please enter a name.',
+            'name.string'            => 'Name must be a string.',
+            'controller_id.required' => 'Please select a controller.',
         );
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -118,7 +177,7 @@ class MethodsController extends Controller
 
         $method = new Method();
 
-        $method->name = $request->get('name');
+        $method->name          = $request->get('name');
         $method->controller_id = $request->get('controller_id');
 
         $controllersId = Vcontroller::all()->pluck('id')->toArray();
@@ -183,7 +242,7 @@ class MethodsController extends Controller
             return response()->json($response, 204);
         }
 
-        $controller = Vcontroller::whereId($method->controller_id)->first();
+        $controller              = Vcontroller::whereId($method->controller_id)->first();
         $method->controller_name = $controller->name;
 
         $data = $method->toArray();

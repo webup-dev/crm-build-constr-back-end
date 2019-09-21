@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Method whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Method whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ * @property-read \App\Models\Vcontroller $vcontroller
  */
 class Method extends Model
 {
@@ -32,5 +34,13 @@ class Method extends Model
     public function vcontroller()
     {
         return $this->belongsTo('App\Models\Vcontroller');
+    }
+
+    /**
+     * The methods that belong to the role .
+     */
+    public function roles()
+    {
+        return $this->belongsToMany('App\Models\Role', 'method_roles')->withTimestamps();
     }
 }
