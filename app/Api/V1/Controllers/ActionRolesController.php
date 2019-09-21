@@ -14,9 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 
-/**
- * @group Action-Roles
- */
 class ActionRolesController extends Controller
 {
     use Helpers;

@@ -13,6 +13,9 @@ use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+/**
+ * @group Method-Roles
+ */
 class MethodRolesController extends Controller
 {
     use Helpers;
@@ -114,21 +117,21 @@ class MethodRolesController extends Controller
     }
 
     /**
-     * Get the specified Method_role.
+     * Get the specified Method-Role.
      *
      * @queryParam id required Method_role ID
      *
      * @response 200 {
      *  "success": true,
      *  "data": {
-     *     "id": 1,
-     *     "method_id": 1
-     *     "method_name": "MethodA",
-     *     "role_id": 1,
-     *     "role_name": "Role1",
-     *     "created_at": "2019-12-08 13:25:36",
-     *     "updated_at": "2019-12-08 13:25:36"
-     *  },
+     *    "id": 1,
+     *    "method_id": 1,
+     *    "method_name": "MethodA",
+     *    "role_id": 1,
+     *    "role_name": "Role1",
+     *    "created_at": "2019-12-08 13:25:36",
+     *    "updated_at": "2019-12-08 13:25:36"
+     *   },
      *  "message": "Method_role is retrieved successfully."
      * }
      *
@@ -168,7 +171,7 @@ class MethodRolesController extends Controller
     }
 
     /**
-     * Index of all method_roles for the specified Method ID.
+     * Index of all Method-Roles for the specified Method ID.
      *
      * @queryParam id required Method ID
      *
@@ -176,7 +179,7 @@ class MethodRolesController extends Controller
      *  "success": true,
      *  "data": [{
      *     "id": 1,
-     *     "method_id": 1
+     *     "method_id": 1,
      *     "method_name": "MethodA",
      *     "role_id": 1,
      *     "role_name": "Role1",
@@ -185,14 +188,14 @@ class MethodRolesController extends Controller
      *   },
      *   {
      *     "id": 1,
-     *     "method_id": 1
+     *     "method_id": 1,
      *     "method_name": "MethodA",
      *     "role_id": 2,
      *     "role_name": "Role2",
      *     "created_at": "2019-12-08 13:25:36",
      *     "updated_at": "2019-12-08 13:25:36"
      *   }],
-     *  "message": "Method_roles are retrieved successfully."
+     *  "message": "Method-Roles are retrieved successfully."
      * }
      *
      * @response 452 {
