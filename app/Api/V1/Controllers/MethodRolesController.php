@@ -21,47 +21,145 @@ class MethodRolesController extends Controller
     use Helpers;
 
     /**
-     * Store a newly created Method_roles in storage.
+     * Store a newly created Roles for Method in storage.
      *
      * @bodyParam method_id int required Method ID
-     * @bodyParam role_id int required Role ID
+     * @bodyParam role_ids array required [['id'=>1],['id'=>2]], id is role ID
      *
      * @response 200 {
      *  "success": true,
-     *  "message": "New Method Roles are created successfully."
+     *  "message": "New Roles for Method created successfully."
      * }
      *
-     * @response 204 {
+     * @response 406 {
      *  "success": false,
-     *  "message": "Method does not exist"
+     *  "message": "Creating is impossible. Method has roles already."
      * }
      *
-     * @response 204 {
+     * @response 422 {
      *  "success": false,
-     *  "message": "Role does not exist"
+     *  "message": "Creating is impossible. Method does not exist."
      * }
      *
      * @response 500 {
      *  "error": {
-     *      "message": "Could not create Method_role",
+     *      "message": "Could not create Roles for Method",
      *      "status_code": 500
      *    }
      * }
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param int $id
+     * @return array|\Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
         $rules = array(
-            'method_id' => 'required|int',
-            'role_id'   => 'required|int'
+            'method_id' => 'required|integer',
+            'role_ids' => 'required',
         );
 
         $messages = array(
-            'method_id.required' => 'Please, select a method.',
-            'role_id.required'   => 'Please select a role.',
+            'method_id.required'   => 'Please select a method.',
+            'role_ids.required'   => 'Please select roles.',
         );
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
+            $errors   = $messages->all();
+            return $errors;
+        }
+
+        $method_id = $request->get('method_id');
+        $method    = Method::find($method_id);
+
+        // Check does method exist?
+        if (!$method) {
+            $response = [
+                'success' => false,
+                'message' => "Creating is impossible. Method does not exist."
+            ];
+            return response()->json($response, 422);
+        }
+
+        // Check does user have roles already?
+        $roles      = $method->roles()->get();
+        $rolesCount = $roles->count();
+        if ($rolesCount != 0) {
+            $response = [
+                'success' => false,
+                'message' => "Creating is impossible. Method has roles already."
+            ];
+            return response()->json($response, 406);
+        }
+
+        $roleIds = $request->get('role_ids'); //array
+
+        $role_ids_arr = [];
+        foreach ($roleIds as $item) {
+            $role_ids_arr[] = $item['id'];
+        }
+
+        $method->roles()->attach($role_ids_arr);
+
+        $roles      = $method->roles()->get();
+        $rolesCount = $roles->count();
+
+        if ($rolesCount != 0) {
+            $response = [
+                'success' => true,
+                'message' => 'New Roles for Method created successfully.'
+            ];
+            return response()->json($response, 200);
+        } else {
+            return $this->response->error('Could not create roles', 500);
+        }
+    }
+
+
+//    /**
+//     * Store a newly created Method_roles in storage.
+//     *
+//     * @bodyParam method_id int required Method ID
+//     * @bodyParam role_id int required Role ID
+//     *
+//     * @response 200 {
+//     *  "success": true,
+//     *  "message": "New Method Roles are created successfully."
+//     * }
+//     *
+//     * @response 204 {
+//     *  "success": false,
+//     *  "message": "Method does not exist"
+//     * }
+//     *
+//     * @response 204 {
+//     *  "success": false,
+//     *  "message": "Role does not exist"
+//     * }
+//     *
+//     * @response 500 {
+//     *  "error": {
+//     *      "message": "Could not create Method_role",
+//     *      "status_code": 500
+//     *    }
+//     * }
+//     *
+//     * @param \Illuminate\Http\Request $request
+//     * @return \Illuminate\Http\Response
+//     */
+//    public function storeOld(Request $request)
+//    {
+//        $rules = array(
+//            'method_id' => 'required|int',
+//            'role_id'   => 'required|int'
+//        );
+//
+//        $messages = array(
+//            'method_id.required' => 'Please, select a method.',
+//            'role_id.required'   => 'Please select a role.',
+//        );
 
 //        $validator = Validator::make($request->all(), $rules, $messages);
 //        if ($validator->fails()) {
@@ -70,51 +168,51 @@ class MethodRolesController extends Controller
 //            return $errors;
 //        }
 
-        $methodIds = Method::all()->pluck('id')->toArray();
-        $roleIds   = Role::all()->pluck('id')->toArray();
-
-        $content = $request->all();
-
-        $i = 0;
-        foreach ($content as $key => $items) {
-            if ($key != 'token') {
-                foreach ($items as $item) {
-                    if (in_array($item['method_id'], $methodIds)) {
-                        if (in_array($item['role_id'], $roleIds)) {
-                            $methodRole = new Method_role([
-                                'role_id'   => $item['role_id'],
-                                'method_id' => $item['method_id']
-                            ]);
-
-                            $methodRole->save();
-                        } else {
-                            $response = [
-                                'success' => false,
-                                'message' => 'Role does not exist.'
-                            ];
-
-                            return response()->json($response, 452);
-                        }
-                    } else {
-                        $response = [
-                            'success' => false,
-                            'message' => 'Method does not exist.'
-                        ];
-
-                        return response()->json($response, 452);
-                    }
-
-                }
-            }
-        }
-
-        $response = [
-            'success' => true,
-            'message' => 'New Method-Roles are created successfully.'
-        ];
-
-        return response()->json($response, 200);
-    }
+//        $methodIds = Method::all()->pluck('id')->toArray();
+//        $roleIds   = Role::all()->pluck('id')->toArray();
+//
+//        $content = $request->all();
+//
+//        $i = 0;
+//        foreach ($content as $key => $items) {
+//            if ($key != 'token') {
+//                foreach ($items as $item) {
+//                    if (in_array($item['method_id'], $methodIds)) {
+//                        if (in_array($item['role_id'], $roleIds)) {
+//                            $methodRole = new Method_role([
+//                                'role_id'   => $item['role_id'],
+//                                'method_id' => $item['method_id']
+//                            ]);
+//
+//                            $methodRole->save();
+//                        } else {
+//                            $response = [
+//                                'success' => false,
+//                                'message' => 'Role does not exist.'
+//                            ];
+//
+//                            return response()->json($response, 452);
+//                        }
+//                    } else {
+//                        $response = [
+//                            'success' => false,
+//                            'message' => 'Method does not exist.'
+//                        ];
+//
+//                        return response()->json($response, 452);
+//                    }
+//
+//                }
+//            }
+//        }
+//
+//        $response = [
+//            'success' => true,
+//            'message' => 'New Method-Roles are created successfully.'
+//        ];
+//
+//        return response()->json($response, 200);
+//    }
 
     /**
      * Get the specified Method-Role.
@@ -179,21 +277,13 @@ class MethodRolesController extends Controller
      *  "success": true,
      *  "data": [{
      *     "id": 1,
-     *     "method_id": 1,
-     *     "method_name": "MethodA",
      *     "role_id": 1,
-     *     "role_name": "Role1",
-     *     "created_at": "2019-12-08 13:25:36",
-     *     "updated_at": "2019-12-08 13:25:36"
+     *     "name": "Role1"
      *   },
      *   {
-     *     "id": 1,
-     *     "method_id": 1,
-     *     "method_name": "MethodA",
+     *     "id": 2,
      *     "role_id": 2,
-     *     "role_name": "Role2",
-     *     "created_at": "2019-12-08 13:25:36",
-     *     "updated_at": "2019-12-08 13:25:36"
+     *     "name": "Role2"
      *   }],
      *  "message": "Method-Roles are retrieved successfully."
      * }
@@ -225,7 +315,7 @@ class MethodRolesController extends Controller
             return response()->json($response, 452);
         }
 
-        $methodRoles = Method_role::whereMethodId($id)->get();
+        $methodRoles = Method_role::select('role_id')->where('method_id', $id)->get();
 
         if ($methodRoles->count() === 0) {
             $response = [
@@ -240,7 +330,7 @@ class MethodRolesController extends Controller
         $methods = Method::all()->keyBy('id');
         $roles   = Role::all()->keyBy('id');
 
-        $methodRoles = $this->formIndexData($methodRoles, $methods, $roles);
+        $methodRoles = $this->formData2($methodRoles, $roles);
 
         $data = $methodRoles->toArray();
 
@@ -251,6 +341,25 @@ class MethodRolesController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
+
+    /**
+     * Form User-Roles collection for response
+     *
+     * @param $user_roles
+     * @param $roles
+     * @return
+     */
+    private function formData2($methodRoles, $roles)
+    {
+        // add name
+        foreach ($methodRoles as $item) {
+            $roleId = $item->role_id;
+            $item->name = $roles[$roleId]->name;
+            $item->id = $roleId;
+        }
+
+        return $methodRoles;
     }
 
     /**
@@ -265,7 +374,7 @@ class MethodRolesController extends Controller
     {
         foreach ($methodRoles as $methodRole) {
             $methodRole->method_name = $methods[$methodRole->method_id]->name;
-            $methodRole->role_name   = $roles[$methodRole->role_id]->name;
+            $methodRole->name   = $roles[$methodRole->role_id]->name;
         }
 
         return $methodRoles;
@@ -276,7 +385,7 @@ class MethodRolesController extends Controller
      *
      * @queryParam id required Method ID
      *
-     * @bodyParam role_ids array required Array of role IDs with key ['ids' => [1, 3]]
+     * @bodyParam role_ids array required Array of role IDs with key ['role_ids' => [['id'=>1], ['id'=> 3]]]
      *
      * @response 200 {
      *  "success": true,
@@ -306,9 +415,7 @@ class MethodRolesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $method  = Method::whereId($id)->find(1);
-        $roleIds = Role::all()->pluck('id')->toArray();
-
+        $method  = Method::whereId($id)->first();
         if (!$method) {
             $response = [
                 'success' => false,
@@ -318,32 +425,66 @@ class MethodRolesController extends Controller
             return response()->json($response, 422);
         }
 
-        $content = $request->all();
+        $method  = Method::find($id);
 
-        foreach ($content as $key => $items) {
-            if ($key != 'token') {
-                // check role IDs
-                foreach ($items as $item) {
-                    if (!in_array($item, $roleIds)) {
-                        $response = [
-                            'success' => false,
-                            'message' => 'One of the roles does not exist.'
-                        ];
+        $allRoleIds = Role::all()->pluck('id')->toArray();
 
-                        return response()->json($response, 422);
-                    }
-                }
-                $method->roles()->sync($items);
-
+        $roleIds = $request->get('role_ids');
+        $role_ids_arr = [];
+        foreach ($roleIds as $item) {
+            $idCurrent = $item['id'];
+            if (!in_array($idCurrent, $allRoleIds)) {
                 $response = [
-                    'success' => true,
-                    'message' => 'Roles of Method are updated successfully.'
+                    'success' => false,
+                    'message' => 'One of the roles does not exist.'
                 ];
 
-                return response()->json($response, 200);
-
+                return response()->json($response, 422);
             }
+            $role_ids_arr[] = $item['id'];
         }
+
+        $method->roles()->sync($role_ids_arr);
+
+        $roles      = $method->roles()->get();
+        $rolesCount = $roles->count();
+
+        if ($rolesCount != 0) {
+            $response = [
+                'success' => true,
+                'message' => 'Roles for Method are updated successfully.'
+            ];
+            return response()->json($response, 200);
+        } else {
+            return $this->response->error('Could not update roles', 500);
+        }
+
+        $content = $request->all();
+
+//        foreach ($content as $key => $items) {
+//            if ($key != 'token') {
+//                // check role IDs
+//                foreach ($items as $item) {
+//                    if (!in_array($item, $roleIds)) {
+//                        $response = [
+//                            'success' => false,
+//                            'message' => 'One of the roles does not exist.'
+//                        ];
+//
+//                        return response()->json($response, 422);
+//                    }
+//                }
+//                $method->roles()->sync($items);
+//
+//                $response = [
+//                    'success' => true,
+//                    'message' => 'Roles of Method are updated successfully.'
+//                ];
+//
+//                return response()->json($response, 200);
+//
+//            }
+//        }
     }
 
     /**

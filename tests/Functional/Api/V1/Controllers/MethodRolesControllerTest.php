@@ -271,12 +271,8 @@ class MethodRolesControllerTest extends TestCase
                     [
                         [
                             'id',
-                            'method_id',
-                            'method_name',
                             'role_id',
-                            'role_name',
-                            'created_at',
-                            'updated_at'
+                            'name'
                         ]
                     ],
                 'message'
@@ -288,14 +284,12 @@ class MethodRolesControllerTest extends TestCase
         $message      = $responseJSON['message'];  // array
 
         $this->assertEquals(count($data), 2);
-        $this->assertEquals(1, $data[0]['method_id']);
-        $this->assertEquals('MethodA', $data[0]['method_name']);
+        $this->assertEquals(1, $data[0]['id']);
         $this->assertEquals(1, $data[0]['role_id']);
-        $this->assertEquals('Role 1', $data[0]['role_name']);
-        $this->assertEquals(1, $data[1]['method_id']);
-        $this->assertEquals('MethodA', $data[1]['method_name']);
+        $this->assertEquals('Role 1', $data[0]['name']);
+        $this->assertEquals(2, $data[1]['id']);
         $this->assertEquals(2, $data[1]['role_id']);
-        $this->assertEquals('Role 2', $data[1]['role_name']);
+        $this->assertEquals('Role 2', $data[1]['name']);
         $this->assertEquals(true, $success);
         $this->assertEquals('Method-Roles are retrieved successfully.', $message);
     }
@@ -393,16 +387,273 @@ class MethodRolesControllerTest extends TestCase
         $this->assertEquals('Method-Roles are absent.', $message);
     }
 
+//    /**
+//     * Check store If Method Roles Are Single:
+//     *   Check login
+//     *   Store a new method-roles (array of 2 item)
+//     *   Check response status
+//     *   Check response structure
+//     *   Check response data
+//     *   Check new method-roles in DB
+//     */
+//    public function testStoreIfMethodRolesIsSingle()
+//    {
+//        // Check login
+//        $response = $this->post('api/auth/login', [
+//            'email'    => 'test1@email.com',
+//            'password' => '123456'
+//        ]);
+//
+//        $response->assertStatus(200);
+//
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $token        = $responseJSON['token'];
+//
+//        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+//            'name'  => 'Test',
+//            'email' => 'test1@email.com'
+//        ])->isOk();
+//
+//        $data = [
+//            'rows' => [
+//                [
+//                    'method_id' => 2,
+//                    'role_id'   => 3
+//                ]
+//            ]
+//        ];
+//
+//        // Store a new action-roles
+//        $response = $this->post('api/method-roles?token=' . $token, $data, []);
+//
+//        // Check response status
+//        $response->assertStatus(200);
+//
+//        // Check response structure
+//        $response->assertJsonStructure(
+//            [
+//                'success',
+//                'message'
+//            ]
+//        );
+//
+//        //Check response data
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $success      = $responseJSON['success'];  // array
+//        $message      = $responseJSON['message'];  // array
+//
+//        $this->assertEquals(true, $success);
+//        $this->assertEquals('New Method-Roles are created successfully.', $message);
+//
+//        // Check DB
+//        $methodRoles     = DB::table('method_roles')->get()->keyBy('id');
+//        $count           = $methodRoles->count();
+//        $lastMethodRoles = $methodRoles[$count];
+//        $this->assertEquals(2, $lastMethodRoles->method_id);
+//        $this->assertEquals(3, $lastMethodRoles->role_id);
+//    }
+//
+//    /**
+//     * Check store If Method Roles Are Multiple:
+//     *   Check login
+//     *   Store a new method-roles (array of 2 item)
+//     *   Check response status
+//     *   Check response structure
+//     *   Check response data
+//     *   Check new method-roles in DB
+//     */
+//    public function testStoreIfMethodRolesAreMultiple()
+//    {
+//        // Check login
+//        $response = $this->post('api/auth/login', [
+//            'email'    => 'test1@email.com',
+//            'password' => '123456'
+//        ]);
+//
+//        $response->assertStatus(200);
+//
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $token        = $responseJSON['token'];
+//
+//        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+//            'name'  => 'Test',
+//            'email' => 'test1@email.com'
+//        ])->isOk();
+//
+//        // Store a new action-roles
+//        $data     = [
+//            'rows' => [
+//                [
+//                    'method_id' => 2,
+//                    'role_id'   => 3
+//                ],
+//                [
+//                    'method_id' => 1,
+//                    'role_id'   => 3
+//                ]
+//            ]
+//        ];
+//        $response = $this->post('api/method-roles?token=' . $token, $data, []);
+//
+//        // Check response status
+//        $response->assertStatus(200);
+//
+//        // Check response structure
+//        $response->assertJsonStructure(
+//            [
+//                'success',
+//                'message'
+//            ]
+//        );
+//
+//        //Check response data
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $success      = $responseJSON['success'];  // array
+//        $message      = $responseJSON['message'];  // array
+//
+//        $this->assertEquals($success, true);
+//        $this->assertEquals($message, 'New Method-Roles are created successfully.');
+//
+//        // Check DB
+//        $methodRoles     = DB::table('method_roles')->get()->keyBy('id');
+//        $count           = $methodRoles->count();
+//        $lastMethodRoles = $methodRoles[$count];
+//        $this->assertEquals(1, $lastMethodRoles->method_id);
+//        $this->assertEquals(3, $lastMethodRoles->role_id);
+//        $penultMethodRoles = $methodRoles[$count - 1];
+//        $this->assertEquals(2, $penultMethodRoles->method_id);
+//        $this->assertEquals(3, $penultMethodRoles->role_id);
+//    }
+//
+//    /**
+//     * Check store If Method ID Is Wrong:
+//     *   Check login
+//     *   Store a new action-roles
+//     *   Check response status
+//     *   Check response structure
+//     *   Check response data
+//     *
+//     */
+//    public function testStoreIfMethodIdIsWrong()
+//    {
+//        // Check login
+//        $response = $this->post('api/auth/login', [
+//            'email'    => 'test1@email.com',
+//            'password' => '123456'
+//        ]);
+//
+//        $response->assertStatus(200);
+//
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $token        = $responseJSON['token'];
+//
+//        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+//            'name'  => 'Test',
+//            'email' => 'test1@email.com'
+//        ])->isOk();
+//
+//        // Store a new method-roles
+//        $data     = [
+//            'rows' => [
+//                [
+//                    'method_id' => 33,
+//                    'role_id'   => 3
+//                ]
+//            ]
+//        ];
+//        $response = $this->post('api/method-roles?token=' . $token, $data, []);
+//
+//        // Check response status
+//        $response->assertStatus(452);
+//
+//        // Check response structure
+//        $response->assertJsonStructure(
+//            [
+//                'success',
+//                'message'
+//            ]
+//        );
+//
+//        //Check response data
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $success      = $responseJSON['success'];  // array
+//        $message      = $responseJSON['message'];  // array
+//
+//        $this->assertEquals(false, $success);
+//        $this->assertEquals("Method does not exist.", $message);
+//    }
+//
+//    /**
+//     * Check store If One Of The Roles ID Is Wrong:
+//     *   Check login
+//     *   Store a new action-roles
+//     *   Check response status
+//     *   Check response structure
+//     *   Check response data
+//     */
+//    public function testStoreIfOneOfTheRolesIdIsWrong()
+//    {
+//        // Check login
+//        $response = $this->post('api/auth/login', [
+//            'email'    => 'test1@email.com',
+//            'password' => '123456'
+//        ]);
+//
+//        $response->assertStatus(200);
+//
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $token        = $responseJSON['token'];
+//
+//        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+//            'name'  => 'Test',
+//            'email' => 'test1@email.com'
+//        ])->isOk();
+//
+//        // Store a new method-roles
+//        $data     = [
+//            'rows' => [
+//                [
+//                    'method_id' => 1,
+//                    'role_id'   => 44
+//                ],
+//                [
+//                    'method_id' => 1,
+//                    'role_id'   => 3
+//                ]
+//            ]
+//        ];
+//        $response = $this->post('api/method-roles?token=' . $token, $data, []);
+//
+//
+//        // Check response status
+//        $response->assertStatus(452);
+//
+//        // Check response structure
+//        $response->assertJsonStructure(
+//            [
+//                'success',
+//                'message'
+//            ]
+//        );
+//
+//        //Check response data
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $success      = $responseJSON['success'];  // array
+//        $message      = $responseJSON['message'];  // array
+//
+//        $this->assertEquals(false, $success);
+//        $this->assertEquals("Role does not exist.", $message);
+//    }
+
     /**
-     * Check store If Method Roles Are Single:
-     *   Check login
-     *   Store a new method-roles (array of 2 item)
-     *   Check response status
-     *   Check response structure
-     *   Check response data
-     *   Check new method-roles in DB
+     * Test Create Roles for a new Method:
+     *    Check login (user #1)
+     *    Create role #1 for method #2
+     *       Check response status
+     *       Check response structure
+     *       Check role #1
      */
-    public function testStoreIfMethodRolesIsSingle()
+    public function testCreateRolesForNewMethod()
     {
         // Check login
         $response = $this->post('api/auth/login', [
@@ -420,89 +671,19 @@ class MethodRolesControllerTest extends TestCase
             'email' => 'test1@email.com'
         ])->isOk();
 
-        $data = [
-            'rows' => [
-                [
-                    'method_id' => 2,
-                    'role_id'   => 3
-                ]
-            ]
-        ];
-
-        // Store a new action-roles
-        $response = $this->post('api/method-roles?token=' . $token, $data, []);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        // Check response structure
-        $response->assertJsonStructure(
-            [
-                'success',
-                'message'
-            ]
-        );
-
-        //Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];  // array
-        $message      = $responseJSON['message'];  // array
-
-        $this->assertEquals(true, $success);
-        $this->assertEquals('New Method-Roles are created successfully.', $message);
-
-        // Check DB
-        $methodRoles     = DB::table('method_roles')->get()->keyBy('id');
-        $count           = $methodRoles->count();
-        $lastMethodRoles = $methodRoles[$count];
-        $this->assertEquals(2, $lastMethodRoles->method_id);
-        $this->assertEquals(3, $lastMethodRoles->role_id);
-    }
-
-    /**
-     * Check store If Method Roles Are Multiple:
-     *   Check login
-     *   Store a new method-roles (array of 2 item)
-     *   Check response status
-     *   Check response structure
-     *   Check response data
-     *   Check new method-roles in DB
-     */
-    public function testStoreIfMethodRolesAreMultiple()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test1@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test1@email.com'
-        ])->isOk();
-
-        // Store a new action-roles
+        // Store a new roles for Method
         $data     = [
-            'rows' => [
-                [
-                    'method_id' => 2,
-                    'role_id'   => 3
-                ],
-                [
-                    'method_id' => 1,
-                    'role_id'   => 3
-                ]
-            ]
+            "method_id" => 2,
+            "role_ids"  => [['id' => 1], ['id' => 2]]
         ];
-        $response = $this->post('api/method-roles?token=' . $token, $data, []);
+        $response = $this->post('api/method-roles/2?token=' . $token, $data);
 
         // Check response status
         $response->assertStatus(200);
+
+//        print_r($response);
+//        exit();
+
 
         // Check response structure
         $response->assertJsonStructure(
@@ -518,29 +699,21 @@ class MethodRolesControllerTest extends TestCase
         $message      = $responseJSON['message'];  // array
 
         $this->assertEquals($success, true);
-        $this->assertEquals($message, 'New Method-Roles are created successfully.');
+        $this->assertEquals($message, 'New Roles for Method created successfully.');
 
         // Check DB
-        $methodRoles     = DB::table('method_roles')->get()->keyBy('id');
-        $count           = $methodRoles->count();
-        $lastMethodRoles = $methodRoles[$count];
-        $this->assertEquals(1, $lastMethodRoles->method_id);
-        $this->assertEquals(3, $lastMethodRoles->role_id);
-        $penultMethodRoles = $methodRoles[$count - 1];
-        $this->assertEquals(2, $penultMethodRoles->method_id);
-        $this->assertEquals(3, $penultMethodRoles->role_id);
+        $method_roles = DB::table('method_roles')->where('method_id', 2)->get();
+        $this->assertEquals(2, $method_roles[1]->role_id);
+        $this->assertEquals(2, $method_roles[1]->method_id);
     }
 
     /**
-     * Check store If Method ID Is Wrong:
-     *   Check login
-     *   Store a new action-roles
-     *   Check response status
-     *   Check response structure
-     *   Check response data
-     *
+     * Test Create Roles for a Method, that has roles:
+     *    Create role for user #1
+     *       Check response status
+     *       Check response structure
      */
-    public function testStoreIfMethodIdIsWrong()
+    public function testCreateRolesForMethodThatHasRoles()
     {
         // Check login
         $response = $this->post('api/auth/login', [
@@ -558,19 +731,16 @@ class MethodRolesControllerTest extends TestCase
             'email' => 'test1@email.com'
         ])->isOk();
 
-        // Store a new method-roles
-        $data     = [
-            'rows' => [
-                [
-                    'method_id' => 33,
-                    'role_id'   => 3
-                ]
-            ]
+        // Store a new roles for User
+        $data = [
+            "method_id" => 1,
+            "role_ids"  => [['id' => 1], ['id' => 2]]
         ];
-        $response = $this->post('api/method-roles?token=' . $token, $data, []);
+
+        $response = $this->post('api/method-roles/1?token=' . $token, $data);
 
         // Check response status
-        $response->assertStatus(452);
+        $response->assertStatus(406);
 
         // Check response structure
         $response->assertJsonStructure(
@@ -584,20 +754,17 @@ class MethodRolesControllerTest extends TestCase
         $responseJSON = json_decode($response->getContent(), true);
         $success      = $responseJSON['success'];  // array
         $message      = $responseJSON['message'];  // array
-
-        $this->assertEquals(false, $success);
-        $this->assertEquals("Method does not exist.", $message);
+        $this->assertEquals($success, false);
+        $this->assertEquals($message, 'Creating is impossible. Method has roles already.');
     }
 
     /**
-     * Check store If One Of The Roles ID Is Wrong:
-     *   Check login
-     *   Store a new action-roles
-     *   Check response status
-     *   Check response structure
-     *   Check response data
+     * Test Create Roles for absent Method:
+     *    Create role #1 for user #3
+     *       Check response status
+     *       Check response structure
      */
-    public function testStoreIfOneOfTheRolesIdIsWrong()
+    public function testCreateRolesForAbsentMethod()
     {
         // Check login
         $response = $this->post('api/auth/login', [
@@ -615,24 +782,16 @@ class MethodRolesControllerTest extends TestCase
             'email' => 'test1@email.com'
         ])->isOk();
 
-        // Store a new method-roles
-        $data     = [
-            'rows' => [
-                [
-                    'method_id' => 1,
-                    'role_id'   => 44
-                ],
-                [
-                    'method_id' => 1,
-                    'role_id'   => 3
-                ]
-            ]
+        // Store a new role for Method
+        $data = [
+            "method_id" => 3333,
+            "role_ids"  => [['id' => 1], ['id' => 2]]
         ];
-        $response = $this->post('api/method-roles?token=' . $token, $data, []);
 
+        $response = $this->post('api/method-roles/3333?token=' . $token, $data);
 
         // Check response status
-        $response->assertStatus(452);
+        $response->assertStatus(422);
 
         // Check response structure
         $response->assertJsonStructure(
@@ -646,9 +805,8 @@ class MethodRolesControllerTest extends TestCase
         $responseJSON = json_decode($response->getContent(), true);
         $success      = $responseJSON['success'];  // array
         $message      = $responseJSON['message'];  // array
-
-        $this->assertEquals(false, $success);
-        $this->assertEquals("Role does not exist.", $message);
+        $this->assertEquals($success, false);
+        $this->assertEquals($message, 'Creating is impossible. Method does not exist.');
     }
 
     /** Check update:
@@ -677,7 +835,7 @@ class MethodRolesControllerTest extends TestCase
         ])->isOk();
 
         // Request
-        $data     = ['ids' => [1, 3]];
+        $data     = ['role_ids' => [['id' => 1], ['id' => 3]]];
         $response = $this->put('api/method-roles/1?token=' . $token, $data, []);
 
         $response->assertStatus(200);
@@ -695,7 +853,7 @@ class MethodRolesControllerTest extends TestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(true, $success);
-        $this->assertEquals("Roles of Method are updated successfully.", $message);
+        $this->assertEquals("Roles for Method are updated successfully.", $message);
 
         // Check DB
         $methodRoles = DB::table('method_roles')->where('method_id', 1)->get();
@@ -732,9 +890,8 @@ class MethodRolesControllerTest extends TestCase
         ])->isOk();
 
         // Request
-        $response = $this->put('api/method-roles/4?token=' . $token, [
-            [1, 3]
-        ]);
+        $data     = ['role_ids' => [['id' => 1111], ['id' => 3]]];
+        $response = $this->put('api/method-roles/1111?token=' . $token, $data, []);
 
         $response->assertStatus(422);
 
@@ -781,9 +938,8 @@ class MethodRolesControllerTest extends TestCase
         ])->isOk();
 
         // Request
-        $response = $this->put('api/method-roles/1?token=' . $token, [
-            'ids' => [1, 4]
-        ]);
+        $data     = ['role_ids' => [['id' => 1111], ['id' => 3]]];
+        $response = $this->put('api/method-roles/1?token=' . $token, $data, []);
 
         $response->assertStatus(422);
 

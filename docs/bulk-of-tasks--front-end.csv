@@ -1,18 +1,22 @@
 Issue Type,Summary,Story Point Estimate
 Story,Create new Branch,0.5
-Story,Planning,1
-Story,Create routes,0.5
-Story,Create link in menu,0.5
-Story,Create links in Controllers,2
-Story,Create static component Index,2
+Story,Planning,3
+Story,Create routes,1
+Story,Create link in menu,0
+Story,Create links in Methods,2
+Story,Create static component of methods,2
+Story,Create static component for index for specified method,2
 Story,Create static component Create,2
 Story,Create static component Edit,2
 Story,Create static component Delete,1
+Story,Create static component DeleteRoles for specified method,1
 Story,Interaction with API server. Index,2
+Story,Interaction with API server. Index for specified method,2
 Story,Interaction with API server. Create,2
 Story,Interaction with API server. Edit,2
 Story,Interaction with API server. Delete,1
+Story,Interaction with API server. DeleteRoles for specified method,1
 Story,Validation,2
-Story,Create other buttons in the component,1
+Story,Create other buttons in the component,0
 Story,Test boundary conditions,3
 Story,Deployment,3
