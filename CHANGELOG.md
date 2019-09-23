@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.9.1] - 2019-09-23
+### Added
+- Module Method-Roles. Store, Update actions are changed. 
+
 ## [0.9.0] - 2019-09-21
 ### Added
 - Module Method-Roles is added. 
