@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.10] - 2019-09-26
+### Added
+- Module Rules (logic of entering). 
+
 ## [0.9.1] - 2019-09-23
 ### Added
 - Module Method-Roles. Store, Update actions are changed. 
