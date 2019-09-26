@@ -71,6 +71,11 @@ $api->version('v1', function (Router $api) {
     });
 
     $api->group(['middleware' => 'api.auth'], function (Router $api) {
+        $api->get('rules', 'App\Api\V1\Controllers\RulesController@getRules');
+        $api->get('rules/main-role', 'App\Api\V1\Controllers\RulesController@getMainRole');
+    });
+
+    $api->group(['middleware' => 'api.auth'], function (Router $api) {
         $api->get('action-roles', 'App\Api\V1\Controllers\ActionRolesController@index');
         $api->get('action-roles/{id}', 'App\Api\V1\Controllers\ActionRolesController@show');
         $api->post('action-roles', 'App\Api\V1\Controllers\ActionRolesController@store');

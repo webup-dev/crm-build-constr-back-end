@@ -2,9 +2,6 @@ Issue Type,Summary,Story Points
 Story,Planning,2
 Story,Create new Branch,0.5
 Story,Create Specifications,2
-Story,Create migration,0.5
-Story,Create Model,2
-Story,Create seed,1
 Story,Create routes,0.5
 Story,Create Controller,0.5
 Story,Create module documentation,5
@@ -12,11 +9,8 @@ Story,Create file of tests,0.5
 Story,Create Tests Documentation,5
 Story,Create PHP test functions,5
 Story,Create Postman tests,1
-Story,Create API functions. Index,2
-Story,Create API functions. Create,3
-Story,Create API functions. Show,2
-Story,Create API functions. Edit,2
-Story,Create API functions. Delete,1
+Story,Create API functions getRules,8
+Story,Get API functions userType,3
 Story,Make Postman tests,1
 Story,Make PHP test functions,5
 Story,Deployment,3

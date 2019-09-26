@@ -31,6 +31,6 @@ class Vcontroller extends Model
      */
     public function methods()
     {
-        return $this->hasMany('App\Models\Method');
+        return $this->hasMany('App\Models\Method', 'controller_id');
     }
 }
