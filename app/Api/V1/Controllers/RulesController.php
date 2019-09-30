@@ -169,6 +169,7 @@ class RulesController extends Controller
      *
      * @response 204 {
      *    "success": false,
+     *    "data": [],
      *    "message": "You do not have any Roles."
      * }
      *

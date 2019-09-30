@@ -19,6 +19,8 @@ $api->version('v1', function (Router $api) {
         $api->get('me', 'App\Api\V1\Controllers\UserController@me');
     });
 
+//    $api->post('auth/logout', 'App\Api\V1\Controllers\LogoutController@logout');
+
     $api->group(['middleware' => 'jwt.auth'], function(Router $api) {
         $api->get('protected', function() {
             return response()->json([

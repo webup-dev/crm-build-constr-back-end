@@ -3,12 +3,12 @@ Story,Create new Branch,0.5
 Story,Planning,5
 Story,Create HTML file of Public page,3
 Story,Insert Public page in the project,1
-Story,Create redirect if user is not authenticated,8
 Story,Test Public page,1
+Story,Create in every authenticated page redirect if user is not authenticated,8
 Story,Get Rules,2
 Story,Create CurrentRules,5
 Story,Implement CurrentRules,3
 Story,Get user type,3
-Story,Create nav-superadmin,2
-Story,Create nav-guest,2
+Story,Create _nav_superadmin.js,2
+Story,Create _nav_guest.js,2
 Story,Deployment,3

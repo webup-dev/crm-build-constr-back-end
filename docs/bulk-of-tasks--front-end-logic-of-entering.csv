@@ -5,10 +5,9 @@ Story,Planning,5
 Story,Create HTML file of Public page,3
 Story,Insert Public page in the project,1
 Story,Test Public page,1
-Story,Test Public page,1
 Story,Create in every authenticated page redirect if user is not authenticated,8
 Story,Get Rules,2
-Story,Create CurrentRules,5 //filtered and summarised Rules
+Story,Create CurrentRules,5
 Story,Implement CurrentRules,3
 Story,Get user type,3
 Story,Create _nav_superadmin.js,2
