@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.10.1] - 2019-09-30
+### Changed
+- Module Rules (logic of entering). Controller was changed. 
+
 ## [0.10] - 2019-09-26
 ### Added
 - Module Rules (logic of entering). 
