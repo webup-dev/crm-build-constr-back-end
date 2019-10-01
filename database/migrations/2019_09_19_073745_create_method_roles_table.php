@@ -16,9 +16,9 @@ class CreateMethodRolesTable extends Migration
         Schema::create('method_roles', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('method_id')->unsigned()->index();
-            $table->foreign('method_id')->references('id')->on('methods')->onDelete('cascade');
+            $table->foreign('method_id')->references('id')->on('methods');
             $table->integer('role_id')->unsigned()->index();
-            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('roles');
             $table->timestamps();
         });
     }

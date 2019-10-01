@@ -202,6 +202,7 @@ class RulesControllerTest extends TestCase
 
         Schema::dropIfExists('method_roles');
         Schema::dropIfExists('user_roles');
+        Schema::dropIfExists('activities');
         Schema::dropIfExists('roles');
         Schema::dropIfExists('methods');
         Schema::dropIfExists('users');
