@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.11] - 2019-10-01
+### Added
+- Module Activities. 
+
 ## [0.10.1] - 2019-09-30
 ### Changed
 - Module Rules (logic of entering). Controller was changed. 
