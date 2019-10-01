@@ -48,7 +48,7 @@ $api->version('v1', function (Router $api) {
         $api->delete('users/{id}', 'App\Api\V1\Controllers\UserController@destroy');
     });
 
-    $api->group(['middleware' => 'api.auth'], function (Router $api) {
+    $api->group(['middleware' => ['api.auth','activity']], function (Router $api) {
         $api->get('roles', 'App\Api\V1\Controllers\RolesController@index');
         $api->get('roles/{id}', 'App\Api\V1\Controllers\RolesController@show');
         $api->post('role', 'App\Api\V1\Controllers\RolesController@store');
@@ -56,7 +56,7 @@ $api->version('v1', function (Router $api) {
         $api->delete('roles/{id}', 'App\Api\V1\Controllers\RolesController@destroy');
     });
 
-    $api->group(['middleware' => 'api.auth'], function (Router $api) {
+    $api->group(['middleware' => ['api.auth','activity']], function (Router $api) {
         $api->get('controllers', 'App\Api\V1\Controllers\VcontrollersController@index');
         $api->get('controllers/{id}', 'App\Api\V1\Controllers\VcontrollersController@show');
         $api->post('controllers', 'App\Api\V1\Controllers\VcontrollersController@store');
@@ -64,7 +64,7 @@ $api->version('v1', function (Router $api) {
         $api->delete('controllers/{id}', 'App\Api\V1\Controllers\VcontrollersController@destroy');
     });
 
-    $api->group(['middleware' => 'api.auth'], function (Router $api) {
+    $api->group(['middleware' => ['api.auth','activity']], function (Router $api) {
         $api->get('methods/{id}', 'App\Api\V1\Controllers\MethodsController@index');
         $api->get('methods/{id}/show', 'App\Api\V1\Controllers\MethodsController@show');
         $api->post('methods/{id}', 'App\Api\V1\Controllers\MethodsController@store');
@@ -72,7 +72,7 @@ $api->version('v1', function (Router $api) {
         $api->delete('methods/{id}', 'App\Api\V1\Controllers\MethodsController@destroy');
     });
 
-    $api->group(['middleware' => 'api.auth'], function (Router $api) {
+    $api->group(['middleware' => ['api.auth','activity']], function (Router $api) {
         $api->get('rules', 'App\Api\V1\Controllers\RulesController@getRules');
         $api->get('rules/main-role', 'App\Api\V1\Controllers\RulesController@getMainRole');
     });
@@ -85,7 +85,7 @@ $api->version('v1', function (Router $api) {
         $api->delete('action-roles/{id}', 'App\Api\V1\Controllers\ActionRolesController@destroy');
     });
 
-    $api->group(['middleware' => 'api.auth'], function (Router $api) {
+    $api->group(['middleware' => ['api.auth','activity']], function (Router $api) {
         $api->get('user-roles/full', 'App\Api\V1\Controllers\UserController@userRolesIndexFull');
         $api->get('user-roles', 'App\Api\V1\Controllers\UserController@userRolesIndex');
         $api->get('user-roles/{id}', 'App\Api\V1\Controllers\UserController@specifiedUserRolesIndex');
@@ -96,7 +96,7 @@ $api->version('v1', function (Router $api) {
         $api->get('profiles/{id}', 'App\Api\V1\Controllers\ProfilesController@getUser');
     });
 
-    $api->group(['middleware' => 'api.auth'], function (Router $api) {
+    $api->group(['middleware' => ['api.auth','activity']], function (Router $api) {
         $api->get('method-role/{id}', 'App\Api\V1\Controllers\MethodRolesController@show');
         $api->get('method-roles/{id}', 'App\Api\V1\Controllers\MethodRolesController@getRoles');
         $api->post('method-roles/{id}', 'App\Api\V1\Controllers\MethodRolesController@store');
@@ -105,7 +105,7 @@ $api->version('v1', function (Router $api) {
         $api->delete('method-roles/{id}', 'App\Api\V1\Controllers\MethodRolesController@destroyRoles');
     });
 
-    $api->group(['middleware' => ['api.auth', 'platform.superadmin']], function (Router $api) {
+    $api->group(['middleware' => ['api.auth', 'platform.superadmin', 'activity']], function (Router $api) {
         $api->get('activities', 'App\Api\V1\Controllers\ActivitiesController@index');
         $api->delete('activities', 'App\Api\V1\Controllers\ActivitiesController@destroy');
     });
