@@ -38,7 +38,7 @@ $api->version('v1', function (Router $api) {
         ]);
     });
 
-    $api->group(['middleware' => 'api.auth'], function (Router $api) {
+    $api->group(['middleware' => ['api.auth','activity']], function (Router $api) {
         $api->get('book', 'App\Api\V1\Controllers\BookController@index');
         $api->get('book/{id}', 'App\Api\V1\Controllers\BookController@show');
         $api->post('book', 'App\Api\V1\Controllers\BookController@store');
@@ -105,7 +105,12 @@ $api->version('v1', function (Router $api) {
         $api->delete('method-roles/{id}', 'App\Api\V1\Controllers\MethodRolesController@destroyRoles');
     });
 
-    $api->get('book', 'App\Api\V1\Controllers\BookController@index');
+    $api->group(['middleware' => ['api.auth', 'platform.superadmin']], function (Router $api) {
+        $api->get('activities', 'App\Api\V1\Controllers\ActivitiesController@index');
+        $api->delete('activities', 'App\Api\V1\Controllers\ActivitiesController@destroy');
+    });
+
+//    $api->get('book', 'App\Api\V1\Controllers\BookController@index');
 
     $api->get('hello', function() {
         return response()->json([

@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Tymon\JWTAuth\JWTAuth;
 
-class SuperAdminRole
+class Superadmin
 {
     /**
      * Handle an incoming request.

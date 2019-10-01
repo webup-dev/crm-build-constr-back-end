@@ -29,6 +29,7 @@ class Role extends Model
     protected $fillable = ['name', 'description'];
 
     /**
+     * user-roles: many-to-many
      * The users that belong to the role .
      */
     public function users()

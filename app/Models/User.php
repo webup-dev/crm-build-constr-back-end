@@ -31,6 +31,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Activity[] $activities
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -91,10 +92,20 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * user-roles: many-to-many
      * The roles that belong to the user.
      */
     public function roles()
     {
         return $this->belongsToMany('App\Models\Role', 'user_roles')->withTimestamps();
+    }
+
+    /**
+     * user-activity: one-to-many
+     * Get the activities for the user.
+     */
+    public function activities()
+    {
+        return $this->hasMany('App\Models\Activity', 'user_id');
     }
 }
