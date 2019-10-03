@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.12] - 2019-10-03
+### Added
+- Module Organizational Structure. 
+
 ## [0.11] - 2019-10-01
 ### Added
 - Module Activities. 
