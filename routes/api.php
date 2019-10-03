@@ -105,6 +105,13 @@ $api->version('v1', function (Router $api) {
         $api->delete('method-roles/{id}', 'App\Api\V1\Controllers\MethodRolesController@destroyRoles');
     });
 
+    $api->group(['middleware' => ['api.auth', 'platform.superadmin','activity']], function (Router $api) {
+        $api->get('organizations', 'App\Api\V1\Controllers\OrganizationsController@index');
+        $api->post('organizations', 'App\Api\V1\Controllers\OrganizationsController@store');
+        $api->put('organizations/{id}', 'App\Api\V1\Controllers\OrganizationsController@update');
+        $api->delete('organizations/{id}', 'App\Api\V1\Controllers\OrganizationsController@destroy');
+    });
+
     $api->group(['middleware' => ['api.auth', 'platform.superadmin', 'activity']], function (Router $api) {
         $api->get('activities', 'App\Api\V1\Controllers\ActivitiesController@index');
         $api->delete('activities', 'App\Api\V1\Controllers\ActivitiesController@destroy');

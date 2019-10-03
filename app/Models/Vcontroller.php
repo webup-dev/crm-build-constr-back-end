@@ -27,6 +27,8 @@ class Vcontroller extends Model
     protected $fillable = ['name'];
 
     /**
+     * Controller - method: one-to-many
+     *
      * Get the methods for the controller.
      */
     public function methods()

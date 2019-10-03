@@ -1,10 +1,13 @@
 Issue Type,Summary,Story Point Estimate
-Story,Planning,1
+Story,Planning,3
 Story,Create new Branch,0.5
-Story,Create routes,0.5
-Story,Create link in menu,0.5
-Story,Create static component. ActivityIndex,2
-Story,Create static component. Delete,1
-Story,Interaction with API server. ActivityIndex,2
+Story,Create routes,1
+Story,Create link in menu,1
+Story,Interaction with API server. Index,5
+Story,Interaction with API server. Create,5
+Story,Interaction with API server. Edit,3
 Story,Interaction with API server. Delete,1
+Story,Validation,2
+Story,Test boundary conditions,1
 Story,Deployment,3
+Story,Report,1

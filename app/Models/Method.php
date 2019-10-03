@@ -29,6 +29,7 @@ class Method extends Model
     protected $fillable = ['name', 'controller_id'];
 
     /**
+     * Controller - method: one-to-many
      * Get the controller that owns the method.
      */
     public function vcontroller()

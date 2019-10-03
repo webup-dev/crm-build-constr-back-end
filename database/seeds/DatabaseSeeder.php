@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
          $this->call(VcontrollersSeeder::class);
          $this->call(MethodsSeeder::class);
          $this->call(MethodRolesSeeder::class);
+         $this->call(OrganizationsSeeder::class);
     }
 }

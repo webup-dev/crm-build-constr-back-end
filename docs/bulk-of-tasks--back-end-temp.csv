@@ -2,18 +2,20 @@ Issue Type,Summary,Story Point Estimate
 Task,Planning,1
 Task,Create new Branch,0.5
 Task,Create Specifications,1
-Task,Create Model,0.5
 Task,Create migration,0.5
+Task,Create Model,0.5
 Task,Create routes,0.5
-Task,Create middleware,5
+Task,Create middleware,3
 Task,Create Controller,0.5
-Task,Create module documentation,2
+Task,Create module documentation,3
 Task,Create a file of tests,0.5
-Task,Create Tests Documentation,1
-Task,Create PHP test functions,2
-Task,Create Postman tests,2
-Task,Create API functions. Get, 3
-Task,Create API functions. Delete, 2
+Task,Create Tests Documentation,2
+Task,Create PHP test functions,5
+Task,Create Postman tests,1
+Task,Create API functions. Index, 3
+Task,Create API functions. Store, 3
+Task,Create API functions. Update, 3
+Task,Create API functions. Delete, 1
 Task,Make Postman tests,1
-Task,Make PHP test functions,2
+Task,Make PHP test functions,5
 Task,Deployment,3

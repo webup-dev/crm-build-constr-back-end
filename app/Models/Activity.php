@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Activity whereUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Activity whereUserId($value)
  * @mixin \Eloquent
+ * @property mixed $req
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Activity whereReq($value)
  */
 class Activity extends Model
 {
