@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.12.1] - 2019-10-04
+### Fixed
+- Module Organizational Structure. Fixing of bugs.
+
 ## [0.12] - 2019-10-03
 ### Added
 - Module Organizational Structure. 
