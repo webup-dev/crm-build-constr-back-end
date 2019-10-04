@@ -34,6 +34,21 @@ class LoginController extends Controller
             throw new HttpException(500);
         }
 
+        $user   = Auth::guard()->user();
+        $uri    = $request->path();
+        $method = $request->method();
+
+        $data           = [];
+        $data['uri']    = $uri;
+        $data['method'] = $method;
+
+        $data = json_encode($data);
+
+        $activity          = new \App\Models\Activity();
+        $activity->user_id = $user['id'];
+        $activity->req     = $data;
+        $activity->save();
+
         return response()
             ->json([
                 'status' => 'ok',

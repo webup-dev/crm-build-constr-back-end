@@ -73,6 +73,55 @@ class OrganizationsController extends Controller
     }
 
     /**
+     * Get the specified Structure Item.
+     *
+     * @queryParam id required Item ID
+     *
+     * @response 200 {
+     *  "success": true,
+     *  "data": {
+     *     "id": 1,
+     *     "name": "Central Office",
+     *     "parent_id": 1,
+     *     "order": 1,
+     *     "created_at": "2019-12-08 13:25:36",
+     *     "updated_at": "2019-12-08 13:25:36"
+     *  },
+     *  "message": "Item is retrieved successfully."
+     * }
+     *
+     * @response 452 {
+     *    "success": false,
+     *    "message": "Method does not exist."
+     * }
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $organization = Organization::whereId($id)->first();
+        if (!$organization) {
+            $response = [
+                'success' => false,
+                'message' => "Item is absent."
+            ];
+
+            return response()->json($response, 452);
+        }
+
+        $data = $organization->toArray();
+
+        $response = [
+            'success' => true,
+            'data'    => $data,
+            'message' => 'Item is retrieved successfully.'
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
      * Store a newly created Organization
      *
      * @bodyParam name string required Organization Name

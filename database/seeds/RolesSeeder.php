@@ -112,6 +112,12 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        if (Role::where('name', '=', 'guest')->first() === null) {
+            $role = Role::create([
+                'name'    => 'guest',
+            ]);
+        }
+
 
     }
 }

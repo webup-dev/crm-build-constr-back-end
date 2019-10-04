@@ -107,6 +107,7 @@ $api->version('v1', function (Router $api) {
 
     $api->group(['middleware' => ['api.auth', 'platform.superadmin','activity']], function (Router $api) {
         $api->get('organizations', 'App\Api\V1\Controllers\OrganizationsController@index');
+        $api->get('organizations/{id}', 'App\Api\V1\Controllers\OrganizationsController@show');
         $api->post('organizations', 'App\Api\V1\Controllers\OrganizationsController@store');
         $api->put('organizations/{id}', 'App\Api\V1\Controllers\OrganizationsController@update');
         $api->delete('organizations/{id}', 'App\Api\V1\Controllers\OrganizationsController@destroy');

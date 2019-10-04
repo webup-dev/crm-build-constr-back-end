@@ -17,6 +17,20 @@
  *   Check response structure
  *   Check response data
  *
+ * Check Show:
+ *   Check login
+ *   Get specified item
+ *   Check response status
+ *   Check response structure
+ *   Check response data
+ *
+ * Check Show Not Existing Item:
+ *   Check login
+ *   Get specified item
+ *   Check response status
+ *   Check response structure
+ *   Check response data
+ *
  * Check store:
  *   Check login
  *   Store a new organization
@@ -301,6 +315,115 @@ class OrganizationsControllerTest extends TestCase
 
         $this->assertEquals("Organizations are absent.", $message);
         $this->assertEquals(true, $success);
+    }
+
+    /**
+     * Check show:
+     *   Check login
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testShow()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'test@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'Test',
+            'email' => 'test@email.com'
+        ])->isOk();
+
+        // Request
+        $response = $this->get('api/organizations/1?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'data' =>
+                    [
+                        'id',
+                        'name',
+                        'parent_id',
+                        'order',
+                        'created_at',
+                        'updated_at'
+                    ],
+                'message'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $message      = $responseJSON['message'];  // array
+        $data         = $responseJSON['data'];  // array
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals('Item is retrieved successfully.', $message);
+        $this->assertEquals('Central Office', $data['name']);
+        $this->assertEquals(null, $data['parent_id']);
+        $this->assertEquals(1, $data['order']);
+    }
+
+    /**
+     * Check Show Not Existing Item:
+     *   Check login
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testShowNotExistingItem()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'test@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'Test',
+            'email' => 'test@email.com'
+        ])->isOk();
+
+        // Request
+        $response = $this->get('api/organizations/1111?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(452);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'message'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $message      = $responseJSON['message'];  // array
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals('Item is absent.', $message);
     }
 
     /**
