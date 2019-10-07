@@ -117,6 +117,15 @@ class VcontrollersControllerTest extends TestCase
         ]);
 
         $controller2->save();
+
+        $role1 = new Role([
+            'name'        => 'superadmin',
+            'description' => 'Description 1'
+        ]);
+
+        $role1->save();
+
+        $user->roles()->attach($role1);
     }
 
     /**

@@ -118,21 +118,21 @@ class RulesControllerTest extends TestCase
         $user1->save();
 
         $role1 = new Role([
-            'name'        => 'Role 1',
+            'name'        => 'superadmin',
             'description' => 'Description 1'
         ]);
 
         $role1->save();
 
         $role2 = new Role([
-            'name'        => 'Role 2',
+            'name'        => 'developer',
             'description' => 'Description 2'
         ]);
 
         $role2->save();
 
         $role3 = new Role([
-            'name'        => 'Role 3',
+            'name'        => 'platform-superadmin',
             'description' => 'Description 3'
         ]);
 
@@ -416,7 +416,7 @@ class RulesControllerTest extends TestCase
         $this->assertEquals(true, $success);
         $this->assertEquals("The main role is retrieved successfully.", $message);
         $this->assertEquals(1, $data['id']);
-        $this->assertEquals('Role 1', $data['name']);
+        $this->assertEquals('superadmin', $data['name']);
     }
 
     /**

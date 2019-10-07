@@ -91,8 +91,19 @@ class RolesControllerTest extends TestCase
 
         $user->save();
 
-        $role1 = factory(Role::class)->create();
-        $role2 = factory(Role::class)->create();
+        $role1 = new Role([
+            'name'     => 'superadmin',
+        ]);
+
+        $role1->save();
+
+        $role2 = new Role([
+            'name'     => 'developer',
+        ]);
+
+        $role2->save();
+
+        $user->roles()->attach([1]);
     }
 
     /**

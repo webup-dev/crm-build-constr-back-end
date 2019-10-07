@@ -152,21 +152,21 @@ class UserController2Test extends TestCase
         $user3->save();
 
         $role1 = new Role([
-            'name'        => 'Role 1',
+            'name'        => 'superadmin',
             'description' => 'Description 1'
         ]);
 
         $role1->save();
 
         $role2 = new Role([
-            'name'        => 'Role 2',
+            'name'        => 'developer',
             'description' => 'Description 2'
         ]);
 
         $role2->save();
 
         $role3 = new Role([
-            'name'        => 'Role 3',
+            'name'        => 'platform-superadmin',
             'description' => 'Description 3'
         ]);
 
