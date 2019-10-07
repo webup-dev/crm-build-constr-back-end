@@ -11,3 +11,16 @@ if (! function_exists('get_role')) {
         return $roleName;
     }
 }
+
+if (! function_exists('one_from_arr_in_other_arr')) {
+    function one_from_arr_in_other_arr($needleArr, $otherArr)
+    {
+        foreach ($needleArr as $item) {
+            if (in_array($item, $otherArr)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}

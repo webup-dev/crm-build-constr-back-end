@@ -24,7 +24,7 @@ class PlatformSuperadmin
 
         $roleNamesArr= $roles->pluck('name')->all();
 
-        if (in_array('superadmin', $roleNamesArr) or in_array('platform-superadmin', $roleNamesArr)) {
+        if (one_from_arr_in_other_arr(['developer', 'superadmin', 'platform-superadmin'], $roleNamesArr)) {
             return $next($request);
         }
 

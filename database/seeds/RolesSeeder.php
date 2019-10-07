@@ -22,6 +22,12 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        if (Role::where('name', '=', 'developer')->first() === null) {
+            $role = Role::create([
+                'name'     => 'developer'
+            ]);
+        }
+
         if (Role::where('name', '=', 'admin')->first() === null) {
             $role = Role::create([
                 'name'     => 'admin'

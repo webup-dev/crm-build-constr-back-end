@@ -42,7 +42,13 @@ class UsersSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
-            'name'     => 'Platform SuperAdmin',
+            'name'     => 'Volodymyr Vadiasov',
+            'email'    => 'developer@admin.com',
+            'password' => bcrypt('12345678')
+        ]);
+
+        DB::table('users')->insert([
+            'name'     => 'Steven Scaamano',
             'email'    => 'platform-superadmin@admin.com',
             'password' => bcrypt('12345678')
         ]);

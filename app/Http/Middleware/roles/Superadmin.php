@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Tymon\JWTAuth\JWTAuth;
+use Auth;
 
 class Superadmin
 {
@@ -17,13 +18,21 @@ class Superadmin
      */
     public function handle($request, Closure $next)
     {
-        $user = JWTAuth::parseToken()->authenticate(); // User $user or false
-        $roleName = get_role($user);
+        $user = Auth::guard()->user();
 
-        if ($roleName === 'superadmin') {
+        $roles = $user->roles;
+
+        $roleNamesArr= $roles->pluck('name')->all();
+
+        if (in_array('developer', $roleNamesArr) or in_array('superadmin', $roleNamesArr)) {
             return $next($request);
         }
 
-        return redirect('/home');
+        $response = [
+            'success' => false,
+            'message' => 'You do not have permissions.'
+        ];
+
+        return response()->json($response, 401);
     }
 }
