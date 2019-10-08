@@ -1,13 +1,15 @@
 Issue Type,Summary,Story Point Estimate
-Story,Planning,3
 Story,Create new Branch,0.5
+Story,Planning,3
 Story,Create routes,1
 Story,Create link in menu,1
-Story,Interaction with API server. Index,5
-Story,Interaction with API server. Create,5
-Story,Interaction with API server. Edit,3
-Story,Interaction with API server. Delete,1
-Story,Validation,2
-Story,Test boundary conditions,1
-Story,Deployment,3
+Story,Create tests,13
+Story,Interaction with API server. Index,3
+Story,Validation,5
+Story,Interaction with API server. Store,8
+Story,Interaction with API server. Show,5
+Story,Interaction with API server. Update,5
+Story,Interaction with API server. Destroy,1
+Story,Test boundary conditions,3
+Story,Deployment,5
 Story,Report,1
