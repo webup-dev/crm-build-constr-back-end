@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.13.0] - 2019-10-10
+### Added
+- Module User Profiles.
+
 ## [0.12.2] - 2019-10-07
 ### Added
 - Middlewares developer, guest, platform-superadmin. Tests are adapted.
