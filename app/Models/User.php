@@ -32,6 +32,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Activity[] $activities
+ * @property-read \App\Models\User_profile $user_profile
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -107,5 +108,15 @@ class User extends Authenticatable implements JWTSubject
     public function activities()
     {
         return $this->hasMany('App\Models\Activity', 'user_id');
+    }
+
+    /**
+     * user <-> user_profile: one-to-one
+     *
+     * Get the user_profile record associated with the user.
+     */
+    public function user_profile()
+    {
+        return $this->hasOne('App\Models\User_profile', 'user_id');
     }
 }

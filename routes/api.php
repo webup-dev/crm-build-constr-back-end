@@ -113,6 +113,16 @@ $api->version('v1', function (Router $api) {
         $api->delete('organizations/{id}', 'App\Api\V1\Controllers\OrganizationsController@destroy');
     });
 
+    $api->group(['middleware' => ['api.auth']], function (Router $api) {
+        $api->get('user-profiles', 'App\Api\V1\Controllers\UserProfilesController@index');
+        $api->get('user-profiles/{id}', 'App\Api\V1\Controllers\UserProfilesController@show');
+        $api->post('user-profiles', 'App\Api\V1\Controllers\UserProfilesController@store');
+        $api->put('user-profiles/{id}', 'App\Api\V1\Controllers\UserProfilesController@update');
+        $api->delete('user-profiles/{id}', 'App\Api\V1\Controllers\UserProfilesController@softDestroy');
+        $api->put('user-profiles/{id}/restore', 'App\Api\V1\Controllers\UserProfilesController@restore');
+        $api->delete('user-profiles/{id}/permanently', 'App\Api\V1\Controllers\UserProfilesController@destroyPermanently');
+    });
+
     $api->group(['middleware' => ['api.auth', 'platform.superadmin', 'activity']], function (Router $api) {
         $api->get('activities', 'App\Api\V1\Controllers\ActivitiesController@index');
         $api->delete('activities', 'App\Api\V1\Controllers\ActivitiesController@destroy');

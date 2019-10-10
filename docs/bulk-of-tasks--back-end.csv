@@ -2,8 +2,10 @@ Issue Type,Summary,Story Point Estimate
 Story,Planning,1
 Story,Create new Branch,0.5
 Story,Create Specifications,1
+Story,Create List of error codes,1
 Story,Create migration,0.5
 Story,Create Model,0.5
+Story,Create seed,0.5
 Story,Create routes,0.5
 Story,Create middleware,3
 Story,Create Controller,0.5

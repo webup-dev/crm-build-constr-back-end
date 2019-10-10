@@ -86,6 +86,9 @@ return [
             'database'  => env('DB_DATABASE', 'forge'),
             'username'  => env('DB_USERNAME', 'forge'),
             'password'  => env('DB_PASSWORD', ''),
+            'options'   => array(
+                PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', true),
+            ),
             'charset'   => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix'    => '',

@@ -78,13 +78,14 @@ namespace App\Functional\Api\V1\Controllers;
 use App\Models\Book;
 use App\Models\Role;
 use App\Models\Vcontroller;
+use App\WnyTestCase;
 use Hash;
 use App\Models\User;
 use App\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 
-class VcontrollersControllerTest extends TestCase
+class VcontrollersControllerTest extends WnyTestCase
 {
     use DatabaseMigrations;
 
