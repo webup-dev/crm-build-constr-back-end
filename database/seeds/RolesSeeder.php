@@ -18,109 +18,127 @@ class RolesSeeder extends Seeder
          */
         if (Role::where('name', '=', 'superadmin')->first() === null) {
             $role = Role::create([
-                'name'     => 'superadmin'
+                'name'       => 'superadmin',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'developer')->first() === null) {
             $role = Role::create([
-                'name'     => 'developer'
+                'name'       => 'developer',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'platform-superadmin')->first() === null) {
             $role = Role::create([
-                'name'    => 'platform-superadmin'
+                'name'       => 'platform-superadmin',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'platform-admin')->first() === null) {
             $role = Role::create([
-                'name'    => 'platform-admin',
+                'name'       => 'platform-admin',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'organization-superadmin')->first() === null) {
             $role = Role::create([
-                'name'    => 'organization-superadmin',
+                'name'       => 'organization-superadmin',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'organization-admin')->first() === null) {
             $role = Role::create([
-                'name'    => 'organization-admin',
+                'name'       => 'organization-admin',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'organization-general-manager')->first() === null) {
             $role = Role::create([
-                'name'    => 'organization-general-manager',
+                'name'       => 'organization-general-manager',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'organization-sales-manager')->first() === null) {
             $role = Role::create([
-                'name'    => 'organization-sales-manager',
+                'name'       => 'organization-sales-manager',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'organization-production-manager')->first() === null) {
             $role = Role::create([
-                'name'    => 'organization-production-manager',
+                'name'       => 'organization-production-manager',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'organization-administrative-leader')->first() === null) {
             $role = Role::create([
-                'name'    => 'organization-administrative-leader',
+                'name'       => 'organization-administrative-leader',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'organization-estimator')->first() === null) {
             $role = Role::create([
-                'name'    => 'organization-estimator',
+                'name'       => 'organization-estimator',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'organization-project-manager')->first() === null) {
             $role = Role::create([
-                'name'    => 'organization-project-manager',
+                'name'       => 'organization-project-manager',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'organization-administrative-assistant')->first() === null) {
             $role = Role::create([
-                'name'    => 'organization-administrative-assistant',
+                'name'       => 'organization-administrative-assistant',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'installer-admin')->first() === null) {
             $role = Role::create([
-                'name'    => 'installer-admin',
+                'name'       => 'installer-admin',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'installer-team-lead')->first() === null) {
             $role = Role::create([
-                'name'    => 'installer-team-lead',
+                'name'       => 'installer-team-lead',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'customer-individual')->first() === null) {
             $role = Role::create([
-                'name'    => 'customer-individual',
+                'name'       => 'customer-individual',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'customer-organization')->first() === null) {
             $role = Role::create([
-                'name'    => 'customer-organization',
+                'name'       => 'customer-organization',
+                'created_at' => now()
             ]);
         }
 
         if (Role::where('name', '=', 'guest')->first() === null) {
             $role = Role::create([
-                'name'    => 'guest',
+                'name'       => 'guest',
+                'created_at' => now()
             ]);
         }
 

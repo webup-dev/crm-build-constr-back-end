@@ -13,18 +13,20 @@ class VcontrollersSeeder extends Seeder
     public function run()
     {
         /*
-         * Add Conrollers
+         * Add Controllers
          *
          */
         if (Vcontroller::where('name', '=', 'Books')->first() === null) {
             $controller = Vcontroller::create([
-                'name' => 'Books'
+                'name'       => 'Books',
+                'created_at' => now()
             ]);
         }
 
         if (Vcontroller::where('name', '=', 'Roles')->first() === null) {
             $controller = Vcontroller::create([
-                'name' => 'Roles'
+                'name'       => 'Roles',
+                'created_at' => now()
             ]);
         }
     }

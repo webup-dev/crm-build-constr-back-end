@@ -17,23 +17,27 @@ class MethodsSeeder extends Seeder
          *
          */
         $method = Method::create([
-            'name' => 'index',
-            'controller_id' => '1'
+            'name'          => 'index',
+            'controller_id' => '1',
+            'created_at'    => now()
         ]);
 
         $method = Method::create([
-            'name' => 'create',
-            'controller_id' => '1'
+            'name'          => 'create',
+            'controller_id' => '1',
+            'created_at'    => now()
         ]);
 
         $method = Method::create([
-            'name' => 'edit',
-            'controller_id' => '1'
+            'name'          => 'edit',
+            'controller_id' => '1',
+            'created_at'    => now()
         ]);
 
         $method = Method::create([
-            'name' => 'delete',
-            'controller_id' => '1'
+            'name'          => 'delete',
+            'controller_id' => '1',
+            'created_at'    => now()
         ]);
 
 

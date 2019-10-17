@@ -18,49 +18,55 @@ class OrganizationsSeeder extends Seeder
          */
         if (Organization::where('name', '=', 'Central Office')->first() === null) {
             $organization = Organization::create([
-                'name'     => 'Central Office',
-                'order'     => '1',
-                'parent_id'     => null,
+                'name'       => 'Central Office',
+                'order'      => '1',
+                'parent_id'  => null,
+                'created_at' => now()
             ]);
         }
 
         if (Organization::where('name', '=', 'Department 1')->first() === null) {
             $organization = Organization::create([
-                'name'     => 'Department 1',
-                'order'     => '2',
-                'parent_id'     => '1',
+                'name'       => 'Department 1',
+                'order'      => '2',
+                'parent_id'  => '1',
+                'created_at' => now()
             ]);
         }
 
         if (Organization::where('name', '=', 'Department 2')->first() === null) {
             $organization = Organization::create([
-                'name'     => 'Department 2',
-                'order'     => '3',
-                'parent_id'     => '1',
+                'name'       => 'Department 2',
+                'order'      => '3',
+                'parent_id'  => '1',
+                'created_at' => now()
             ]);
         }
 
         if (Organization::where('name', '=', 'Branch Office')->first() === null) {
             $organization = Organization::create([
-                'name'     => 'Branch Office',
-                'order'     => '4',
-                'parent_id'     => '1',
+                'name'       => 'Branch Office',
+                'order'      => '4',
+                'parent_id'  => '1',
+                'created_at' => now()
             ]);
         }
 
         if (Organization::where('name', '=', 'Branch Department 1')->first() === null) {
             $organization = Organization::create([
-                'name'     => 'Branch Department 1',
-                'order'     => '5',
-                'parent_id'     => '4',
+                'name'       => 'Branch Department 1',
+                'order'      => '5',
+                'parent_id'  => '4',
+                'created_at' => now()
             ]);
         }
 
         if (Organization::where('name', '=', 'Branch Department 2')->first() === null) {
             $organization = Organization::create([
-                'name'     => 'Branch Department 2',
-                'order'     => '6',
-                'parent_id'     => '4',
+                'name'       => 'Branch Department 2',
+                'order'      => '6',
+                'parent_id'  => '4',
+                'created_at' => now()
             ]);
         }
     }

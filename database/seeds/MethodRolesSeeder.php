@@ -17,23 +17,27 @@ class MethodRolesSeeder extends Seeder
          *
          */
         $action_role = Method_role::create([
-            'method_id'   => 1,
-            'role_id' => 1
+            'method_id'  => 1,
+            'role_id'    => 1,
+            'created_at' => now()
         ]);
 
         $action_role = Method_role::create([
-            'method_id'   => 2,
-            'role_id' => 1
+            'method_id'  => 2,
+            'role_id'    => 1,
+            'created_at' => now()
         ]);
 
         $action_role = Method_role::create([
-            'method_id'   => 1,
-            'role_id' => 2
+            'method_id'  => 1,
+            'role_id'    => 2,
+            'created_at' => now()
         ]);
 
         $action_role = Method_role::create([
-            'method_id'   => 2,
-            'role_id' => 2
+            'method_id'  => 2,
+            'role_id'    => 2,
+            'created_at' => now()
         ]);
 
     }

@@ -37,7 +37,8 @@ class UserProfilesSeeder extends Seeder
             'status'           => 'active',
             'start_date'       => null,
             'termination_date' => null,
-            'deleted_at'       => null
+            'deleted_at'       => null,
+            'created_at'       => now()
         ]);
 
         DB::table('user_profiles')->insert([
@@ -60,7 +61,8 @@ class UserProfilesSeeder extends Seeder
             'status'           => 'active',
             'start_date'       => null,
             'termination_date' => null,
-            'deleted_at'       => null
+            'deleted_at'       => null,
+            'created_at'       => now()
         ]);
 
         DB::table('user_profiles')->insert([
@@ -83,7 +85,8 @@ class UserProfilesSeeder extends Seeder
             'status'           => 'active',
             'start_date'       => null,
             'termination_date' => null,
-            'deleted_at'       => null
+            'deleted_at'       => null,
+            'created_at'       => now()
         ]);
 
         DB::table('user_profiles')->insert([
@@ -106,7 +109,8 @@ class UserProfilesSeeder extends Seeder
             'status'           => 'active',
             'start_date'       => null,
             'termination_date' => null,
-            'deleted_at'       => null
+            'deleted_at'       => null,
+            'created_at'       => now()
         ]);
 
         DB::table('user_profiles')->insert([
@@ -129,7 +133,8 @@ class UserProfilesSeeder extends Seeder
             'status'           => 'active',
             'start_date'       => null,
             'termination_date' => null,
-            'deleted_at'       => null
+            'deleted_at'       => null,
+            'created_at'       => now()
         ]);
 
         DB::table('user_profiles')->insert([
@@ -152,7 +157,8 @@ class UserProfilesSeeder extends Seeder
             'status'           => 'active',
             'start_date'       => null,
             'termination_date' => null,
-            'deleted_at'       => null
+            'deleted_at'       => null,
+            'created_at'       => now()
         ]);
 
         DB::table('user_profiles')->insert([
@@ -175,7 +181,8 @@ class UserProfilesSeeder extends Seeder
             'status'           => 'active',
             'start_date'       => null,
             'termination_date' => null,
-            'deleted_at'       => null
+            'deleted_at'       => null,
+            'created_at'       => now()
         ]);
     }
 }
