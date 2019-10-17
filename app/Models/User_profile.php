@@ -65,6 +65,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User_profile withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User_profile withoutTrashed()
+ * @property-read \App\Models\Organization $organization
  */
 class User_profile extends Model
 {
@@ -97,10 +98,20 @@ class User_profile extends Model
     /**
      * user <-> user_profile: one-to-one
      *
-     * Get the user that owns the user_profile.
+     * Get the user that belong to the user_profile.
      */
     public function user()
     {
         return $this->belongsTo('App\Models\User', 'id', 'user_id');
+    }
+
+    /**
+     * organizations <-> user_profiles: one-to-many
+     *
+     * Get the organization that owns the user_profile.
+     */
+    public function organization()
+    {
+        return $this->belongsTo('App\Models\Organization', 'department_id', 'id');
     }
 }

@@ -435,6 +435,7 @@ class UserProfilesControllerTest extends WnyTestCase
 
         // Check response status
         $response->assertStatus(200);
+//        dd($response);
 
         // Check response structure
         $response->assertJsonStructure(
@@ -452,7 +453,8 @@ class UserProfilesControllerTest extends WnyTestCase
                             "start_date",
                             "termination_date",
                             "created_at",
-                            "updated_at"
+                            "updated_at",
+                            "organization"
                         ]
                     ],
                 'message'
@@ -612,6 +614,7 @@ class UserProfilesControllerTest extends WnyTestCase
                         "last_name",
                         "title",
                         "department_id",
+                        "organization",
                         "phone_home",
                         "phone_work",
                         "phone_extension",

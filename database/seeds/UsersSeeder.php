@@ -24,31 +24,13 @@ class UsersSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
-            'name'     => 'Super Admin2',
-            'email'    => 'superadmin2@admin.com',
-            'password' => Hash::make('12345678')
-        ]);
-
-        DB::table('users')->insert([
-            'name'     => 'Demo Guest',
-            'email'    => 'guest@admin.com',
-            'password' => Hash::make('12345678')
-        ]);
-
-        DB::table('users')->insert([
-            'name'     => 'Admin Admin',
-            'email'    => 'admin@admin.com',
-            'password' => bcrypt('12345678')
-        ]);
-
-        DB::table('users')->insert([
             'name'     => 'Volodymyr Vadiasov',
             'email'    => 'developer@admin.com',
             'password' => bcrypt('12345678')
         ]);
 
         DB::table('users')->insert([
-            'name'     => 'Steven Scaamano',
+            'name'     => 'Steven Caamano',
             'email'    => 'platform-superadmin@admin.com',
             'password' => bcrypt('12345678')
         ]);
@@ -60,8 +42,20 @@ class UsersSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
-            'name'     => 'Organization-1 SuperAdmin',
-            'email'    => 'organization-1-superadmin@admin.com',
+            'name'     => 'Organization-A SuperAdmin',
+            'email'    => 'organization-A-superadmin@admin.com',
+            'password' => bcrypt('12345678')
+        ]);
+
+        DB::table('users')->insert([
+            'name'     => 'Organization-A Admin',
+            'email'    => 'organization-A-admin@admin.com',
+            'password' => bcrypt('12345678')
+        ]);
+
+        DB::table('users')->insert([
+            'name'     => 'Organization-A General-Manager',
+            'email'    => 'organization-A-generalManager@admin.com',
             'password' => bcrypt('12345678')
         ]);
 
@@ -130,5 +124,13 @@ class UsersSeeder extends Seeder
             'email'    => 'customer-1-organization@admin.com',
             'password' => bcrypt('12345678')
         ]);
+
+        DB::table('users')->insert([
+            'name'     => 'Demo Guest',
+            'email'    => 'guest@admin.com',
+            'password' => bcrypt('12345678')
+        ]);
+
+
     }
 }

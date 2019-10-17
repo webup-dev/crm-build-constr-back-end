@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereParentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User_profile[] $user_profile
  */
 class Organization extends Model
 {
@@ -47,5 +48,15 @@ class Organization extends Model
     public function childOrganizations()
     {
         return $this->hasMany('App\Models\Organization', 'parent_id');
+    }
+
+    /**
+     * organizations <-> user_profiles: one-to-many
+     *
+     * Get the organization that owns the user_profile.
+     */
+    public function user_profile()
+    {
+        return $this->hasMany('App\Models\User_profile', 'department_id', 'id');
     }
 }

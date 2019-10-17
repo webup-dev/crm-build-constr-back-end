@@ -90,11 +90,13 @@ class UserProfilesController extends Controller
             $user         = User::find($user->id);
             $userProfile  = $user->user_profile;
             $departmentId = $userProfile->department_id;
-            $userProfiles = User_profile::select('id', 'user_id', 'first_name', 'last_name', 'department_id', 'status', 'start_date', 'termination_date', 'created_at', 'updated_at')
+            $userProfiles = User_profile::with('organization')
+                ->select('id', 'user_id', 'first_name', 'last_name', 'department_id', 'status', 'start_date', 'termination_date', 'created_at', 'updated_at')
                 ->where('department_id', $departmentId)
                 ->get();
         } else {
-            $userProfiles = User_profile::select('id', 'user_id', 'first_name', 'last_name', 'department_id', 'status', 'start_date', 'termination_date', 'created_at', 'updated_at')
+            $userProfiles = User_profile::with('organization')
+                ->select('id', 'user_id', 'first_name', 'last_name', 'department_id', 'status', 'start_date', 'termination_date', 'created_at', 'updated_at')
                 ->get();
         }
 
@@ -150,7 +152,7 @@ class UserProfilesController extends Controller
      *    "termination_date": null,
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
      *   },
      *  "message": "User Profile is retrieved successfully."
      * }
@@ -173,7 +175,9 @@ class UserProfilesController extends Controller
         $user         = Auth::guard()->user();
         $roles        = $user->roles;
         $roleNamesArr = $roles->pluck('name')->all();
-        $userProfile  = User_profile::whereId($id)->first();
+        $userProfile  = User_profile::with('organization')
+            ->whereId($id)
+            ->first();
 
         if (!$userProfile) {
             $response = [

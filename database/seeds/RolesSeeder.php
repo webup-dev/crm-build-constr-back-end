@@ -28,12 +28,6 @@ class RolesSeeder extends Seeder
             ]);
         }
 
-        if (Role::where('name', '=', 'admin')->first() === null) {
-            $role = Role::create([
-                'name'     => 'admin'
-            ]);
-        }
-
         if (Role::where('name', '=', 'platform-superadmin')->first() === null) {
             $role = Role::create([
                 'name'    => 'platform-superadmin'
@@ -49,6 +43,12 @@ class RolesSeeder extends Seeder
         if (Role::where('name', '=', 'organization-superadmin')->first() === null) {
             $role = Role::create([
                 'name'    => 'organization-superadmin',
+            ]);
+        }
+
+        if (Role::where('name', '=', 'organization-admin')->first() === null) {
+            $role = Role::create([
+                'name'    => 'organization-admin',
             ]);
         }
 

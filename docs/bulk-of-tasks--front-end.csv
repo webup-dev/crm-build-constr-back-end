@@ -7,6 +7,10 @@ Story,Create links in Methods,2
 Story,Create static component of methods,2
 Story,Create static component for index for specified method,2
 Story,Create static component Create,2
+Story,Import validation lib,2
+Story,Create validation rules,2
+Story,Add descriptions for validation,2
+Story,Change model, add Style in layout for validation,2
 Story,Create static component Edit,2
 Story,Create static component Delete,1
 Story,Create static component DeleteRoles for specified method,1
