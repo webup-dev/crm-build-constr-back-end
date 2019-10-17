@@ -449,6 +449,7 @@ class UserProfilesControllerTest extends WnyTestCase
                             "first_name",
                             "last_name",
                             "department_id",
+                            "organization",
                             "status",
                             "start_date",
                             "termination_date",

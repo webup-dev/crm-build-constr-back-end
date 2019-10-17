@@ -48,6 +48,7 @@ class UserProfilesController extends Controller
      *    "first_name": "Joe",
      *    "last_name": "Dassen",
      *    "department_id": 1,
+     *    "organization": "object",
      *    "status": "active",
      *    "start_date": null,
      *    "termination_date": null,
@@ -60,6 +61,7 @@ class UserProfilesController extends Controller
      *    "first_name": "Chloe",
      *    "last_name": "Tariakis",
      *    "department_id": 1,
+     *    "organization": "object",
      *    "status": "active",
      *    "start_date": null,
      *    "termination_date": null,
@@ -135,7 +137,7 @@ class UserProfilesController extends Controller
      *    "last_name": "Dassen",
      *    "title": null,
      *    "department_id": 1,
-     *    "department": "Organization object",
+     *    "organization": "Organization object",
      *    "phone_home": "(999) 999-9999",
      *    "phone_work": "(999) 999-9999",
      *    "phone_extension": "99999",
@@ -152,7 +154,7 @@ class UserProfilesController extends Controller
      *    "termination_date": null,
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03"
      *   },
      *  "message": "User Profile is retrieved successfully."
      * }
@@ -222,6 +224,7 @@ class UserProfilesController extends Controller
      * @bodyParam last_name string required User Last Name
      * @bodyParam title string Title
      * @bodyParam department_id int required User Organization ID
+     * @bodyParam organization object required Organization object
      * @bodyParam phone_home string Home Phone
      * @bodyParam phone_work string Work Phone
      * @bodyParam phone_extension string Phone Extension
