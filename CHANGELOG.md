@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.13.1] - 2019-10-17
+### Added
+- Module User Profiles. Bugs are fixed. Middlewares are added.
+
 ## [0.13.0] - 2019-10-10
 ### Added
 - Module User Profiles.
