@@ -1,21 +1,28 @@
 Issue Type,Summary,Story Point Estimate
-Story,Planning,3
+Story,Planning,1
 Story,Create new Branch,0.5
-Story,Create Specifications,2
-Story,Create migration,2
-Story,Create Model,2
+Story,Create Specifications,1
+Story,Create List of error codes,1
+Story,Create migration,0.5
+Story,Create Model,0.5
+Story,Create seed,0.5
 Story,Create routes,0.5
+Story,Create middleware,3
 Story,Create Controller,0.5
 Story,Create module documentation,5
 Story,Create a file of tests,0.5
-Story,Create Tests Documentation,3
-Story,Create PHP test functions,5
+Story,Create API functions. Create user+profile,5
+Story,Create API functions. Soft Delete user+profile,2
+Story,Create API functions. Index of Soft Deleted user+profile,2
+Story,Create API functions. Repair Soft Deleted user+profile,2
+Story,Create API functions. Permanent Delete user+profile,1
+Story,Create Tests Documentation. Create user+profile,2
+Story,Create Tests Documentation. Soft Delete user+profile,1
+Story,Create Tests Documentation. Index of Soft Deleted user+profile,2
+Story,Create Tests Documentation. Repair Soft Deleted user+profile,2
+Story,Create Tests Documentation. Permanent Delete user+profile,2
+Story,Create PHP test functions,8
 Story,Create Postman tests,1
-Story,Create API functions. Index, 3
-Story,Validation, 3
-Story,Create API functions. Store, 5
-Story,Create API functions. Update, 5
-Story,Create API functions. Delete, 1
 Story,Make Postman tests,1
-Story,Make PHP test functions,8
-Story,Deployment,5
+Story,Testing of functions,8
+Story,Deployment,3

@@ -26,6 +26,25 @@
  *   Check response structure
  *   Check response data
  *
+ * Check IndexSoftDeleted:
+ *   Check login
+ *   Create SoftDeleted
+ *   Check response status
+ *   Check response structure
+ *   Check response data
+ *
+ * Check IndexSoftDeleted If Content Is Empty:
+ *   Check login
+ *   Check response status
+ *   Check response structure
+ *   Check response data
+ *
+ * Check IndexSoftDeleted If Access Is Absent:
+ *   Check login
+ *   Check response status
+ *   Check response structure
+ *   Check response data
+ *
  * Check Show:
  *   Check login
  *   Get specified item
@@ -65,23 +84,14 @@
  *   Check response status
  *   Check response structure
  *   Check response data
- *   Get DB table UserProfiles and check last UserProfile
+ *   Check DB tables UserProfiles, Users
  *
- * Check store own profile:
+ * Check store invalid data:
  *   Check login
  *   Store a new User Profile
  *   Check response status
  *   Check response structure
  *   Check response data
- *   Get DB table UserProfiles and check last UserProfile
- *
- * Check store If Access Is Not Full:
- *   Check login
- *   Store a new User Profile
- *   Check response status
- *   Check response structure
- *   Check response data
- *   Get DB table UserProfiles and check last UserProfile
  *
  * Check store If Access Is Absent:
  *   Check login
@@ -126,14 +136,6 @@
  *     Check response structure
  *     Check DB: deleted_at of the soft-deleted row
  *
- * Check Soft Delete If The Access Is Not Full:
- *   User with restricted access (organization superadmin from the Branch Department) deletes the profile of the user from Branch Department.
- *   We check that the user profile must change the field deleted_at from null to not null.
- *     Check login
- *     Check response status
- *     Check response structure
- *     Check DB: deleted_at of the soft-deleted row
- *
  * Check Soft Delete If The Access Is Absent:
  *   User with not appropriated access (organization estimator from the Branch Department, user #3) deletes the profile of the user #2 from Branch Department.
  *   We wait for a message about error.
@@ -148,8 +150,8 @@
  *     Check response status
  *     Check response structure
  *
- * Check Repair:
- *   User with full access from the Central Department (user #1) repair the soft-deleted profile of the user from Branch Department (user #3).
+ * Check Restore:
+ *   User with full access from the Central Department (user #1) restore the soft-deleted profile of the user from Branch Department (user #3).
  *   We check that the user profile must change the field deleted_at from not null to null.
  *     Check login
  *     Soft delete user #3
@@ -158,18 +160,8 @@
  *     Check response structure
  *     Check DB: deleted_at of the ID=3
  *
- * Check Repair If The Access Is Not Full:
- *   User with restricted access (organization superadmin (ID=2) from the Branch Department) repairs the profile of the user (# 3) from Branch Department.
- *   We check that the user profile must change the field deleted_at from null to not null.
- *     Check login
- *     Soft delete user #3
- *     Repair user #3
- *     Check response status
- *     Check response structure
- *     Check DB: deleted_at of the ID=3
- *
  * Check Repair If The Access Is Absent:
- *   User with not appropriated access (organization estimator from the Branch Department, user #3) repairs the profile of the user #2 from Branch Department.
+ *   User with not appropriated access (organization estimator from the Branch Department, user #3) restores the profile of the user #2 from Branch Department.
  *   We wait for a message about error.
  *     Check login
  *     Soft delete user #2
@@ -190,16 +182,6 @@
  *     Check login
  *     Soft delete user #3
  *     Delete Permanently #3
- *     Check response status
- *     Check response structure
- *     Check DB: row with ID=3 must be absent
- *
- * Check Delete Permanently If The Access Is Not Full:
- *   User with restricted access (organization superadmin (ID=2) from the Branch Department) deletes permanently the soft-deleted profile of the user (# 3) from Branch Department.
- *   We check that the user profile must change the field deleted_at from null to not null.
- *     Check login
- *     Soft delete user #3
- *     Delete Permanently user #3
  *     Check response status
  *     Check response structure
  *     Check DB: row with ID=3 must be absent
@@ -226,6 +208,7 @@ namespace App;
 use App\Models\Organization;
 use App\Models\Role;
 use App\Models\User_profile;
+use App\Models\User_role;
 use Hash;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -573,6 +556,160 @@ class UserProfilesControllerTest extends WnyTestCase
     }
 
     /**
+     * Check IndexSoftDeleted:
+     *   Check login
+     *   Create SoftDeleted
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testIndexSoftDeleted()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'test1@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'Test 1',
+            'email' => 'test1@email.com'
+        ])->isOk();
+
+        // Create soft deleted
+        $response = $this->delete('api/user-profiles/3?token=' . $token, []);
+        $response->assertStatus(200);
+        $response = $this->delete('api/user-profiles/2?token=' . $token, []);
+        $response->assertStatus(200);
+
+        // Request
+        $response = $this->get('api/user-profiles/soft-deleted?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'data' =>
+                    [
+                        [
+                            "id",
+                            "user_id",
+                            "first_name",
+                            "last_name",
+                            "department_id",
+                            "organization",
+                            "status",
+                            "start_date",
+                            "termination_date",
+                            "deleted_at",
+                            "created_at",
+                            "updated_at",
+                            "organization"
+                        ]
+                    ],
+                'message'
+            ]
+        );
+        $responseJSON = json_decode($response->getContent(), true);
+        $data         = $responseJSON['data'];  // array
+        $message      = $responseJSON['message'];  // array
+        $success      = $responseJSON['success'];  // array
+
+        $this->assertEquals(2, count($data));
+        $this->assertEquals(2, $data[0]['id']);
+        $this->assertEquals('TestB', $data[0]['first_name']);
+        $this->assertEquals('2', $data[0]['department_id']);
+        $this->assertEquals('active', $data[0]['status']);
+        $this->assertNotEquals(null, $data[0]['deleted_at']);
+        $this->assertEquals("User and User Profiles are retrieved successfully.", $message);
+        $this->assertEquals(true, $success);
+    }
+
+    /**
+     * Check IndexSoftDeleted If Content Is Empty:
+     *   Check login
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testIndexSoftDeletedIfContentIsEmpty()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'test1@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'Test 1',
+            'email' => 'test1@email.com'
+        ])->isOk();
+
+        $response = $this->get('api/user-profiles/soft-deleted?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(204);
+    }
+
+    /**
+     * Check IndexSoftDeleted If Access Is Absent:
+     *   Check login
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testIndexSoftDeletedIfAccessIsAbsent()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'test4@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'Test 4',
+            'email' => 'test4@email.com'
+        ])->isOk();
+
+        $response = $this->get('api/user-profiles/soft-deleted?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(453);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'message'
+            ]
+        );
+        $responseJSON = json_decode($response->getContent(), true);
+        $message      = $responseJSON['message'];  // array
+        $success      = $responseJSON['success'];  // array
+
+        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals(false, $success);
+    }
+
+    /**
      * Check show:
      *   Check login
      *   Check response status
@@ -829,7 +966,7 @@ class UserProfilesControllerTest extends WnyTestCase
      *   Check response status
      *   Check response structure
      *   Check response data
-     *   Get DB table UserProfiles and check last UserProfile
+     *   Check DB tables UserProfiles, Users
      */
     public function testStore()
     {
@@ -851,7 +988,6 @@ class UserProfilesControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            'user_id'          => 4,
             'first_name'       => 'TestD',
             'last_name'        => 'TestD',
             'title'            => '',
@@ -860,7 +996,7 @@ class UserProfilesControllerTest extends WnyTestCase
             'phone_work'       => '',
             'phone_extension'  => '',
             'phone_mob'        => '',
-            'email_personal'   => '',
+            'email_personal'   => 'testD@admin.com',
             'email_work'       => '',
             'address_line_1'   => 'Williams 7',
             'address_line_2'   => '',
@@ -873,10 +1009,8 @@ class UserProfilesControllerTest extends WnyTestCase
             'deleted_at'       => null
         ];
 
-        // Store a new organization
+        // Store a new user, user-profile
         $response = $this->post('api/user-profiles?token=' . $token, $data, []);
-//        dd($response);
-
 
         // Check response status
         $response->assertStatus(200);
@@ -895,23 +1029,28 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
 
         $this->assertEquals(true, $success);
-        $this->assertEquals("New User Profile is created successfully.", $message);
+        $this->assertEquals("User and User Profile are created successfully.", $message);
 
-        // Check DB
-        $userProfile = DB::table('user_profiles')->where('last_name', 'TestD')->first();
-        $this->assertEquals(4, $userProfile->id);
+        // Check DB table users
+        $user = DB::table('users')->where('email', '=', 'testD@admin.com')->first();
+        $this->assertEquals(5, $user->id);
+        $this->assertEquals('TestD TestD', $user->name);
+
+        // Check DB table user_profiles
+        $userProfile = DB::table('user_profiles')->where('user_id', '=', 5)->first();
+        $this->assertEquals('TestD', $userProfile->first_name);
         $this->assertEquals(2, $userProfile->department_id);
     }
 
     /**
-     * Check store validation:
+     * Check store invalid data:
      *   Check login
-     *   Store a new User Profile
+     *   Store a new User, User Profile
      *   Check response status
      *   Check response structure
      *   Check response data
      */
-    public function testStoreValidation()
+    public function testStoreInvalidData()
     {
         // Check login
         $response = $this->post('api/auth/login', [
@@ -931,7 +1070,6 @@ class UserProfilesControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            'user_id'          => null,
             'first_name'       => null,
             'last_name'        => null,
             'title'            => 1,
@@ -953,9 +1091,8 @@ class UserProfilesControllerTest extends WnyTestCase
             'deleted_at'       => '2019-10-29 5655555555'
         ];
 
-        // Store a new organization
+        // Store a new user, user profile
         $response = $this->post('api/user-profiles?token=' . $token, $data, []);
-//        dd($response);
 
         // Check response status
         $response->assertStatus(422);
@@ -965,97 +1102,18 @@ class UserProfilesControllerTest extends WnyTestCase
             [
                 'error' =>
                     [
-                       'message',
-                       'errors'
+                        'message',
+                        'errors'
                     ]
             ]
         );
 
         //Check response data
         $responseJSON = json_decode($response->getContent(), true);
-        $error      = $responseJSON['error'];  // array
+        $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(20, count($error['errors']));
-    }
-
-    /**
-     * Check Store If Access Is Not Full:
-     *   Check login
-     *   Store a new User Profile
-     *   Check response status
-     *   Check response structure
-     *   Check response data
-     *   Get DB table UserProfiles and check last UserProfile
-     */
-    public function testStoreIfAccessIsNotFull()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test2@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test 2',
-            'email' => 'test2@email.com'
-        ])->isOk();
-
-        // Create data
-        $data = [
-            'user_id'          => 4,
-            'first_name'       => 'TestD',
-            'last_name'        => 'TestD',
-            'title'            => '',
-            'department_id'    => 2,
-            'phone_home'       => '',
-            'phone_work'       => '',
-            'phone_extension'  => '',
-            'phone_mob'        => '',
-            'email_personal'   => '',
-            'email_work'       => '',
-            'address_line_1'   => 'Williams 7',
-            'address_line_2'   => '',
-            'city'             => 'Kyiv',
-            'state'            => 'CA',
-            'zip'              => '90001',
-            'status'           => 'active',
-            'start_date'       => null,
-            'termination_date' => null,
-            'deleted_at'       => null
-        ];
-
-        // Store a new organization
-        $response = $this->post('api/user-profiles?token=' . $token, $data, []);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        // Check response structure
-        $response->assertJsonStructure(
-            [
-                'success',
-                'message'
-            ]
-        );
-
-        //Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];  // array
-        $message      = $responseJSON['message'];  // array
-
-        $this->assertEquals(true, $success);
-        $this->assertEquals("New User Profile is created successfully.", $message);
-
-        // Check DB
-        $userProfile = DB::table('user_profiles')->where('last_name', 'TestD')->first();
-        $this->assertGreaterThanOrEqual(4, $userProfile->id);
-        $this->assertEquals(2, $userProfile->department_id);
+        $this->assertEquals(19, count($error['errors']));
     }
 
     /**
@@ -1087,7 +1145,6 @@ class UserProfilesControllerTest extends WnyTestCase
         // Create data
         // Create data
         $data = [
-            'user_id'          => 4,
             'first_name'       => 'TestD',
             'last_name'        => 'TestD',
             'title'            => '',
@@ -1503,7 +1560,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(true, $success);
-        $this->assertEquals("User Profile is soft-deleted successfully.", $message);
+        $this->assertEquals("User is soft-deleted successfully.", $message);
 
         $userProfile = DB::table('user_profiles')->where('id', 3)->first();
         $this->assertNotEquals(null, $userProfile->deleted_at);
@@ -1546,7 +1603,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(true, $success);
-        $this->assertEquals("User Profile is soft-deleted successfully.", $message);
+        $this->assertEquals("User is soft-deleted successfully.", $message);
 
         $userProfile = DB::table('user_profiles')->where('id', 3)->first();
         $this->assertNotEquals(null, $userProfile->deleted_at);
@@ -1620,7 +1677,7 @@ class UserProfilesControllerTest extends WnyTestCase
         // Request
         $response = $this->delete('api/user-profiles/2222?token=' . $token, []);
 
-        $response->assertStatus(452);
+        $response->assertStatus(422);
 
         $responseJSON = json_decode($response->getContent(), true);
         $success      = $responseJSON['success'];
@@ -1661,6 +1718,14 @@ class UserProfilesControllerTest extends WnyTestCase
 
         // Preparation
         $response = $this->delete('api/user-profiles/3?token=' . $token, []);
+        $userRoles = User_role::onlyTrashed()->where('user_id', 3)->get();
+        $response->assertStatus(200);
+        $userProfile = User_profile::onlyTrashed()->where('id', 3)->first();
+        $this->assertNotEquals(null, $userProfile->deleted_at);
+        $user = User::onlyTrashed()->where('id', $userProfile->user_id)->first();
+        $this->assertNotEquals(null, $user->deleted_at);
+        $userRoles = User_role::onlyTrashed()->where('user_id', $userProfile->user_id)->get();
+        $this->assertNotEquals(null, $userRoles[0]->deleted_at);
 
         // Request
         $response = $this->put('api/user-profiles/3/restore?token=' . $token, []);
@@ -1672,58 +1737,14 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(true, $success);
-        $this->assertEquals("User Profile is restored successfully.", $message);
+        $this->assertEquals("User is restored successfully.", $message);
 
-        $userProfile = DB::table('user_profiles')->where('id', 3)->first();
+        $userProfile = User_profile::where('id', 3)->first();
         $this->assertEquals(null, $userProfile->deleted_at);
-    }
-
-    /**
-     * Check Restore If The Access Is Not Full:
-     *   User with restricted access (organization superadmin (ID=2) from the Branch Department) restores the profile of the user (# 3) from Branch Department.
-     *   We check that the user profile must change the field deleted_at from null to not null.
-     *     Check login
-     *     Soft delete user #3
-     *     Restore user #3
-     *     Check response status
-     *     Check response structure
-     *     Check DB: deleted_at of the ID=3
-     */
-    public function testRestoreIfTheAccessIsNotFull()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test2@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test 2',
-            'email' => 'test2@email.com'
-        ])->isOk();
-
-        // Preparation
-        $response = $this->delete('api/user-profiles/3?token=' . $token, []);
-
-        // Request
-        $response = $this->put('api/user-profiles/3/restore?token=' . $token, []);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];
-        $message      = $responseJSON['message'];
-
-        $this->assertEquals(true, $success);
-        $this->assertEquals("User Profile is restored successfully.", $message);
-
-        $userProfile = DB::table('user_profiles')->where('id', 3)->first();
-        $this->assertEquals(null, $userProfile->deleted_at);
+        $user = User::where('id', $userProfile->user_id)->first();
+        $this->assertEquals(null, $user->deleted_at);
+        $userRole = User_role::where('user_id', $userProfile->user_id)->first();
+        $this->assertEquals(null, $userRole->deleted_at);
     }
 
     /**
@@ -1815,7 +1836,7 @@ class UserProfilesControllerTest extends WnyTestCase
         // Request
         $response = $this->put('api/user-profiles/2222/restore?token=' . $token, []);
 
-        $response->assertStatus(452);
+        $response->assertStatus(422);
 
         $responseJSON = json_decode($response->getContent(), true);
         $success      = $responseJSON['success'];
@@ -1867,55 +1888,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(true, $success);
-        $this->assertEquals("User Profile is deleted permanently.", $message);
-
-        $userProfile = DB::table('user_profiles')->where('id', 3)->first();
-        $this->assertEquals(null, $userProfile);
-    }
-
-    /**
-     * Check Delete Permanently If The Access Is Not Full:
-     *   User with restricted access (organization superadmin (ID=2) from the Branch Department) deletes permanently the soft-deleted profile of the user (# 3) from Branch Department.
-     *   We check that the user profile must change the field deleted_at from null to not null.
-     *     Check login
-     *     Soft delete user #3
-     *     Delete Permanently user #3
-     *     Check response status
-     *     Check response structure
-     *     Check DB: row with ID=3 must be absent
-     */
-    public function testDeletePermanentlyIfTheAccessIsNotFull()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test2@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test 2',
-            'email' => 'test2@email.com'
-        ])->isOk();
-
-        // Preparation
-        $response = $this->delete('api/user-profiles/3?token=' . $token, []);
-
-        // Request
-        $response = $this->delete('api/user-profiles/3/permanently?token=' . $token, []);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];
-        $message      = $responseJSON['message'];
-
-        $this->assertEquals(true, $success);
-        $this->assertEquals("User Profile is deleted permanently.", $message);
+        $this->assertEquals("User is deleted permanently.", $message);
 
         $userProfile = DB::table('user_profiles')->where('id', 3)->first();
         $this->assertEquals(null, $userProfile);
@@ -2011,7 +1984,7 @@ class UserProfilesControllerTest extends WnyTestCase
         // Request
         $response = $this->delete('api/user-profiles/2222/permanently?token=' . $token, []);
 
-        $response->assertStatus(452);
+        $response->assertStatus(422);
 
         $responseJSON = json_decode($response->getContent(), true);
         $success      = $responseJSON['success'];

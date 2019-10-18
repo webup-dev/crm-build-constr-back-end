@@ -115,6 +115,7 @@ $api->version('v1', function (Router $api) {
 
     $api->group(['middleware' => ['api.auth']], function (Router $api) {
         $api->get('user-profiles', 'App\Api\V1\Controllers\UserProfilesController@index');
+        $api->get('user-profiles/soft-deleted', 'App\Api\V1\Controllers\UserProfilesController@indexSoftDeleted');
         $api->get('user-profiles/{id}', 'App\Api\V1\Controllers\UserProfilesController@show');
         $api->post('user-profiles', 'App\Api\V1\Controllers\UserProfilesController@store');
         $api->put('user-profiles/{id}', 'App\Api\V1\Controllers\UserProfilesController@update');

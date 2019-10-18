@@ -1,15 +1,22 @@
 Issue Type,Summary,Story Point Estimate
 Story,Create new Branch,0.5
 Story,Planning,3
-Story,Create routes,1
-Story,Create link in menu,1
-Story,Create tests,13
-Story,Interaction with API server. Index,3
-Story,Validation,5
-Story,Interaction with API server. Store,8
-Story,Interaction with API server. Show,5
-Story,Interaction with API server. Update,5
-Story,Interaction with API server. Destroy,1
+Story,Create routes,2
+Story,Create button 'Create' in UserProfile index,0.5
+Story,Create file of the component 'Create',0.5
+Story,Develop Component 'Create',5
+Story,Import validation lib,0.5
+Story,Create validation rules,0.5
+Story,Add descriptions for validation,1
+Story,Change model add Style in layout for validation,1
+Story,Create button 'Delete' in UserProfile index,0.5
+Story,Develop function 'Delete',1
+Story,Create file of the component 'ListOfSoftDeleted',0.5
+Story,Develop Component 'SoftDeleted',5
+Story,Create button 'Repair' in the component 'ListOfSoftDeleted',0.5
+Story,Develop function 'Repair',2
+Story,Create button 'PermanentDelete' in the component 'SoftDeleted',0.5
+Story,Develop function 'PermanentDelete',2
 Story,Test boundary conditions,3
-Story,Deployment,5
+Story,Deployment,3
 Story,Report,1
