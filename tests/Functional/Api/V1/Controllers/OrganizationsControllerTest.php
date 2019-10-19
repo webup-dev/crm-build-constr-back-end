@@ -727,7 +727,7 @@ class OrganizationsControllerTest extends WnyTestCase
         $this->assertEquals("Organization is deleted successfully.", $message);
 
         $organization = DB::table('organizations')->where('id', 3)->first();
-        $this->assertEquals(null, $organization);
+        $this->assertNotEquals(null, $organization->deleted_at);
     }
 
     /**

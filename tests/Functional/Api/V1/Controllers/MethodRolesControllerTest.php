@@ -989,9 +989,10 @@ class MethodRolesControllerTest extends WnyTestCase
         // Check DB
         $methodRoles = DB::table('method_roles')->where('method_id', 1)->get();
         $count       = $methodRoles->count();
-        $this->assertEquals(1, $count);
+        $this->assertEquals(2, $count);
         $this->assertEquals(1, $methodRoles[0]->role_id);
         $this->assertEquals(1, $methodRoles[0]->method_id);
+        $this->assertNotEquals(null, $methodRoles[1]->deleted_at);
     }
 
     /**

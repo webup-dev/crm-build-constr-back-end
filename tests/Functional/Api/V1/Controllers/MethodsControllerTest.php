@@ -658,7 +658,8 @@ class MethodsControllerTest extends WnyTestCase
         $this->assertEquals($message, "Method is deleted successfully.");
 
         $method = DB::table('methods')->where('id', 2)->get();
-        $this->assertEquals(0, $method->count(), 'Method is not deleted.');
+        $this->assertEquals(1, $method->count(), 'Method is deleted.');
+        $this->assertNotEquals(null, $method[0]->deleted_at, 'Method is not soft-deleted.');
     }
 
     /**
