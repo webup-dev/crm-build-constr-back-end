@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Activity
@@ -27,6 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Activity extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'activities';
     protected $fillable = ['user_id', 'req'];
 

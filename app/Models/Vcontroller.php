@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Vcontroller
@@ -23,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Vcontroller extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'controllers';
     protected $fillable = ['name'];
 

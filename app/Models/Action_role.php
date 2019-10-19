@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Action_role
@@ -24,6 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Action_role extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'action_roles';
     protected $fillable = ['action', 'role_ids'];
 }

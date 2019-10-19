@@ -18,6 +18,7 @@ class CreateMethodsTable extends Migration
             $table->string('name');
             $table->integer('controller_id')->unsigned()->index();
             $table->foreign('controller_id')->references('id')->on('controllers')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

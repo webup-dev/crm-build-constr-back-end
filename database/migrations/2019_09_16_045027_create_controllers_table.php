@@ -16,6 +16,7 @@ class CreateControllersTable extends Migration
         Schema::create('controllers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

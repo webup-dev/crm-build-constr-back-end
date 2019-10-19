@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Book
@@ -28,5 +29,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Book extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ['title', 'author_name', 'pages_count'];
 }

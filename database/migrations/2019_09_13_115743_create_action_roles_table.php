@@ -17,6 +17,7 @@ class CreateActionRolesTable extends Migration
             $table->increments('id');
             $table->string('action');
             $table->string('role_ids');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

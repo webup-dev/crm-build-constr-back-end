@@ -19,6 +19,7 @@ class CreateMethodRolesTable extends Migration
             $table->foreign('method_id')->references('id')->on('methods');
             $table->integer('role_id')->unsigned()->index();
             $table->foreign('role_id')->references('id')->on('roles');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

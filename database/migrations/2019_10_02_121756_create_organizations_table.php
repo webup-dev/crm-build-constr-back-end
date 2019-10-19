@@ -19,6 +19,7 @@ class CreateOrganizationsTable extends Migration
             $table->string('name');
             $table->integer('parent_id')->unsigned()->index()->nullable();
             $table->foreign('parent_id')->references('id')->on('organizations');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

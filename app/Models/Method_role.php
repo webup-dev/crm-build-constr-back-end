@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Method_role
@@ -26,6 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Method_role extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'method_roles';
     protected $fillable = ['method_id', 'role_id'];
 
