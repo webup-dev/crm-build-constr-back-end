@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.14.1] - 2019-10-19
+### Fixed
+- Bugs are fixed.
+
 ## [0.14.0] - 2019-10-18
 ### Added
 - Soft deleting, restoring, permanent deleting are added to Module User Profiles.
