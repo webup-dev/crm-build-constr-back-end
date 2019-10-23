@@ -153,40 +153,50 @@ class OrganizationsController extends Controller
         $rules = array(
             'name'      => 'required|string',
             'order'     => 'required|string',
-            'parent_id' => 'integer',
+            'parent_id' => 'integer|nullable',
         );
 
         $messages = array(
-            'name.required'  => 'Please enter a name.',
-            'name.string'    => 'Name must be a string.',
-            'order.required' => 'Please enter an order.',
-            'order.string'   => 'Order must be a string.',
+            'name.required'     => 'Please enter a name.',
+            'name.string'       => 'Name must be a string.',
+            'order.required'    => 'Please enter an order.',
+            'order.string'      => 'Order must be a string.',
+            'parent_id.integer' => 'Parent ID must be an integer.',
         );
 
         $validator = Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
             $messages = $validator->messages();
             $errors   = $messages->all();
-            return $errors;
-        }
-
-        // Check parent ID
-        $parentId = $request->get('parent_id');
-        $org = Organization::whereId($parentId)->first();
-
-        if (!$org) {
             $response = [
-                'success' => false,
-                'message' => 'Parent Id is impossible.'
+                'errors' => $errors
             ];
             return response()->json($response, 452);
         }
 
+        // Check parent ID
+        $parentId = $request->get('parent_id');
+
+        // adapting js value (00 to php's null)
+        if ($parentId != 0) {
+            $org = Organization::whereId($parentId)->first();
+
+            if (!$org) {
+                $response = [
+                    'success' => false,
+                    'message' => 'Parent Id is impossible.'
+                ];
+                return response()->json($response, 452);
+            }
+        } else {
+            $parentId = null;
+        }
+
         $organization = new Organization();
 
-        $organization->name        = $request->get('name');
-        $organization->order = $request->get('order');
-        $organization->parent_id = $request->get('parent_id');
+        $organization->name      = $request->get('name');
+        $organization->order     = $request->get('order');
+        $organization->parent_id = $parentId;
 
         if ($organization->save()) {
             $response = [

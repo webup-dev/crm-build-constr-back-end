@@ -32,7 +32,7 @@ class StoreUserProfile extends FormRequest
             'phone_work'       => 'string',
             'phone_extension'  => 'string',
             'phone_mob'        => 'string',
-            'email_personal'   => 'email',
+            'email_personal'   => 'required|email',
             'email_work'       => 'email',
             'address_line_1'   => 'required|string',
             'address_line_2'   => 'string',

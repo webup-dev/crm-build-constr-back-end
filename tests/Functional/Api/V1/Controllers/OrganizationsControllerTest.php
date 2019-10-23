@@ -39,7 +39,7 @@
  *   Check response data
  *   Get DB table Organizations and check last Organization
  *
- * Check store If The Parent Id Is Absent:
+ * Check store If The Parent Id Is Not Integer:
  *   Check login
  *   Store a new organization
  *   Check response status
@@ -492,6 +492,121 @@ class OrganizationsControllerTest extends WnyTestCase
         $organization = DB::table('organizations')->where('name', 'Department 3')->first();
         $this->assertGreaterThanOrEqual(7, $organization->id);
         $this->assertEquals(1, $organization->parent_id);
+    }
+
+    /**
+     * Check store:
+     *   Check login
+     *   Store a new organization
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     *   Get DB table Organizations and check last Organization
+     */
+    public function testStoreParentIdIsZero()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'test@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'Test',
+            'email' => 'test@email.com'
+        ])->isOk();
+
+        // Create data
+        $data = [
+            'name'      => 'Department 3',
+            'order'     => '4',
+            'parent_id' => 0
+        ];
+
+        // Store a new organization
+        $response = $this->post('api/organizations?token=' . $token, $data, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'message'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $message      = $responseJSON['message'];  // array
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals("New Organization is created successfully.", $message);
+
+        // Check DB
+        $organization = DB::table('organizations')->where('name', 'Department 3')->first();
+        $this->assertGreaterThanOrEqual(7, $organization->id);
+        $this->assertEquals(null, $organization->parent_id);
+    }
+
+    /**
+     * Check Store If The Parent Id Is Not Integer:
+     *   Check login
+     *   Store a new organization
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testStoreIfTheParentIdIsNotInteger()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'test@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'Test',
+            'email' => 'test@email.com'
+        ])->isOk();
+
+        // Create data
+        $data = [
+            'name'      => 'Department 3',
+            'order'     => '6',
+            'parent_id' => 'string'
+        ];
+
+        // Store a new organization
+        $response = $this->post('api/organizations?token=' . $token, $data, []);
+
+        // Check response status
+        $response->assertStatus(452);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'errors'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $errors      = $responseJSON['errors'];  // array
+
+        $this->assertEquals("Parent ID must be an integer.", $errors[0]);
     }
 
     /**

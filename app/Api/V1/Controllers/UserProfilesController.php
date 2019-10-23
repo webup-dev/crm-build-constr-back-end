@@ -690,7 +690,7 @@ class UserProfilesController extends Controller
         foreach ($userRoles as $userRole) {
             $userRole->forceDelete();
         }
-        if (!$user) {
+        if ($user) {
             $user->forceDelete();
         }
 
