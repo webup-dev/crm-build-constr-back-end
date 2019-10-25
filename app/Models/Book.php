@@ -26,6 +26,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Book whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Book whereUserId($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Book onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Book whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Book withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Book withoutTrashed()
  */
 class Book extends Model
 {

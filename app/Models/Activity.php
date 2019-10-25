@@ -25,6 +25,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @mixin \Eloquent
  * @property mixed $req
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Activity whereReq($value)
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Activity onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Activity whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Activity withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Activity withoutTrashed()
  */
 class Activity extends Model
 {

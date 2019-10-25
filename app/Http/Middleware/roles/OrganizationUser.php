@@ -6,7 +6,7 @@ use Closure;
 use Tymon\JWTAuth\JWTAuth;
 use Auth;
 
-class PlatformAdmin
+class OrganizationUser
 {
     /**
      * Handle an incoming request.
@@ -24,7 +24,21 @@ class PlatformAdmin
 
         $roleNamesArr= $roles->pluck('name')->all();
 
-        if (one_from_arr_in_other_arr(['developer', 'superadmin', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
+        if (one_from_arr_in_other_arr(
+            [
+                'developer',
+                'superadmin',
+                'platform-superadmin',
+                'organization-superadmin',
+                'organization-admin',
+                'organization-general-manager',
+                'organization-sales-manager',
+                'organization-production-manager',
+                'organization-administrative-leader',
+                'organization-estimator',
+                'organization-project-manager',
+                'organization-administrative-assistant'
+            ], $roleNamesArr)) {
             return $next($request);
         }
 

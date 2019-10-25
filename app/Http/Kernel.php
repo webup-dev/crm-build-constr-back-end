@@ -63,5 +63,6 @@ class Kernel extends HttpKernel
         'organization.superadmin' => \App\Http\Middleware\OrganizationSuperadmin::class,
         'organization.admin'      => \App\Http\Middleware\OrganizationAdmin::class,
         'organization.admin.ext'  => \App\Http\Middleware\OrganizationAdminExt::class,
+        'organization.user'  => \App\Http\Middleware\OrganizationUser::class,
     ];
 }

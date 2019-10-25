@@ -22,6 +22,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Action_role whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Action_role whereRoleIds($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Action_role whereUpdatedAt($value)
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Action_role onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Action_role whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Action_role withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Action_role withoutTrashed()
  */
 class Action_role extends Model
 {

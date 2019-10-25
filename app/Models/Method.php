@@ -24,6 +24,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
  * @property-read \App\Models\Vcontroller $vcontroller
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Method onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Method whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Method withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Method withoutTrashed()
  */
 class Method extends Model
 {

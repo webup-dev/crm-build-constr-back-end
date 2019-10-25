@@ -27,6 +27,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereUpdatedAt($value)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User_profile[] $user_profile
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Organization onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Organization withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Organization withoutTrashed()
  */
 class Organization extends Model
 {
@@ -56,10 +63,20 @@ class Organization extends Model
     /**
      * organizations <-> user_profiles: one-to-many
      *
-     * Get the organization that owns the user_profile.
+     * Get the user_profile that belongs the organization.
      */
     public function user_profile()
     {
         return $this->hasMany('App\Models\User_profile', 'department_id', 'id');
+    }
+
+    /**
+     * organizations <-> customers: one-to-many
+     *
+     * Get the customer that belongs to the organization.
+     */
+    public function customer()
+    {
+        return $this->hasMany('App\Models\Customer', 'organization_id', 'id');
     }
 }

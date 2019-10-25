@@ -7,21 +7,18 @@ Story,Create migration,0.5
 Story,Create Model,0.5
 Story,Create seed,0.5
 Story,Create routes,0.5
-Story,Create middleware,3
+Story,Create middlewares: OrganizationUser,3
 Story,Create Controller,0.5
-Story,Create module documentation,5
+Story,Create module documentation,8
 Story,Create a file of tests,0.5
-Story,Create API functions. Create user+profile,5
-Story,Create API functions. Soft Delete user+profile,2
-Story,Create API functions. Index of Soft Deleted user+profile,2
-Story,Create API functions. Repair Soft Deleted user+profile,2
-Story,Create API functions. Permanent Delete user+profile,1
-Story,Create Tests Documentation. Create user+profile,2
-Story,Create Tests Documentation. Soft Delete user+profile,1
-Story,Create Tests Documentation. Index of Soft Deleted user+profile,2
-Story,Create Tests Documentation. Repair Soft Deleted user+profile,2
-Story,Create Tests Documentation. Permanent Delete user+profile,2
-Story,Create PHP test functions,8
+Story,Create Tests Documentation,4
+Story,Create API functions. index,3
+Story,Create API functions. store,3
+Story,Create API functions. update,3
+Story,Create API functions. destroy,2
+Story,Create API functions. restore,2
+Story,Create API functions. permanentDelete,2
+Story,Create PHP test functions,13
 Story,Create Postman tests,1
 Story,Make Postman tests,1
 Story,Testing of functions,8

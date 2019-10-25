@@ -130,14 +130,14 @@ class UsersSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
-            'name'       => 'Customer-1 Individual',
+            'name'       => 'Customer A Individual',
             'email'      => 'customer-1-individual@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
         DB::table('users')->insert([
-            'name'       => 'Customer-1 Organization',
+            'name'       => 'Customer B Organization',
             'email'      => 'customer-1-organization@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()

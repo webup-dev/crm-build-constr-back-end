@@ -21,6 +21,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vcontroller whereUpdatedAt($value)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Method[] $methods
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Vcontroller onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vcontroller whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Vcontroller withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Vcontroller withoutTrashed()
  */
 class Vcontroller extends Model
 {

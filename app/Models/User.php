@@ -39,6 +39,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User withoutTrashed()
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereDeletedAt($value)
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -125,5 +127,15 @@ class User extends Authenticatable implements JWTSubject
     public function user_profile()
     {
         return $this->hasOne('App\Models\User_profile', 'user_id');
+    }
+
+    /**
+     * user <-> customer: one-to-one
+     *
+     * Get the customer record associated with the user.
+     */
+    public function customer()
+    {
+        return $this->hasOne('App\Models\Customer', 'user_id');
     }
 }

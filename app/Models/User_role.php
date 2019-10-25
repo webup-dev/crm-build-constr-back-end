@@ -29,6 +29,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User_role withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User_role withoutTrashed()
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User_role whereDeletedAt($value)
  */
 class User_role extends Model
 {
