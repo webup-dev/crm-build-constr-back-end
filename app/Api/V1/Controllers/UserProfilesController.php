@@ -383,7 +383,7 @@ class UserProfilesController extends Controller
         $user = new User([
             'password' => bcrypt('12345678'),
             'name'     => $data['first_name'] . ' ' . $data['last_name'],
-            'email'    => $data['email_personal']
+            'email'    => $data['email_work']
         ]);
 
         if (!$user->save()) {
