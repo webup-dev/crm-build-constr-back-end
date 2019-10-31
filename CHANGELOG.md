@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.15.0] - 2019-10-31
+### Added
+- Module Customers.
+
 ## [0.14.2] - 2019-10-23
 ### Added
 - Module Organizations. Item ordering is added.
