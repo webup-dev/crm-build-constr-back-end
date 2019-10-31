@@ -6,6 +6,7 @@ use App\Http\Requests\StoreCustomer;
 use App\Http\Requests\UpdateCustomer;
 use App\Models\Activity;
 use App\Models\Customer;
+use App\Models\Organization;
 use App\Models\User;
 use App\Models\User_profile;
 use App\Models\User_role;
@@ -28,7 +29,7 @@ class CustomersController extends Controller
 
     public function __construct()
     {
-        $this->middleware('organization.user')->only(['index', 'store', 'update']);
+        $this->middleware('organization.user')->only(['index', 'store', 'show', 'update']);
         $this->middleware('organization.admin')->only(['softDestroy']);
         $this->middleware('platform.admin')->only(['indexSoftDeleted', 'restore', 'destroyPermanently']);
         $this->middleware('activity');
@@ -303,6 +304,78 @@ class CustomersController extends Controller
     }
 
     /**
+     * Get the specified Structure Item.
+     *
+     * @queryParam id required Item ID
+     *
+     * @response 200 {
+     *  "success": true,
+     *  "data": {
+     *     "id": 1,
+     *     "user_id": "Customer A",
+     *     "name": "Central Office",
+     *     "type": "individual",
+     *     "note": "Note",
+     *     "organization_id": 1,
+     *     "deleted_at": null,
+     *     "created_at": "2019-12-08 13:25:36",
+     *     "updated_at": "2019-12-08 13:25:36",
+     *     "user": "user object",
+     *     "organization": "organization object"
+     *  },
+     *  "message": "Item is retrieved successfully."
+     * }
+     *
+     * @response 422 {
+     *  "success": false,
+     *  "message": "Item is absent."
+     * }
+     *
+     * @response 453 {
+     *  "success": false,
+     *  "message": "You do not have permissions."
+     * }
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+
+        $customer     = Customer::whereId($id)
+            ->first();
+        if (!$customer) {
+            $response = [
+                'success' => false,
+                'message' => "Item is absent."
+            ];
+
+            return response()->json($response, 422);
+        }
+        if (!$this->checkUserFromOrganization($customer->organization_id)) {
+            $response = [
+                'success' => false,
+                'message' => "You do not have permissions."
+            ];
+
+            return response()->json($response, 453);
+        }
+
+        $user         = $customer->user;
+        $organization = $customer->organization;
+
+        $data = $customer->toArray();
+
+        $response = [
+            'success' => true,
+            'data'    => $data,
+            'message' => 'Item is retrieved successfully.'
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
      * Edit data of the specified customer
      *
      * Access:
@@ -528,7 +601,7 @@ class CustomersController extends Controller
         }
 
         // Restore user
-        $user   = User::onlyTrashed()->whereId($customer->user_id)->first();
+        $user = User::onlyTrashed()->whereId($customer->user_id)->first();
         $user->restore();
 
         // Restore user profile
@@ -620,18 +693,19 @@ class CustomersController extends Controller
         $roles        = $user->roles;
         $roleNamesArr = $roles->pluck('name')->all();
 
-        if (one_from_arr_in_other_arr(['organization-superadmin', 'organization-admin'], $roleNamesArr)) {
+        if (one_from_arr_in_other_arr(['organization-superadmin', 'organization-admin', 'organization-general-manager'], $roleNamesArr)) {
+//            print_r("here");
             $user                  = User::find($user->id);
             $userProfileRequester  = $user->user_profile;
             $departmentIdRequester = $userProfileRequester->department_id;
+//            print_r("requester: " . $departmentIdRequester);
+//            print_r("requester department: " . $departmentIdRequester);
+//            print_r("customer department:" . $id);
+
 
             if (!($id == $departmentIdRequester)) {
-                $response = [
-                    'success' => false,
-                    'message' => "You do not have access."
-                ];
-
-                return response()->json($response, 453);
+//                print_r("restriction!");
+                return false;
             }
             return true;
         }

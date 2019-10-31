@@ -74,6 +74,34 @@
  *   Check response structure
  *   Check response data
  *
+ * Check show:
+ *   Check login
+ *   Get the specified Customer
+ *   Check response status
+ *   Check response structure
+ *   Check response data
+ *
+ * Check show with absent ID:
+ *   Check login
+ *   Get the specified Customer
+ *   Check response status
+ *   Check response structure
+ *   Check response data
+ *
+ * Check show If Access Of Role Is Absent:
+ *   Check login Customer
+ *   Get the specified Customer
+ *   Check response status
+ *   Check response structure
+ *   Check response data
+ *
+ * Check show If Access To Department Is Absent:
+ *   Check login Customer
+ *   Get the specified Customer
+ *   Check response status
+ *   Check response structure
+ *   Check response data
+ *
  * Check update:
  *   Check login
  *   Update the Customer
@@ -203,6 +231,16 @@ class CustomersControllerTest extends WnyTestCase
     {
         parent::setUp();
 
+        /*
+         | User        | User ID | Role                         | Organization       | Organization ID |
+         |-------------|---------|------------------------------|--------------------|-----------------|
+         | User A      | 1       | superadmin                   | Central Department | 1               |
+         | User B      | 2       | organization-general-manager | Central Department | 1               |
+         | User C      | 3       | organization-general-manager | Branch Department  | 2               |
+         | User D      | 6       | superadmin                   | Branch Department  | 2               |
+         | Customer A  | 4       | customer-individual          | Central Department | 1               |
+         | Customer B  | 5       | customer-individual          | Branch Department  | 2               |
+         */
         $user1 = new User([
             'name'     => 'User A',
             'email'    => 'userA@email.com',
@@ -243,6 +281,14 @@ class CustomersControllerTest extends WnyTestCase
 
         $user5->save();
 
+        $user6 = new User([
+            'name'     => 'User D',
+            'email'    => 'userD@email.com',
+            'password' => '123456'
+        ]);
+
+        $user6->save();
+
         $role1 = new Role([
             'name' => 'superadmin'
         ]);
@@ -266,6 +312,7 @@ class CustomersControllerTest extends WnyTestCase
         $user3->roles()->attach(2);
         $user4->roles()->attach(3);
         $user5->roles()->attach(3);
+        $user6->roles()->attach(1);
 
         $department1 = new Organization([
             'name' => 'Central Department'
@@ -294,7 +341,7 @@ class CustomersControllerTest extends WnyTestCase
             'name'            => 'Customer B',
             'type'            => 'individual',
             'note'            => 'test note',
-            'organization_id' => 1
+            'organization_id' => 2
         ]);
 
         $customer2->save();
@@ -353,6 +400,31 @@ class CustomersControllerTest extends WnyTestCase
             'user_id'          => 3,
             'first_name'       => 'User C',
             'last_name'        => 'User C',
+            'title'            => '',
+            'department_id'    => 2,
+            'phone_home'       => '',
+            'phone_work'       => '',
+            'phone_extension'  => '',
+            'phone_mob'        => '',
+            'email_personal'   => '',
+            'email_work'       => '',
+            'address_line_1'   => 'Williams 7',
+            'address_line_2'   => '',
+            'city'             => 'Kyiv',
+            'state'            => 'CA',
+            'zip'              => '90001',
+            'status'           => 'active',
+            'start_date'       => null,
+            'termination_date' => null,
+            'deleted_at'       => null
+        ]);
+
+        $userProfile3->save();
+
+        $userProfile4 = User_profile::create([
+            'user_id'          => 6,
+            'first_name'       => 'User D',
+            'last_name'        => 'User D',
             'title'            => '',
             'department_id'    => 2,
             'phone_home'       => '',
@@ -458,13 +530,38 @@ class CustomersControllerTest extends WnyTestCase
 
     /**
      * Check Index If Content Is Empty:
-     *   Check login
+     *   Check login User 1
+     *   Delete Customer 2
+     *   Check login User 3
+     *   Try to get list of customers of organization 2
      *   Check response status
      *   Check response structure
      *   Check response data
      */
     public function testIndexIfContentIsEmpty()
     {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'userD@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'User D',
+            'email' => 'userD@email.com'
+        ])->isOk();
+
+        // Delete Customer 2
+        $response = $this->delete('api/customers/2?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
         // Check login
         $response = $this->post('api/auth/login', [
             'email'    => 'userC@email.com',
@@ -561,8 +658,6 @@ class CustomersControllerTest extends WnyTestCase
         // Create soft deleted
         $response = $this->delete('api/customers/1?token=' . $token, []);
         $response->assertStatus(200);
-        $response = $this->delete('api/customers/2?token=' . $token, []);
-        $response->assertStatus(200);
 
         // Request
         $response = $this->get('api/customers/soft-deleted?token=' . $token, []);
@@ -597,7 +692,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $success      = $responseJSON['success'];  // array
 
-        $this->assertEquals(2, count($data));
+        $this->assertEquals(1, count($data));
         $this->assertEquals(1, $data[0]['id']);
         $this->assertEquals('Customer A', $data[0]['name']);
         $this->assertEquals('1', $data[0]['organization_id']);
@@ -745,11 +840,11 @@ class CustomersControllerTest extends WnyTestCase
 
         // Check DB table users
         $user = DB::table('users')->where('email', '=', 'customerC@admin.com')->first();
-        $this->assertEquals(6, $user->id);
+        $this->assertEquals(7, $user->id);
         $this->assertEquals('Customer C CustomerC', $user->name);
 
         // Check DB table customers
-        $customer = DB::table('customers')->where('user_id', '=', 6)->first();
+        $customer = DB::table('customers')->where('user_id', '=', 7)->first();
         $this->assertEquals('Customer C CustomerC', $customer->name);
         $this->assertEquals('organization', $customer->type);
         $this->assertEquals('note test', $customer->note);
@@ -949,6 +1044,243 @@ class CustomersControllerTest extends WnyTestCase
         $responseJSON = json_decode($response->getContent(), true);
         $success      = $responseJSON['success'];  // array
         $message      = $responseJSON['message'];  // array
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals("You do not have permissions.", $message);
+    }
+
+    /**
+     * Check show:
+     *   Check login
+     *   Get the specified Customer
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testShow()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'userA@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $response = $this->get('api/auth/me?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $name         = $responseJSON['name'];  // array
+        $email        = $responseJSON['email'];  // array
+
+        $this->assertEquals('User A', $name);
+        $this->assertEquals("userA@email.com", $email);
+
+        $response = $this->get('api/customers/1?token=' . $token, []);
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'data' =>
+                    [
+                        'id',
+                        'user_id',
+                        'name',
+                        'type',
+                        'note',
+                        'organization_id',
+                        'deleted_at',
+                        'created_at',
+                        'updated_at',
+                        'user',
+                        'organization'
+                    ],
+                'message'
+            ]
+        );
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals("Item is retrieved successfully.", $message);
+        $this->assertEquals(4, $data['user_id']);
+        $this->assertEquals('Customer A', $data['name']);
+        $this->assertEquals('individual', $data['type']);
+        $this->assertEquals('test note', $data['note']);
+        $this->assertEquals(1, $data['organization_id']);
+        $this->assertEquals(null, $data['deleted_at']);
+        $this->assertEquals(4, $data['user']['id']);
+        $this->assertEquals("customerA@email.com", $data['user']['email']);
+        $this->assertEquals(1, $data['organization']['id']);
+        $this->assertEquals('Central Department', $data['organization']['name']);
+    }
+
+    /**
+     * Check show with Wrong ID:
+     *   Check login
+     *   Get the specified Customer
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testShowWithWrongId()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'userA@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $response = $this->get('api/auth/me?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $name         = $responseJSON['name'];  // array
+        $email        = $responseJSON['email'];  // array
+
+        $this->assertEquals('User A', $name);
+        $this->assertEquals("userA@email.com", $email);
+
+        $response = $this->get('api/customers/1111?token=' . $token, []);
+        $response->assertStatus(422);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'message'
+            ]
+        );
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $message      = $responseJSON['message'];
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals("Item is absent.", $message);
+    }
+
+    /**
+     * Check show If Access Of Role Is Absent:
+     *   Check login Customer
+     *   Get the specified Customer
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testShowIfAccessOfRoleIsAbsent()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'customerA@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $response = $this->get('api/auth/me?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $name         = $responseJSON['name'];  // array
+        $email        = $responseJSON['email'];  // array
+
+        $this->assertEquals('Customer A', $name);
+        $this->assertEquals("customerA@email.com", $email);
+
+        $response = $this->get('api/customers/2?token=' . $token, []);
+        $response->assertStatus(453);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'message'
+            ]
+        );
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $message      = $responseJSON['message'];
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals("You do not have permissions.", $message);
+    }
+
+    /**
+     * Check show If Access To Department Is Absent:
+     *   Check login Customer
+     *   Get the specified Customer
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testShowIfAccessToDepartmentIsAbsent()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'userB@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $response = $this->get('api/auth/me?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $name         = $responseJSON['name'];  // array
+        $email        = $responseJSON['email'];  // array
+
+        $this->assertEquals('User B', $name);
+        $this->assertEquals("userB@email.com", $email);
+
+        $response = $this->get('api/customers/2?token=' . $token, []);
+        $response->assertStatus(453);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'message'
+            ]
+        );
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
         $this->assertEquals("You do not have permissions.", $message);

@@ -129,5 +129,12 @@ class OrganizationsSeeder extends Seeder
             'parent_id'  => '8',
             'created_at' => now()
         ]);
+
+        $organization = Organization::create([
+            'name'       => 'Administrative assistant',
+            'order'      => '1',
+            'parent_id'  => '9',
+            'created_at' => now()
+        ]);
     }
 }

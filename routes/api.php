@@ -132,6 +132,7 @@ $api->version('v1', function (Router $api) {
     $api->group(['middleware' => ['api.auth']], function (Router $api) {
         $api->get('customers', 'App\Api\V1\Controllers\CustomersController@index');
         $api->get('customers/soft-deleted', 'App\Api\V1\Controllers\CustomersController@indexSoftDeleted');
+        $api->get('customers/{id}', 'App\Api\V1\Controllers\CustomersController@show');
         $api->post('customers', 'App\Api\V1\Controllers\CustomersController@store');
         $api->put('customers/{id}', 'App\Api\V1\Controllers\CustomersController@update');
         $api->delete('customers/{id}', 'App\Api\V1\Controllers\CustomersController@softDestroy');

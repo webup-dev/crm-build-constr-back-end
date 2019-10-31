@@ -1,22 +1,48 @@
 Issue Type,Summary,Story Point Estimate
 Story,Create new Branch,0.5
 Story,Planning,3
-Story,Create routes,2
-Story,Create button 'Create' in UserProfile index,0.5
-Story,Create file of the component 'Create',0.5
-Story,Develop Component 'Create',5
+Story,Create plan of the tests,8
+Story,Create menu Customers,0.5
+Story,Create sub-menu Index,0.5
+Story,Create sub-menu Soft-deleted,0.5
+Story,Create routes,1
+Story,Setup testing environment,3
+Story,Copy vue dir for component,0.5
+Story,Create test dir for 'Index',0.5
+Story,Code tests for 'Index',3
+Story,Develop Component 'Index',3
+Story,Test Component 'Index',2
+Story,Create button 'Create' in 'Index',0.5
+Story,Code tests for 'Store',3
+Story,Develop Component 'Store',3
 Story,Import validation lib,0.5
 Story,Create validation rules,0.5
 Story,Add descriptions for validation,1
 Story,Change model add Style in layout for validation,1
-Story,Create button 'Delete' in UserProfile index,0.5
-Story,Develop function 'Delete',1
-Story,Create file of the component 'ListOfSoftDeleted',0.5
-Story,Develop Component 'SoftDeleted',5
-Story,Create button 'Repair' in the component 'ListOfSoftDeleted',0.5
-Story,Develop function 'Repair',2
-Story,Create button 'PermanentDelete' in the component 'SoftDeleted',0.5
-Story,Develop function 'PermanentDelete',2
+Story,Test Component 'Store',2
+Story,Create buttons 'Edit' in 'Index',0.5
+Story,Code tests for 'Edit',3
+Story,Develop Component 'Edit',3
+Story,Import validation lib,0.5
+Story,Create validation rules,0.5
+Story,Add descriptions for validation,1
+Story,Change model add Style in layout for validation,1
+Story,Test Component 'Edit',2
+Story,Create buttons 'Delete' in 'Index',0.5
+Story,Code tests for 'Delete',3
+Story,Develop Component 'Delete',3
+Story,Test Component 'Delete',2
+Story,Code tests for 'SoftDeleted',3
+Story,Develop Component 'SoftDeleted',3
+Story,Test Component 'SoftDeleted',2
+Story,Create buttons 'Restore' in 'SoftDeleted',0.5
+Story,Code tests for 'Restore',3
+Story,Develop Component 'Restore',3
+Story,Test Component 'Restore',2
+Story,Create buttons 'PermanentDelete' in 'SoftDeleted',0.5
+Story,Code tests for 'PermanentDelete',3
+Story,Develop Component 'PermanentDelete',3
+Story,Test Component 'PermanentDelete',2
 Story,Test boundary conditions,3
 Story,Deployment,3
 Story,Report,1
