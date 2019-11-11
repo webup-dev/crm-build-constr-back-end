@@ -80,7 +80,7 @@ class ActivitiesControllerTest extends WnyTestCase
         $user2->save();
 
         $role1 = new Role([
-            'name'     => 'superadmin'
+            'name'     => 'developer'
         ]);
 
         $role1->save();
@@ -234,7 +234,7 @@ class ActivitiesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
 
         $this->assertEquals(false, $success);
-        $this->assertEquals('You do not have permissions.', $message);
+        $this->assertEquals('Permission is absent by the role.', $message);
     }
 
     /**
@@ -313,7 +313,7 @@ class ActivitiesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
 
         $activities = Activity::whereIn('id', [1, 2])->get();
         $this->assertEquals(2, $activities->count());

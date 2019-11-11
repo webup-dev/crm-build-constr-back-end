@@ -17,13 +17,8 @@ class UsersSeeder extends Seeder
          * Add Users
          *
          */
-        DB::table('users')->insert([
-            'name'       => 'Super Admin',
-            'email'      => 'superadmin@admin.com',
-            'password'   => bcrypt('12345678'),
-            'created_at' => now()
-        ]);
 
+        // 1
         DB::table('users')->insert([
             'name'       => 'Volodymyr Vadiasov',
             'email'      => 'developer@admin.com',
@@ -31,6 +26,7 @@ class UsersSeeder extends Seeder
             'created_at' => now()
         ]);
 
+        // 2
         DB::table('users')->insert([
             'name'       => 'Steven Caamano',
             'email'      => 'platform-superadmin@admin.com',
@@ -38,6 +34,7 @@ class UsersSeeder extends Seeder
             'created_at' => now()
         ]);
 
+        // 3
         DB::table('users')->insert([
             'name'       => 'Platform Admin',
             'email'      => 'platform-admin@admin.com',
@@ -45,104 +42,119 @@ class UsersSeeder extends Seeder
             'created_at' => now()
         ]);
 
+        // 4
         DB::table('users')->insert([
-            'name'       => 'Organization-A SuperAdmin',
-            'email'      => 'organization-A-superadmin@admin.com',
+            'name'       => 'WNY SuperAdmin',
+            'email'      => 'wny-superadmin@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 5
         DB::table('users')->insert([
-            'name'       => 'Organization-A Admin',
-            'email'      => 'organization-A-admin@admin.com',
+            'name'       => 'WNY Admin',
+            'email'      => 'wny-admin@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 6
         DB::table('users')->insert([
-            'name'       => 'Organization-A General-Manager',
-            'email'      => 'organization-A-generalManager@admin.com',
+            'name'       => 'WNY General-Manager',
+            'email'      => 'wny-generalManager@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 7
         DB::table('users')->insert([
-            'name'       => 'Organization-1 General-Manager',
-            'email'      => 'organization-1-general-manager@admin.com',
+            'name'       => 'Spring General-Manager',
+            'email'      => 'Spring-general-manager@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 8
         DB::table('users')->insert([
-            'name'       => 'Organization-1 Sales-Manager-1',
-            'email'      => 'organization-1-sales-manager-1@admin.com',
+            'name'       => 'WNY Sales-Manager',
+            'email'      => 'wny-sales-manager@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 9
         DB::table('users')->insert([
-            'name'       => 'Organization-1 Production-Manager-1',
-            'email'      => 'organization-1-production-manager-1@admin.com',
+            'name'       => 'WNY Production-Manager',
+            'email'      => 'wny-production-manager@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 10
         DB::table('users')->insert([
-            'name'       => 'Organization-1 Administrative-Leader',
-            'email'      => 'organization-1-administrative-leader@admin.com',
+            'name'       => 'WNY Administrative-Leader',
+            'email'      => 'wny-administrative-leader@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 11
         DB::table('users')->insert([
-            'name'       => 'Organization-1 Estimator-1',
-            'email'      => 'organization-1-estimator-1@admin.com',
+            'name'       => 'WNY Estimator',
+            'email'      => 'wny-estimator@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 12
         DB::table('users')->insert([
-            'name'       => 'Organization-1 Project-Manager-1',
-            'email'      => 'organization-1-project-manager-1@admin.com',
+            'name'       => 'WNY Project-Manager',
+            'email'      => 'wny-project-manager@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 13
         DB::table('users')->insert([
-            'name'       => 'Organization-1 Administrative-Assistant-1',
-            'email'      => 'organization-1-administrative-assistant-1@admin.com',
+            'name'       => 'WNY Administrative-Assistant',
+            'email'      => 'wny-administrative-assistant@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 14
         DB::table('users')->insert([
-            'name'       => 'Installer-1 Admin',
-            'email'      => 'installer-1-admin@admin.com',
+            'name'       => 'WNY Installer-Admin',
+            'email'      => 'wny-installer-admin@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 15
         DB::table('users')->insert([
-            'name'       => 'Installer-1 Team-1-Lead',
-            'email'      => 'installer-1-team-1-lead@admin.com',
+            'name'       => 'WNY Installer-Team-Lead',
+            'email'      => 'wny-installer-team-lead@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 16
         DB::table('users')->insert([
-            'name'       => 'Customer A Individual',
-            'email'      => 'customer-1-individual@admin.com',
+            'name'       => 'Customer A-WNY',
+            'email'      => 'wny-customer-individual@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 17
         DB::table('users')->insert([
-            'name'       => 'Customer B Organization',
-            'email'      => 'customer-1-organization@admin.com',
+            'name'       => 'Customer B-Spring',
+            'email'      => 'spring-customer-organization@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
 
+        // 18
         DB::table('users')->insert([
             'name'       => 'Demo Guest',
             'email'      => 'guest@admin.com',

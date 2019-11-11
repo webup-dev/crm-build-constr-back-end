@@ -29,8 +29,8 @@ class UserProfilesController extends Controller
 
     public function __construct()
     {
-        $this->middleware('organization.admin')->only(['index', 'indexSoftDeleted', 'store', 'softDestroy', 'restore', 'destroyPermanently']);
-        $this->middleware('organization.admin.ext')->only(['show', 'update']);
+        $this->middleware('user_profiles_organization.admin')->only(['index', 'indexSoftDeleted', 'store', 'softDestroy', 'restore', 'destroyPermanently']);
+        $this->middleware('user_profiles_organization.admin.own')->only(['show', 'update']);
         $this->middleware('activity');
     }
 
@@ -91,6 +91,7 @@ class UserProfilesController extends Controller
      */
     public function index()
     {
+//        dd("here");
         $user         = Auth::guard()->user();
         $roles        = $user->roles;
         $roleNamesArr = $roles->pluck('name')->all();
@@ -261,8 +262,8 @@ class UserProfilesController extends Controller
     public
     function show($id)
     {
-        $checkOrganization = $this->checkUserFromOrganization($id);
-
+//        $checkOrganization = $this->checkUserFromOrganization($id);
+//        dd("here");
         $user         = Auth::guard()->user();
         $roles        = $user->roles;
         $roleNamesArr = $roles->pluck('name')->all();
@@ -279,20 +280,20 @@ class UserProfilesController extends Controller
             return response()->json($response, 452);
         }
 
-        if (one_from_arr_in_other_arr(['organization-superadmin', 'organization-admin'], $roleNamesArr)) {
-            $user                  = User::find($user->id);
-            $userProfileRequester  = $user->user_profile;
-            $departmentIdRequester = $userProfileRequester->department_id;
-
-            if (!($userProfile->department_id == $departmentIdRequester)) {
-                $response = [
-                    'success' => false,
-                    'message' => "You do not have access."
-                ];
-
-                return response()->json($response, 453);
-            }
-        }
+//        if (one_from_arr_in_other_arr(['organization-superadmin', 'organization-admin'], $roleNamesArr)) {
+//            $user                  = User::find($user->id);
+//            $userProfileRequester  = $user->user_profile;
+//            $departmentIdRequester = $userProfileRequester->department_id;
+//
+//            if (!($userProfile->department_id == $departmentIdRequester)) {
+//                $response = [
+//                    'success' => false,
+//                    'message' => "You do not have access."
+//                ];
+//
+//                return response()->json($response, 453);
+//            }
+//        }
 
         $data = $userProfile->toArray();
 
@@ -537,8 +538,7 @@ class UserProfilesController extends Controller
     public
     function softDestroy($id)
     {
-        $checkOrganization = $this->checkUserFromOrganization($id);
-
+//        dd("here controller");
         $userProfile = User_profile::whereId($id)->first();
         if (!$userProfile) {
             $response = [
@@ -553,7 +553,7 @@ class UserProfilesController extends Controller
         // there are 3 DB tables that are bond to User: activities, user_roles, user_profiles
         Activity::truncate();
 
-        $userRoles=User_role::whereUserId($user->id)->get();
+        $userRoles = User_role::whereUserId($user->id)->get();
         foreach ($userRoles as $userRole) {
             $userRole->delete();
         }
@@ -616,7 +616,7 @@ class UserProfilesController extends Controller
 
         // Restore user
         $userId = $userProfile->user_id;
-        $user = User::onlyTrashed()->whereId($userId)->first();
+        $user   = User::onlyTrashed()->whereId($userId)->first();
         $user->restore();
 
         // Restore user profile
@@ -684,7 +684,7 @@ class UserProfilesController extends Controller
             return response()->json($response, 422);
         }
 
-        $user = User::withTrashed()->whereId($userProfile->user_id)->first();
+        $user      = User::withTrashed()->whereId($userProfile->user_id)->first();
         $userRoles = User_role::withTrashed()->whereUserId($userProfile->user_id)->get();
         $userProfile->forceDelete();
         foreach ($userRoles as $userRole) {

@@ -268,7 +268,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $user4->save();
 
         $role1 = new Role([
-            'name' => 'superadmin'
+            'name' => 'developer'
         ]);
 
         $role1->save();
@@ -288,6 +288,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $user1->roles()->attach(1);
         $user2->roles()->attach(2);
         $user3->roles()->attach(3);
+        $user4->roles()->attach(3);
 
         $department1 = new Organization([
             'name' => 'Central Department'
@@ -301,6 +302,13 @@ class UserProfilesControllerTest extends WnyTestCase
         ]);
 
         $department2->save();
+
+        $department3 = new Organization([
+            'name'      => 'Branch Department 1',
+            'parent_id' => 2
+        ]);
+
+        $department3->save();
 
         $userProfile1 = User_profile::create([
             'user_id'          => 1,
@@ -376,6 +384,31 @@ class UserProfilesControllerTest extends WnyTestCase
         ]);
 
         $userProfile3->save();
+
+        $userProfile4 = User_profile::create([
+            'user_id'          => 4,
+            'first_name'       => 'TestD',
+            'last_name'        => 'TestD',
+            'title'            => '',
+            'department_id'    => 3,
+            'phone_home'       => '',
+            'phone_work'       => '',
+            'phone_extension'  => '',
+            'phone_mob'        => '',
+            'email_personal'   => '',
+            'email_work'       => '',
+            'address_line_1'   => 'Williams 7',
+            'address_line_2'   => '',
+            'city'             => 'Kyiv',
+            'state'            => 'CA',
+            'zip'              => '90001',
+            'status'           => 'active',
+            'start_date'       => null,
+            'termination_date' => null,
+            'deleted_at'       => null
+        ]);
+
+        $userProfile4->save();
     }
 
     /**
@@ -449,7 +482,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $success      = $responseJSON['success'];  // array
 
-        $this->assertEquals(3, count($data));
+        $this->assertEquals(4, count($data));
         $this->assertEquals(1, $data[0]['id']);
         $this->assertEquals('TestA', $data[0]['first_name']);
         $this->assertEquals('1', $data[0]['department_id']);
@@ -551,7 +584,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $success      = $responseJSON['success'];  // array
 
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
         $this->assertEquals(false, $success);
     }
 
@@ -705,7 +738,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $success      = $responseJSON['success'];  // array
 
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
         $this->assertEquals(false, $success);
     }
 
@@ -788,6 +821,7 @@ class UserProfilesControllerTest extends WnyTestCase
 
     /**
      * Check Show Own Profile:
+     * organization-estimator tries to open his profile
      *   Check login
      *   Get specified item
      *   Check response status
@@ -864,6 +898,83 @@ class UserProfilesControllerTest extends WnyTestCase
     }
 
     /**
+     * Check Show Own Profile:
+     *   Check login
+     *   Get specified item
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testShowProfileFromChild()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'test2@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'Test 2',
+            'email' => 'test2@email.com'
+        ])->isOk();
+
+        // Request
+        $response = $this->get('api/user-profiles/4?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'data' =>
+                    [
+                        "id",
+                        "user_id",
+                        "first_name",
+                        "last_name",
+                        "title",
+                        "department_id",
+                        "phone_home",
+                        "phone_work",
+                        "phone_extension",
+                        "phone_mob",
+                        "email_personal",
+                        "email_work",
+                        "address_line_1",
+                        "address_line_2",
+                        "city",
+                        "state",
+                        "zip",
+                        "status",
+                        "start_date",
+                        "termination_date",
+                        "created_at",
+                        "updated_at"
+                    ],
+                'message'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $message      = $responseJSON['message'];  // array
+        $data         = $responseJSON['data'];  // array
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals('User Profile is retrieved successfully.', $message);
+        $this->assertEquals('TestD', $data['last_name']);
+        $this->assertEquals(3, $data['department_id']);
+    }
+
+    /**
      * Check show If Access Is Absent:
      *   Check login
      *   Check response status
@@ -908,7 +1019,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
 
         $this->assertEquals(false, $success);
-        $this->assertEquals('You do not have permissions.', $message);
+        $this->assertEquals('Permission is absent by the role.', $message);
     }
 
     /**
@@ -1186,7 +1297,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**
@@ -1520,7 +1631,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**
@@ -1568,7 +1679,7 @@ class UserProfilesControllerTest extends WnyTestCase
 
     /**
      * Check Soft Delete If The Access Is Not Full:
-     *   User with restricted access (organization superadmin from the Branch Department) deletes the profile of the user from Branch Department.
+     *   User with restricted access (organization superadmin from the Branch Department) deletes the profile of the user from its Department.
      *   We check that the user profile must change the field deleted_at from null to not null.
      *     Check login
      *     Check response status
@@ -1645,7 +1756,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**
@@ -1804,7 +1915,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**
@@ -1952,7 +2063,7 @@ class UserProfilesControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**

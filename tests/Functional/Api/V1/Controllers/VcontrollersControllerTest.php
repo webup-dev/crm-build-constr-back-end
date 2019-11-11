@@ -120,7 +120,7 @@ class VcontrollersControllerTest extends WnyTestCase
         $controller2->save();
 
         $role1 = new Role([
-            'name'        => 'superadmin',
+            'name'        => 'developer',
             'description' => 'Description 1'
         ]);
 

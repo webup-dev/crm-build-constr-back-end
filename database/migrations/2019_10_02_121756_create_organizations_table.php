@@ -15,7 +15,8 @@ class CreateOrganizationsTable extends Migration
     {
         Schema::create('organizations', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('order')->nullable();
+            $table->integer('level')->default(2);
+            $table->integer('order')->nullable();
             $table->string('name');
             $table->integer('parent_id')->unsigned()->index()->nullable();
             $table->foreign('parent_id')->references('id')->on('organizations');

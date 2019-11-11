@@ -8,191 +8,46 @@
  *   Create 1 department
  *   Create 2 profiles
  *
- * Check Index:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
+ * Check Index
+ * Check Index If The Access Is Not Full
+ * Check Index If Content Is Empty
+ * Check Index If The Access Is Absent By The Role
  *
- * Check Index If Content Is Empty:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check Index If Access Is Absent:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check IndexSoftDeleted:
- *   Check login
- *   Create SoftDeleted
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check IndexSoftDeleted If Content Is Empty:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *
+ * Check IndexSoftDeleted
+ * Check IndexSoftDeleted If Content Is Empty
  * Check IndexSoftDeleted If Access Is Absent:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
  *
- * Check store:
- *   Check login
- *   Store a new Customer
- *   Check response status
- *   Check response structure
- *   Check response data
- *   Check DB tables Customers
- *
- * Check store invalid data:
- *   Check login
- *   Store a new Customer
- *   Check response status
- *   Check response structure
- *   Check response data
- *
+ * Check store
+ * Check store If The Access Is Not Full
+ * Check store invalid data
  * Check store If Access Of Role Is Absent:
- *   Check login Customer
- *   Store a new Customer
- *   Check response status
- *   Check response structure
- *   Check response data
- *
  * Check store If Access To Department Is Absent:
- *   Check login Customer
- *   Store a new Customer
- *   Check response status
- *   Check response structure
- *   Check response data
  *
- * Check show:
- *   Check login
- *   Get the specified Customer
- *   Check response status
- *   Check response structure
- *   Check response data
+ * Check show
+ * Check show If The Access Is Not Full
+ * Check show with absent ID
+ * Check show If The Access Is Absent By The Role
+ * Check show If Access To Department Is Absent
  *
- * Check show with absent ID:
- *   Check login
- *   Get the specified Customer
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check show If Access Of Role Is Absent:
- *   Check login Customer
- *   Get the specified Customer
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check show If Access To Department Is Absent:
- *   Check login Customer
- *   Get the specified Customer
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check update:
- *   Check login
- *   Update the Customer
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check update If Data Is Invalid:
- *   Check login
- *   Update the Customer
- *   Check response status
- *   Check response structure
- *   Check response data
- *
+ * Check update
+ * Check update If The Access Is Not Full
+ * Check update If Data Is Invalid
  * Check update If The Id Is Wrong
- *   Check login
- *   Update the Customer
- *   Check response status
- *   Check response structure
- *   Check response data
+ * Check update If The Access Is Absent By The Role
+ * Check update If The Access To The Department Is Absent
  *
- * Check update If Access Is Absent:
- *   Check login
- *   Update the Customer
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check Soft Delete:
- *   We check that the customer account must change the field deleted_at from null to not null.
- *     Check login
- *     Check response status
- *     Check response structure
- *     Check DB: deleted_at of the soft-deleted row
- *
- * Check Soft Delete If The Access Is Absent:
- *   We wait for a message about error.
- *     Check login
- *     Check response status
- *     Check response structure
- *
+ * Check Soft Delete
+ * Check Soft Delete If The Access Is Not Full
+ * Check Soft Delete If The Access Is Absent By the Role
  * Check Soft Delete If The Id Is Wrong:
- *   We wait for a message about error.
- *     Check login
- *     Check response status
- *     Check response structure
  *
- * Check Restore:
- *   We check that the Customer Account must change the field deleted_at from not null to null.
- *     Check login
- *     Soft delete customer
- *     Repair customer
- *     Check response status
- *     Check response structure
- *     Check DB: deleted_at
+ * Check Restore
+ * Check Restore If The Access Is Absent By the Role
+ * Check Restore If The ID Is Wrong:
  *
- * Check Restore If The Access Is Absent:
- *   We wait for a message about error.
- *     Check login
- *     Soft delete customer
- *     Repair customer
- *     Check response status
- *     Check response structure
- *
- * Check Repair If The ID Is Wrong:
- *   We wait for a message about error.
- *     Check login
- *     Check response status
- *     Check response structure
- *
- * Check Delete Permanently:
- *     Check login
- *     Soft delete customer
- *     Delete Permanently customer
- *     Check response status
- *     Check response structure
- *     Check DB: customer must be absent
- *
+ * Check Delete Permanently
  * Check Delete Permanently If The Access Is Absent:
- *   We wait for a message about error.
- *     Check login
- *     Soft delete customer
- *     Delete Permanently customer
- *     Check response status
- *     Check response structure
- *
  * Check Delete Permanently If The ID Is Wrong:
- *   We wait for a message about error.
- *     Check login
- *     Check response status
- *     Check response structure
  */
 
 namespace App;
@@ -290,7 +145,7 @@ class CustomersControllerTest extends WnyTestCase
         $user6->save();
 
         $role1 = new Role([
-            'name' => 'superadmin'
+            'name' => 'developer'
         ]);
 
         $role1->save();
@@ -444,7 +299,7 @@ class CustomersControllerTest extends WnyTestCase
             'deleted_at'       => null
         ]);
 
-        $userProfile3->save();
+        $userProfile4->save();
     }
 
     use DatabaseMigrations;
@@ -529,6 +384,76 @@ class CustomersControllerTest extends WnyTestCase
     }
 
     /**
+     * Check Index If The Access Is Not Full
+     *   User B id=2 role=organization-general-manager org=Central Department org_id=1
+     *   Check login
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testIndexIfTheAccessIsNotFull()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'userB@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+            'name'  => 'User B',
+            'email' => 'userB@email.com'
+        ])->isOk();
+
+        // Request
+        $response = $this->get('api/customers?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'data' =>
+                    [
+                        [
+                            "id",
+                            "user_id",
+                            "name",
+                            "organization_id",
+                            "organization",
+                            "type",
+                            "note",
+                            "deleted_at",
+                            "created_at",
+                            "updated_at"
+                        ]
+                    ],
+                'message'
+            ]
+        );
+        $responseJSON = json_decode($response->getContent(), true);
+        $data         = $responseJSON['data'];  // array
+        $message      = $responseJSON['message'];  // array
+        $success      = $responseJSON['success'];  // array
+
+        $this->assertEquals(1, count($data));
+        $this->assertEquals(1, $data[0]['id']);
+        $this->assertEquals(4, $data[0]['user_id']);
+        $this->assertEquals('Customer A', $data[0]['name']);
+        $this->assertEquals('   1', $data[0]['organization_id']);
+        $this->assertEquals('individual', $data[0]['type']);
+        $this->assertEquals('test note', $data[0]['note']);
+        $this->assertEquals("Customers are retrieved successfully.", $message);
+        $this->assertEquals(true, $success);
+    }
+
+    /**
      * Check Index If Content Is Empty:
      *   Check login User 1
      *   Delete Customer 2
@@ -585,13 +510,14 @@ class CustomersControllerTest extends WnyTestCase
     }
 
     /**
-     * Check Index If Access Is Absent:
+     * Check Index If The Access Is Absent By The Role:
+     *   Customer A tries to get index
      *   Check login
      *   Check response status
      *   Check response structure
      *   Check response data
      */
-    public function testIndexIfAccessIsAbsent()
+    public function CheckIndexIfTheAccessIsAbsentByTheRole()
     {
         // Check login
         $response = $this->post('api/auth/login', [
@@ -625,7 +551,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $success      = $responseJSON['success'];  // array
 
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
         $this->assertEquals(false, $success);
     }
 
@@ -774,7 +700,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $success      = $responseJSON['success'];  // array
 
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
         $this->assertEquals(false, $success);
     }
 
@@ -978,7 +904,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**
@@ -1046,7 +972,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**
@@ -1230,7 +1156,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**
@@ -1268,7 +1194,7 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals("userB@email.com", $email);
 
         $response = $this->get('api/customers/2?token=' . $token, []);
-        $response->assertStatus(453);
+        $response->assertStatus(454);
 
         // Check response structure
         $response->assertJsonStructure(
@@ -1283,7 +1209,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission to department is absent.", $message);
     }
 
     /**
@@ -1295,6 +1221,68 @@ class CustomersControllerTest extends WnyTestCase
      *   Check response data
      */
     public function testUpdate()
+    {
+        // Check login
+        $response = $this->post('api/auth/login', [
+            'email'    => 'userA@email.com',
+            'password' => '123456'
+        ]);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $token        = $responseJSON['token'];
+
+        $response = $this->get('api/auth/me?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $name         = $responseJSON['name'];  // array
+        $email        = $responseJSON['email'];  // array
+
+        $this->assertEquals('User A', $name);
+        $this->assertEquals("userA@email.com", $email);
+
+        // Create data
+        $data = [
+            'user_id'         => 4,
+            'name'            => 'Customer A Updated',
+            'type'            => 'individual',
+            'note'            => 'note test',
+            'organization_id' => 1
+        ];
+
+        $response = $this->put('api/customers/1?token=' . $token, $data, []);
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+        $data         = json_decode($data);
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals("Customer is updated successfully.", $message);
+        $this->assertEquals("Customer A Updated", $data->name);
+
+        // Check DB
+        $customer = DB::table('customers')->where('name', 'Customer A Updated')->first();
+        $this->assertEquals(1, $customer->id);
+        $this->assertEquals('Customer A Updated', $customer->name);
+    }
+
+    /**
+     * Check update If The Access Is Not Full
+     *   Check login
+     *   Update the Customer
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testUpdateIfTheAccessIsNotFull()
     {
         // Check login
         $response = $this->post('api/auth/login', [
@@ -1497,7 +1485,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**
@@ -1544,7 +1532,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 //
     /**
@@ -1627,7 +1615,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**
@@ -1665,7 +1653,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**
@@ -1814,7 +1802,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**
@@ -1873,7 +1861,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**
@@ -2017,7 +2005,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**
@@ -2076,7 +2064,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("You do not have permissions.", $message);
+        $this->assertEquals("Permission is absent by the role.", $message);
     }
 
     /**

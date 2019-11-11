@@ -41,6 +41,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User withoutTrashed()
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereDeletedAt($value)
+ * @property-read \App\Models\Customer $customer
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerIndividual[] $customerIndividualCreated
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerIndividual[] $customerIndividualUpdated
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -137,5 +140,23 @@ class User extends Authenticatable implements JWTSubject
     public function customer()
     {
         return $this->hasOne('App\Models\Customer', 'user_id');
+    }
+
+    /**
+     * user <-> customer_individual: one-to-many
+     * Get the created customer_individual.
+     */
+    public function customerIndividualCreated()
+    {
+        return $this->hasMany('App\Models\CustomerIndividual', 'created_by_id', 'id');
+    }
+
+    /**
+     * user <-> customer_individual: one-to-many
+     * Get the updated customer_individual.
+     */
+    public function customerIndividualUpdated()
+    {
+        return $this->hasMany('App\Models\CustomerIndividual', 'updated_by_id', 'id');
     }
 }

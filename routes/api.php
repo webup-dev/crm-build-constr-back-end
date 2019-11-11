@@ -105,12 +105,15 @@ $api->version('v1', function (Router $api) {
         $api->delete('method-roles/{id}', 'App\Api\V1\Controllers\MethodRolesController@destroyRoles');
     });
 
-    $api->group(['middleware' => ['api.auth', 'platform.superadmin','activity']], function (Router $api) {
+    $api->group(['middleware' => ['api.auth']], function (Router $api) {
         $api->get('organizations', 'App\Api\V1\Controllers\OrganizationsController@index');
+        $api->get('organizations/soft-deleted', 'App\Api\V1\Controllers\OrganizationsController@indexSoftDeleted');
         $api->get('organizations/{id}', 'App\Api\V1\Controllers\OrganizationsController@show');
         $api->post('organizations', 'App\Api\V1\Controllers\OrganizationsController@store');
         $api->put('organizations/{id}', 'App\Api\V1\Controllers\OrganizationsController@update');
-        $api->delete('organizations/{id}', 'App\Api\V1\Controllers\OrganizationsController@destroy');
+        $api->delete('organizations/{id}', 'App\Api\V1\Controllers\OrganizationsController@softDestroy');
+        $api->put('organizations/{id}/restore', 'App\Api\V1\Controllers\OrganizationsController@restore');
+        $api->delete('organizations/{id}/permanently', 'App\Api\V1\Controllers\OrganizationsController@destroyPermanently');
     });
 
     $api->group(['middleware' => ['api.auth']], function (Router $api) {
@@ -133,6 +136,8 @@ $api->version('v1', function (Router $api) {
         $api->get('customers', 'App\Api\V1\Controllers\CustomersController@index');
         $api->get('customers/soft-deleted', 'App\Api\V1\Controllers\CustomersController@indexSoftDeleted');
         $api->get('customers/{id}', 'App\Api\V1\Controllers\CustomersController@show');
+        $api->get('customers/{id}/individual', 'App\Api\V1\Controllers\CustomerIndividualsController@show');
+        $api->put('customers/{id}/individual', 'App\Api\V1\Controllers\CustomerIndividualsController@update');
         $api->post('customers', 'App\Api\V1\Controllers\CustomersController@store');
         $api->put('customers/{id}', 'App\Api\V1\Controllers\CustomersController@update');
         $api->delete('customers/{id}', 'App\Api\V1\Controllers\CustomersController@softDestroy');

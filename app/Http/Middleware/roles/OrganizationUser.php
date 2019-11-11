@@ -27,8 +27,8 @@ class OrganizationUser
         if (one_from_arr_in_other_arr(
             [
                 'developer',
-                'superadmin',
                 'platform-superadmin',
+                'platform-admin',
                 'organization-superadmin',
                 'organization-admin',
                 'organization-general-manager',
@@ -44,7 +44,7 @@ class OrganizationUser
 
         $response = [
             'success' => false,
-            'message' => 'You do not have permissions.'
+            'message' => 'Permission is absent by the role.'
         ];
 
         return response()->json($response, 453);

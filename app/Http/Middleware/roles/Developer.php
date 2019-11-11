@@ -30,7 +30,7 @@ class Developer
 
         $response = [
             'success' => false,
-            'message' => 'You do not have permissions.'
+            'message' => 'Permission is absent by the role.'
         ];
 
         return response()->json($response, 401);

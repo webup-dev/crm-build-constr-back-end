@@ -5,7 +5,10 @@ namespace App\Api\V1\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Organization;
 use App\Models\Role;
+use App\Models\User_profile;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Validator;
+use Auth;
 use JWTAuth;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
@@ -18,6 +21,12 @@ class OrganizationsController extends Controller
 {
     use Helpers;
 
+    public function __construct()
+    {
+        $this->middleware('organizations_organization.admin')->only(['index', 'store', 'show', 'update', 'softDestroy', 'indexSoftDeleted', 'restore', 'destroyPermanently']);
+        $this->middleware('activity');
+    }
+
     /**
      * Get index of organizations
      *
@@ -25,17 +34,21 @@ class OrganizationsController extends Controller
      *  "success": true,
      *  "data": [{
      *    "id": 1,
+     *    "level": 0,
      *    "order": 1,
-     *    "name": "Central Office",
+     *    "name": "Platform",
      *    "parent_id": null,
+     *    "deleted_a": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
      *   },
      *   {
-     *    "id": 2,
-     *    "order": 2,
-     *    "name": "Department 1",
+     *    "id": 1,
+     *    "level": 1,
+     *    "order": 1,
+     *    "name": "WNY",
      *    "parent_id": 1,
+     *    "deleted_a": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
      *   }],
@@ -47,26 +60,146 @@ class OrganizationsController extends Controller
      *  "message": "Organizations are absent."
      * }
      *
+     * @response 453 {
+     *  "success": false,
+     *  "message": "You do not have permission."
+     * }
+     *
      * @return Response
      */
     public function index()
     {
+        // get user organization_id
+        $parentId = $this->userOrganizationId();
+
         $organizations = Organization::all();
 
         if ($organizations->count() === 0) {
+
             $response = [
                 'success' => true,
                 'message' => "Organizations are absent."
             ];
 
-            return response()->json($response, 200);
+            return response()->json($response, 204);
         }
+
+        // check organizational roles
+        $organizations = $this->getParentAndChildsByParentId($organizations, $parentId);
+
+
         $data = $organizations->toArray();
+
+        // reindex to prevent absence of 0 key that is needed for tests
+        $data = array_values($data);
 
         $response = [
             'success' => true,
             'data'    => $data,
             'message' => "Organizations retrieved successfully."
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    private function userOrganizationId()
+    {
+        $user        = Auth::guard()->user();
+        $userProfile = User_profile::with('organization')
+            ->whereUserId($user->id)
+            ->first();
+
+        $parentId = $userProfile->organization->id;
+        if ($parentId === null) {
+            $parentId = 0;
+        }
+
+        return $parentId;
+    }
+
+    private function getParentAndChildsByParentId(Collection $organizations, $parentId)
+    {
+        // array of objects to array
+        $sourceArr = $organizations->toArray();
+
+        // get required arrays
+        $requiredArr = buildTree($sourceArr, $parentId);
+
+        // transform selected arrays into the plain array of id's. Add parent Id
+        $ids   = collectValues($requiredArr, 'id', []);
+        $ids[] = $parentId;
+
+        // select required objects
+        $selected = $organizations->whereIn('id', $ids);
+
+        return $selected;
+    }
+
+    /**
+     * Get index of soft-deleted roles
+     *
+     * Access:
+     *   direct access:
+     *     platform-admin and higher
+     *
+     * @response 200 {
+     *  "success": true,
+     *  "data": [{
+     *    "id": 1,
+     *    "level": 1,
+     *    "order": 1,
+     *    "name": "Winter",
+     *    "parent_id": 1,
+     *    "deleted_a": "2019-06-24 07:12:03",
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03"
+     *   },
+     *   {
+     *    "id": 2,
+     *    "level": 1,
+     *    "order": 2,
+     *    "name": "Autumn",
+     *    "parent_id": 1,
+     *    "deleted_a": "2019-06-24 07:12:03",
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03"
+     *   }],
+     *  "message": "Soft-deleted Roles are retrieved successfully."
+     * }
+     *
+     * @response 204 {
+     *  "message": "No content."
+     * }
+     *
+     * @response 453 {
+     *  "success": false,
+     *  "message": "Permission is absent."
+     * }
+     *
+     * @return Response
+     */
+    public function indexSoftDeleted()
+    {
+        $customers = Customer::onlyTrashed()
+            ->with('organization')
+            ->select('id', 'user_id', 'name', 'type', 'organization_id', 'note', 'deleted_at', 'created_at', 'updated_at')
+            ->get();
+
+        if (!$customers->count()) {
+            $response = [
+                'success' => true,
+                'message' => "Soft Deleted Customers are empty."
+            ];
+
+            return response()->json($response, 204);
+        }
+
+        $data = $customers->toArray();
+
+        $response = [
+            'success' => true,
+            'data'    => $data,
+            'message' => "Soft-deleted customers are retrieved successfully."
         ];
 
         return response()->json($response, 200);
@@ -80,12 +213,14 @@ class OrganizationsController extends Controller
      * @response 200 {
      *  "success": true,
      *  "data": {
-     *     "id": 1,
-     *     "name": "Central Office",
-     *     "parent_id": 1,
-     *     "order": 1,
-     *     "created_at": "2019-12-08 13:25:36",
-     *     "updated_at": "2019-12-08 13:25:36"
+     *    "id": 1,
+     *    "level": 1,
+     *    "order": 1,
+     *    "name": "WNY",
+     *    "parent_id": 1,
+     *    "deleted_a": null,
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03"
      *  },
      *  "message": "Item is retrieved successfully."
      * }
@@ -93,6 +228,21 @@ class OrganizationsController extends Controller
      * @response 452 {
      *    "success": false,
      *    "message": "Method does not exist."
+     * }
+     *
+     * @response 453 {
+     *  "success": false,
+     *  "message": "Permission is absent by the role."
+     * }
+     *
+     * @response 454 {
+     *  "success": false,
+     *  "message": "Permission to department is absent."
+     * }
+     *
+     * @response 455 {
+     *  "success": false,
+     *  "message": "ID is absent"
      * }
      *
      * @param int $id
@@ -133,9 +283,17 @@ class OrganizationsController extends Controller
      *  "message": "New Organization is created successfully."
      * }
      *
-     * @response 452 {
+     * @response 422 {
+     *  'error' =>
+     *       [
+     *         'message',
+     *         'errors'
+     *       ]
+     * }
+     *
+     * @response 453 {
      *  "success": false,
-     *  "message": "Parent Id is impossible."
+     *  "message": "Permission is absent."
      * }
      *
      * @response 500 {
@@ -152,7 +310,7 @@ class OrganizationsController extends Controller
     {
         $rules = array(
             'name'      => 'required|string',
-            'order'     => 'required|string',
+            'order'     => 'required|integer',
             'parent_id' => 'integer|nullable',
         );
 
@@ -169,10 +327,15 @@ class OrganizationsController extends Controller
             $messages = $validator->messages();
             $errors   = $messages->all();
             $response = [
-                'errors' => $errors
+                'errors' => [
+                    'errors'  => $errors,
+                    'message' => 'The given data was invalid.'
+                ]
             ];
             return response()->json($response, 452);
         }
+
+        $organization = new Organization();
 
         // Check parent ID
         $parentId = $request->get('parent_id');
@@ -180,7 +343,9 @@ class OrganizationsController extends Controller
         // adapting js value (00 to php's null)
         if ($parentId != 0) {
             $org = Organization::whereId($parentId)->first();
+//            dd($org);
 
+            $organization->level = $org->level + 1;
             if (!$org) {
                 $response = [
                     'success' => false,
@@ -189,14 +354,13 @@ class OrganizationsController extends Controller
                 return response()->json($response, 452);
             }
         } else {
-            $parentId = null;
+            $parentId            = null;
+            $organization->level = 1;
         }
 
-        $organization = new Organization();
-
         $organization->name      = $request->get('name');
-        $organization->order     = $request->get('order');
         $organization->parent_id = $parentId;
+        $organization->order     = $request->get('order');
 
         if ($organization->save()) {
             $response = [
@@ -221,24 +385,36 @@ class OrganizationsController extends Controller
      * @response 200 {
      *  "success": true,
      *  "data": {
-     *       "id": 1,
-     *       "order": 1,
-     *       "name": "Central Office",
-     *       "parent_id": null,
-     *       "created_at": "2019-06-24 07:12:03",
-     *       "updated_at": "2019-06-24 07:12:03"
-     *     },
+     *    "id": 1,
+     *    "level": 1,
+     *    "order": 1,
+     *    "name": "WNY",
+     *    "parent_id": 1,
+     *    "deleted_a": null,
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03"
+     *  },
      *  "message": "Organization is updated successfully."
      * }
      *
-     * @response 204 {
+     * @response 422 {
      *  "success": false,
-     *  "message": "Could not find Organization."
+     *  "message": "The given data was invalid."
      * }
      *
-     * @response 452 {
+     * @response 453 {
      *  "success": false,
-     *  "message": "Parent Id is impossible."
+     *  "message": "Permission is absent by the role."
+     * }
+     *
+     * @response 454 {
+     *  "success": false,
+     *  "message": "Permission to department is absent."
+     * }
+     *
+     * @response 455 {
+     *  "success": false,
+     *  "message": "ID is absent."
      * }
      *
      * @response 500 {
@@ -254,6 +430,33 @@ class OrganizationsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $rules = array(
+            'name'      => 'required|string',
+            'order'     => 'required|integer',
+            'parent_id' => 'integer|nullable',
+        );
+
+        $messages = array(
+            'name.required'     => 'Please enter a name.',
+            'name.string'       => 'Name must be a string.',
+            'order.required'    => 'Please enter an order.',
+            'order.string'      => 'Order must be a string.',
+            'parent_id.integer' => 'Parent ID must be an integer.',
+        );
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
+            $errors   = $messages->all();
+            $response = [
+                'errors' => [
+                    'errors'  => $errors,
+                    'message' => 'The given data was invalid.'
+                ]
+            ];
+            return response()->json($response, 452);
+        }
+
         $organization = Organization::whereId($id)->first();
 
         if (!$organization) {
@@ -267,14 +470,8 @@ class OrganizationsController extends Controller
 
         $organization->fill($request->all());
 
-        if ($organization->parent_id == $id) {
-            $response = [
-                'success' => false,
-                'message' => 'Parent Id is impossible.'
-            ];
-
-            return response()->json($response, 452);
-        }
+        $parentOrg = Organization::whereId($organization->parent_id)->first();
+        $organization->level = $parentOrg->level + 1;
 
         $data = json_encode($organization);
 
@@ -301,26 +498,41 @@ class OrganizationsController extends Controller
      *  "message": "Organization is deleted successfully"
      * }
      *
-     * @response 204 {
+     * @response 453 {
      *  "success": false,
-     *  "message": "Could not find Organization."
+     *  "message": "Permission is absent by the role."
+     * }
+     *
+     * @response 454 {
+     *  "success": false,
+     *  "message": "Permission to department is absent."
+     * }
+     *
+     * @response 455 {
+     *  "success": false,
+     *  "message": "Id is absent."
+     * }
+     *
+     * @response 456 {
+     *  "success": false,
+     *  "message": "Impossible to destroy due to child."
      * }
      *
      * @param int $id
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy($id)
+    public function softDestroy($id)
     {
         $organization = Organization::whereId($id)->first();
 
         if (!$organization) {
             $response = [
                 'success' => false,
-                'message' => 'Could not find Organization.'
+                'message' => 'Id is absent.'
             ];
 
-            return response()->json($response, 452);
+            return response()->json($response, 455);
         }
 
         if ($organization->delete()) {
@@ -333,5 +545,117 @@ class OrganizationsController extends Controller
         } else {
             return $this->response->error('Could not delete Organization', 500);
         }
+    }
+
+    /**
+     * Restore customer
+     *
+     * Access:
+     *   direct access:
+     *     platform-admin and higher
+     *
+     * @queryParam id int required Organization ID
+     *
+     *
+     * @response 200 {
+     *  "success": true,
+     *  "message": "Organization is restored."
+     * }
+     *
+     * @response 422 {
+     *  "success": false,
+     *  "message": "Organization is absent."
+     * }
+     *
+     * @response 453 {
+     *  "success": false,
+     *  "message": "Permission is absent by the role."
+     * }
+     *
+     * @response 454 {
+     *  "success": false,
+     *  "message": "Permission to department is absent."
+     * }
+     *
+     * @param $id
+     * @return void
+     */
+    public function restore($id)
+    {
+        $organization = Organization::onlyTrashed()->whereId($id)->first();
+
+        if (!$organization) {
+            $response = [
+                'success' => false,
+                'message' => 'Organization is absent.'
+            ];
+
+            return response()->json($response, 422);
+        }
+
+        // Restore organization profile
+        $organization->restore();
+
+        $response = [
+            'success' => true,
+            'message' => 'Organization is restored successfully.'
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * Destroy organization permanently
+     *
+     * Access:
+     *   direct access:
+     *     platform-admin and higher
+     *
+     * @queryParam id int required Customer ID
+     *
+     * @response 200 {
+     *  "success": true,
+     *  "message": "Correct permanent destroy."
+     * }
+     *
+     * @response 455 {
+     *  "success": false,
+     *  "message": "ID is absent."
+     * }
+     *
+     * @response 453 {
+     *  "success": false,
+     *  "message": "Permission is absent by the role."
+     * }
+     *
+     * @response 454 {
+     *  "success": false,
+     *  "message": "Permission to department is absent."
+     * }
+     *
+     * @param $id
+     * @return void
+     */
+    public
+    function destroyPermanently($id)
+    {
+        $organization = Organization::withTrashed()->whereId($id)->first();
+
+        if (!$organization) {
+            $response = [
+                'success' => false,
+                'message' => 'ID is absent.'
+            ];
+
+            return response()->json($response, 455);
+        }
+
+        $organization->forceDelete();
+        $response = [
+            'success' => true,
+            'message' => 'Organization is deleted permanently.'
+        ];
+
+        return response()->json($response, 200);
     }
 }

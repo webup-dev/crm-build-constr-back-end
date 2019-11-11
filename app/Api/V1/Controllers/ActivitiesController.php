@@ -47,7 +47,7 @@ class ActivitiesController extends Controller
      *
      * @response 401 {
      *  "success": false,
-     *  "message": "You do not have permissions."
+     *  "message": "Permission is absent by the role."
      * }
      *
      * @return Response
@@ -80,7 +80,7 @@ class ActivitiesController extends Controller
      *
      * @response 401 {
      *  "success": false,
-     *  "message": "You do not have permissions."
+     *  "message": "Permission is absent by the role."
      * }
      *
      * @response 500 {

@@ -24,13 +24,13 @@ class PlatformAdmin
 
         $roleNamesArr= $roles->pluck('name')->all();
 
-        if (one_from_arr_in_other_arr(['developer', 'superadmin', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
+        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $next($request);
         }
 
         $response = [
             'success' => false,
-            'message' => 'You do not have permissions.'
+            'message' => 'Permission is absent by the role.'
         ];
 
         return response()->json($response, 453);

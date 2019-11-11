@@ -43,30 +43,6 @@ class UserProfilesSeeder extends Seeder
 
         DB::table('user_profiles')->insert([
             'user_id'          => 2,
-            'first_name'       => 'Volodymyr',
-            'last_name'        => 'Vadiasov',
-            'title'            => '',
-            'department_id'    => 1,
-            'phone_home'       => '',
-            'phone_work'       => '',
-            'phone_extension'  => '',
-            'phone_mob'        => '',
-            'email_personal'   => '',
-            'email_work'       => '',
-            'address_line_1'   => 'Williams 7',
-            'address_line_2'   => '',
-            'city'             => 'Kyiv',
-            'state'            => 'CA',
-            'zip'              => '90001',
-            'status'           => 'active',
-            'start_date'       => null,
-            'termination_date' => null,
-            'deleted_at'       => null,
-            'created_at'       => now()
-        ]);
-
-        DB::table('user_profiles')->insert([
-            'user_id'          => 3,
             'first_name'       => 'Steven',
             'last_name'        => 'Caamano',
             'title'            => '',
@@ -90,7 +66,7 @@ class UserProfilesSeeder extends Seeder
         ]);
 
         DB::table('user_profiles')->insert([
-            'user_id'          => 4,
+            'user_id'          => 3,
             'first_name'       => 'Platform',
             'last_name'        => 'Admin',
             'title'            => '',
@@ -114,11 +90,35 @@ class UserProfilesSeeder extends Seeder
         ]);
 
         DB::table('user_profiles')->insert([
-            'user_id'          => 5,
-            'first_name'       => 'Organization-A',
+            'user_id'          => 4,
+            'first_name'       => 'WNY',
             'last_name'        => 'Superadmin',
             'title'            => '',
-            'department_id'    => 4,
+            'department_id'    => 2,
+            'phone_home'       => '',
+            'phone_work'       => '',
+            'phone_extension'  => '',
+            'phone_mob'        => '',
+            'email_personal'   => '',
+            'email_work'       => '',
+            'address_line_1'   => '1504 Scottsville Rd',
+            'address_line_2'   => '',
+            'city'             => 'New York',
+            'state'            => 'NY',
+            'zip'              => '14623',
+            'status'           => 'active',
+            'start_date'       => null,
+            'termination_date' => null,
+            'deleted_at'       => null,
+            'created_at'       => now()
+        ]);
+
+        DB::table('user_profiles')->insert([
+            'user_id'          => 5,
+            'first_name'       => 'WNY',
+            'last_name'        => 'Admin',
+            'title'            => '',
+            'department_id'    => 2,
             'phone_home'       => '',
             'phone_work'       => '',
             'phone_extension'  => '',
@@ -139,10 +139,10 @@ class UserProfilesSeeder extends Seeder
 
         DB::table('user_profiles')->insert([
             'user_id'          => 6,
-            'first_name'       => 'Organization-A',
-            'last_name'        => 'Admin',
+            'first_name'       => 'WNY',
+            'last_name'        => 'General-Manager',
             'title'            => '',
-            'department_id'    => 4,
+            'department_id'    => 2,
             'phone_home'       => '',
             'phone_work'       => '',
             'phone_extension'  => '',
@@ -162,11 +162,35 @@ class UserProfilesSeeder extends Seeder
         ]);
 
         DB::table('user_profiles')->insert([
-            'user_id'          => 7,
-            'first_name'       => 'Organization-A',
-            'last_name'        => 'General-Manager',
+            'user_id'          => 11,
+            'first_name'       => 'WNY',
+            'last_name'        => 'Estimator',
             'title'            => '',
-            'department_id'    => 4,
+            'department_id'    => 5,
+            'phone_home'       => '',
+            'phone_work'       => '',
+            'phone_extension'  => '',
+            'phone_mob'        => '',
+            'email_personal'   => '',
+            'email_work'       => '',
+            'address_line_1'   => '1504 Scottsville Rd',
+            'address_line_2'   => '',
+            'city'             => 'New York',
+            'state'            => 'NY',
+            'zip'              => '14623',
+            'status'           => 'active',
+            'start_date'       => null,
+            'termination_date' => null,
+            'deleted_at'       => null,
+            'created_at'       => now()
+        ]);
+
+        DB::table('user_profiles')->insert([
+            'user_id'          => 11,
+            'first_name'       => 'WNY',
+            'last_name'        => 'Project-Manager',
+            'title'            => '',
+            'department_id'    => 7,
             'phone_home'       => '',
             'phone_work'       => '',
             'phone_extension'  => '',

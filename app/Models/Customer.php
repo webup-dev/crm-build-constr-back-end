@@ -31,6 +31,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Customer withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Customer withoutTrashed()
  * @mixin \Eloquent
+ * @property int $user_id
+ * @property int $organization_id
+ * @property-read \App\Models\CustomerIndividual $customer_individual
+ * @property-read \App\Models\Organization $organization
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereOrganizationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereUserId($value)
  */
 class Customer extends Model
 {
@@ -64,6 +71,16 @@ class Customer extends Model
     public function organization()
     {
         return $this->belongsTo('App\Models\Organization', 'organization_id', 'id');
+    }
+
+    /**
+     * customer_individual <-> customer: one-to-one
+     *
+     * Get the customer_individual record associated with the customer_individual
+     */
+    public function customer_individual()
+    {
+        return $this->hasOne('App\Models\CustomerIndividual', 'customer_id', 'id');
     }
 
 }

@@ -34,12 +34,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Organization withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Organization withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Customer[] $customer
  */
 class Organization extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['order', 'name', 'parent_id'];
+    protected $fillable = ['level', 'order', 'name', 'parent_id'];
 
     /**
      * Organization - Organization: one-to-many

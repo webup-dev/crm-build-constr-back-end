@@ -6,9 +6,10 @@ use Closure;
 use Tymon\JWTAuth\JWTAuth;
 use Auth;
 
-class OrganizationAdmin
+class Organizations_OrganizationAdmin
 {
     /**
+     * Middleware for routes with organization ID in URL.
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
@@ -49,6 +50,9 @@ class OrganizationAdmin
             ];
 
             return response()->json($response, 454);
+        } else {
+            // own account
+
         }
 
         $response = [

@@ -20,7 +20,7 @@ class CreateCustomersTable extends Migration
             $table->string('name');
             $table->enum('type', ['individual', 'organization']);
             $table->string('note')->nullable();
-            $table->integer('organization_id')->unsigned()->index();
+            $table->integer('organization_id')->unsigned();
             $table->foreign('organization_id')->references('id')->on('organizations')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();

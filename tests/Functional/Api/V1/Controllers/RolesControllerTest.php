@@ -93,7 +93,7 @@ class RolesControllerTest extends WnyTestCase
         $user->save();
 
         $role1 = new Role([
-            'name'     => 'superadmin',
+            'name'     => 'platform-superadmin',
         ]);
 
         $role1->save();

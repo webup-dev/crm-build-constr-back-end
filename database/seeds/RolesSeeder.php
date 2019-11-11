@@ -16,13 +16,8 @@ class RolesSeeder extends Seeder
          * Add Roles
          *
          */
-        if (Role::where('name', '=', 'superadmin')->first() === null) {
-            $role = Role::create([
-                'name'       => 'superadmin',
-                'created_at' => now()
-            ]);
-        }
 
+        // 1
         if (Role::where('name', '=', 'developer')->first() === null) {
             $role = Role::create([
                 'name'       => 'developer',
@@ -30,6 +25,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 2
         if (Role::where('name', '=', 'platform-superadmin')->first() === null) {
             $role = Role::create([
                 'name'       => 'platform-superadmin',
@@ -37,6 +33,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 3
         if (Role::where('name', '=', 'platform-admin')->first() === null) {
             $role = Role::create([
                 'name'       => 'platform-admin',
@@ -44,6 +41,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 4
         if (Role::where('name', '=', 'organization-superadmin')->first() === null) {
             $role = Role::create([
                 'name'       => 'organization-superadmin',
@@ -51,6 +49,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 5
         if (Role::where('name', '=', 'organization-admin')->first() === null) {
             $role = Role::create([
                 'name'       => 'organization-admin',
@@ -58,6 +57,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 6
         if (Role::where('name', '=', 'organization-general-manager')->first() === null) {
             $role = Role::create([
                 'name'       => 'organization-general-manager',
@@ -65,6 +65,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 7
         if (Role::where('name', '=', 'organization-sales-manager')->first() === null) {
             $role = Role::create([
                 'name'       => 'organization-sales-manager',
@@ -72,6 +73,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 8
         if (Role::where('name', '=', 'organization-production-manager')->first() === null) {
             $role = Role::create([
                 'name'       => 'organization-production-manager',
@@ -79,6 +81,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 9
         if (Role::where('name', '=', 'organization-administrative-leader')->first() === null) {
             $role = Role::create([
                 'name'       => 'organization-administrative-leader',
@@ -86,6 +89,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 10
         if (Role::where('name', '=', 'organization-estimator')->first() === null) {
             $role = Role::create([
                 'name'       => 'organization-estimator',
@@ -93,6 +97,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 11
         if (Role::where('name', '=', 'organization-project-manager')->first() === null) {
             $role = Role::create([
                 'name'       => 'organization-project-manager',
@@ -100,6 +105,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 12
         if (Role::where('name', '=', 'organization-administrative-assistant')->first() === null) {
             $role = Role::create([
                 'name'       => 'organization-administrative-assistant',
@@ -107,6 +113,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 13
         if (Role::where('name', '=', 'installer-admin')->first() === null) {
             $role = Role::create([
                 'name'       => 'installer-admin',
@@ -114,6 +121,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 14
         if (Role::where('name', '=', 'installer-team-lead')->first() === null) {
             $role = Role::create([
                 'name'       => 'installer-team-lead',
@@ -121,6 +129,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 15
         if (Role::where('name', '=', 'customer-individual')->first() === null) {
             $role = Role::create([
                 'name'       => 'customer-individual',
@@ -128,6 +137,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 16
         if (Role::where('name', '=', 'customer-organization')->first() === null) {
             $role = Role::create([
                 'name'       => 'customer-organization',
@@ -135,6 +145,7 @@ class RolesSeeder extends Seeder
             ]);
         }
 
+        // 17
         if (Role::where('name', '=', 'guest')->first() === null) {
             $role = Role::create([
                 'name'       => 'guest',

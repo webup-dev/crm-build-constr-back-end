@@ -23,14 +23,14 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * @group Customers
  */
-class CustomersController extends Controller
+class CustomerIndividualsController extends Controller
 {
     use Helpers;
 
     public function __construct()
     {
-        $this->middleware('customers_organization.users')->only(['index', 'store', 'show', 'update']);
-        $this->middleware('customers_organization.admin')->only(['softDestroy']);
+        $this->middleware('organization.user')->only(['index', 'store', 'show', 'update']);
+        $this->middleware('organization.admin')->only(['softDestroy']);
         $this->middleware('platform.admin')->only(['indexSoftDeleted', 'restore', 'destroyPermanently']);
         $this->middleware('activity');
     }
@@ -86,13 +86,11 @@ class CustomersController extends Controller
      */
     public function index()
     {
-        // Define user.role to form response
+        // check custom access
         $user         = Auth::guard()->user();
         $roles        = $user->roles;
         $roleNamesArr = $roles->pluck('name')->all();
         $accessArray  = [
-            'organization-superadmin',
-            'organization-admin',
             'organization-general-manager',
             'organization-sales-manager',
             'organization-production-manager',
@@ -102,23 +100,21 @@ class CustomersController extends Controller
             'organization-administrative-assistant'
         ];
         if (one_from_arr_in_other_arr($accessArray, $roleNamesArr)) {
-            // only its organizations
             $user         = User::find($user->id);
             $userProfile  = $user->user_profile;
             $departmentId = $userProfile->department_id;
 
-            $customers = Customer::with('organization')
+            $userProfiles = Customer::with('organization')
                 ->select('id', 'user_id', 'name', 'organization_id', 'type', 'type', 'note', 'deleted_at', 'created_at', 'updated_at')
                 ->where('organization_id', $departmentId)
                 ->get();
         } else {
-            // all organizations
-            $customers = Customer::with('organization')
+            $userProfiles = Customer::with('organization')
                 ->select('id', 'user_id', 'name', 'organization_id', 'type', 'type', 'note', 'deleted_at', 'created_at', 'updated_at')
                 ->get();
         }
 
-        if ($customers->count() === 0) {
+        if ($userProfiles->count() === 0) {
             $response = [
                 'success' => true,
                 'message' => "Customers are absent."
@@ -127,7 +123,7 @@ class CustomersController extends Controller
             return response()->json($response, 204);
         }
 
-        $data = $customers->toArray();
+        $data = $userProfiles->toArray();
 
         $response = [
             'success' => true,
@@ -258,18 +254,16 @@ class CustomersController extends Controller
         $user        = Auth::guard()->user();
         $userProfile = $user->user_profile;
 
-        $organizations = Organization::all()->toArray();
-
-        if (!isOwn($organizations, $userProfile->department_id, $data['organization_id'])) {
+        if ($userProfile->department_id !== $data['organization_id']) {
             $response = [
                 'success' => false,
-                'message' => 'Permission is absent by the role.'
+                'message' => 'You do not have permissions.'
             ];
 
             return response()->json($response, 453);
         }
 
-       $data['user_id'] = $this->createUser($data);
+        $data['user_id'] = $this->createUser($data);
 
         $customer = new Customer([
             'user_id'         => $data['user_id'],
@@ -342,11 +336,6 @@ class CustomersController extends Controller
      *  "message": "You do not have permissions."
      * }
      *
-     * @response 454 {
-     *  "success": false,
-     *  "message": "Permission to department is absent."
-     * }
-     *
      * @param int $id
      * @return \Illuminate\Http\Response
      */
@@ -361,6 +350,14 @@ class CustomersController extends Controller
             ];
 
             return response()->json($response, 422);
+        }
+        if (!$this->checkUserFromOrganization($customer->organization_id)) {
+            $response = [
+                'success' => false,
+                'message' => "You do not have permissions."
+            ];
+
+            return response()->json($response, 453);
         }
 
         $user         = $customer->user;
@@ -447,7 +444,7 @@ class CustomersController extends Controller
         if (isset($data['organization_id']) && $userProfile->department_id !== $data['organization_id']) {
             $response = [
                 'success' => false,
-                'message' => 'Permission is absent by the role.'
+                'message' => 'You do not have permissions.'
             ];
 
             return response()->json($response, 453);
