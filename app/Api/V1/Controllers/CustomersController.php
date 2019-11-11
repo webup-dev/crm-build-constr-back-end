@@ -436,15 +436,14 @@ class CustomersController extends Controller
             return response()->json($response, 453);
         }
 
-        $this->checkUserFromOrganization($customer->organization_id);
-
         $data = $request->all();
 
-        // Check is organization_id is available
+        // Check is organization_id available
+        $organizations = Organization::all()->toArray();
         $user        = Auth::guard()->user();
         $userProfile = $user->user_profile;
 
-        if (isset($data['organization_id']) && $userProfile->department_id !== $data['organization_id']) {
+        if (!isOwn($organizations, $userProfile->department_id, $data['organization_id'])) {
             $response = [
                 'success' => false,
                 'message' => 'Permission is absent by the role.'
@@ -514,13 +513,14 @@ class CustomersController extends Controller
         }
 
         // Check is organization_id is available
+        $organizations = Organization::all()->toArray();
         $user        = Auth::guard()->user();
         $userProfile = $user->user_profile;
 
-        if ($userProfile->department_id !== $customer->organization_id) {
+        if (!isOwn($organizations, $userProfile->department_id, $customer->organization_id)) {
             $response = [
                 'success' => false,
-                'message' => 'You do not have permissions.'
+                'message' => 'Permission is absent by the role.'
             ];
 
             return response()->json($response, 453);
