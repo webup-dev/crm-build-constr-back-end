@@ -65,15 +65,12 @@ if (!function_exists('isOwn')) {
     // collect all values of the key from tree
     function isOwn(array $elements, $parentId, $checkingId)
     {
-//        dd("here isOwn");
         $tree         = buildTree($elements, $parentId);
-//        dd($tree);
         $availableIds = collectValues($tree, 'id', []);
         // add parent ID
         $availableIds[] = $parentId;
-//        dd($availableIds);
-        $res          = in_array($checkingId, $availableIds);
-//        dd($res);
+        $res            = in_array($checkingId, $availableIds);
+
         return $res;
     }
 }

@@ -69,5 +69,7 @@ class Kernel extends HttpKernel
         'customers_organization.users'         => \App\Http\Middleware\Customers_OrganizationUsers::class,
         'customers_organization.admin.own'     => \App\Http\Middleware\Customers_OrganizationAdminOwn::class,
         'organization.user'                    => \App\Http\Middleware\OrganizationUser::class,
+        'soft_deleted_menu_organization.admin' => \App\Http\Middleware\SoftDeletedMenu_OrganizationAdmin::class,
+
     ];
 }

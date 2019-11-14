@@ -1,19 +1,20 @@
 Issue Type,Summary,Story Point Estimate
 Story,Planning,1
 Story,Create new Branch,0.5
-Story,Create Specifications,3
+Story,Create Specifications,5
 Story,Create List of error codes,1
 Story,Create routes,0.5
 Story,Create Controller,0.5
-Story,Use middlewares,0
-Story,Create module documentation,8
+Story,Create middleware,2
+Story,Use middlewares,0.5
+Story,Create module documentation,2
 Story,Create a file of tests,0.5
-Story,Create Tests Documentation,3
+Story,Create Tests Documentation,2
 Story,Create seed,2
-Story,Create Tests Setup,3
-Story,Create PHP test functions,13
+Story,Create Tests Setup,2
+Story,Create PHP test functions,2
 Story,Create API functions. GetSoftDeleted,5
 Story,Create Postman tests,1
 Story,Make Postman tests,1
-Story,Testing of functions,8
+Story,Testing of functions,2
 Story,Deployment,3

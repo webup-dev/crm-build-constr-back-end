@@ -284,11 +284,10 @@ class OrganizationsController extends Controller
      * }
      *
      * @response 422 {
-     *  'error' =>
-     *       [
-     *         'message',
-     *         'errors'
-     *       ]
+     *  "error": [
+     *      "message",
+     *      "errors"
+     *   ]
      * }
      *
      * @response 453 {

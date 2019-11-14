@@ -145,6 +145,10 @@ $api->version('v1', function (Router $api) {
         $api->delete('customers/{id}/permanently', 'App\Api\V1\Controllers\CustomersController@destroyPermanently');
     });
 
+    $api->group(['middleware' => ['api.auth']], function (Router $api) {
+        $api->get('soft-deleted-items', 'App\Api\V1\Controllers\MenusController@getSoftDeleted');
+    });
+
 
 //    $api->get('book', 'App\Api\V1\Controllers\BookController@index');
 

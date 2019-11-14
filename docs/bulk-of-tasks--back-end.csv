@@ -1,23 +1,25 @@
 Issue Type,Summary,Story Point Estimate
 Story,Planning,1
 Story,Create new Branch,0.5
-Story,Create Specifications,1
+Story,Create Specifications,5
 Story,Create List of error codes,1
 Story,Create migration,0.5
 Story,Create Model,0.5
-Story,Create seed,0.5
+Story,Edit seed,1
 Story,Create routes,0.5
-Story,Create middleware,3
+Story,Create middlewares,0
 Story,Create Controller,0.5
-Story,Create module documentation,3
+Story,Create module documentation,8
 Story,Create a file of tests,0.5
-Story,Create Tests Documentation,2
-Story,Create PHP test functions,5
+Story,Create Tests Documentation,3
+Story,Create PHP test functions,13
+Story,Edit method store in CustomersController,3
+Story,Create API functions. update,5
+Story,Create API functions. show,3
+Story,Edit API functions. destroy,2
+Story,Edit API functions. restore,2
+Story,Edit API functions. permanentDelete,2
 Story,Create Postman tests,1
-Story,Create API functions. Index, 3
-Story,Create API functions. Store, 3
-Story,Create API functions. Update, 3
-Story,Create API functions. Delete, 1
 Story,Make Postman tests,1
-Story,Make PHP test functions,5
+Story,Testing of functions,8
 Story,Deployment,3
