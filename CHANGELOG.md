@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.16.0] - 2019-11-15
+### Added
+- Level of organizations (Platform is "owner" of all organizations). Roles are updated according to the new organizations structure. API endpoint SoftDeleted is created. 
+
 ## [0.15.0] - 2019-10-31
 ### Added
 - Module Customers.
