@@ -1,0 +1,15 @@
+Issue Type,Summary,Story Point Estimate
+Story,Create new Branch,0.5
+Story,Planning,3
+Story,Create menu Soft-deleted in nav_platform_superadmin,0.5
+Story,Insert in Soft-deleted menu User-profiles,0.5
+Story,Insert in Soft-deleted menu Customers,0.5
+Story,After login with required role...,0.5
+Story,Create a request to count soft-deleted,2
+Story,insert data from the request in the store,2
+Story,bind saved data in the store to the menu,2
+Story,Delete old “soft-deleted” points from the menu,0.5
+Story,Create a block Soft-deleted in the Dashboard,3
+Story,Copy menu to developer platform-admin,1
+Story,Copy dashboard block to developer platform-admin,1
+Story,Deployment,3
