@@ -38,6 +38,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereOrganizationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereUserId($value)
+ * @property string|null $line_1
+ * @property string|null $line_2
+ * @property string|null $city
+ * @property string|null $state
+ * @property string|null $zip
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereLine1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereLine2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereState($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereZip($value)
  */
 class Customer extends Model
 {
@@ -46,23 +56,26 @@ class Customer extends Model
     protected $table = 'customers';
     protected $fillable = [
         'name',
-        'user_id',
-        'organization_id',
         'type',
-        'note',
+        'organization_id',
+        'line_1',
+        'line_2',
+        'city',
+        'state',
+        'zip',
         'deleted_at'
     ];
 
-    /**
-     * user <-> customer: one-to-one
-     *
-     * Get the user that belong to the customer.
-     */
-    public function user()
-    {
-        return $this->belongsTo('App\Models\User', 'user_id', 'id');
-    }
-
+//    /**
+//     * user <-> customer: one-to-one
+//     *
+//     * Get the user that belong to the customer.
+//     */
+//    public function user()
+//    {
+//        return $this->belongsTo('App\Models\User', 'user_id', 'id');
+//    }
+//
     /**
      * organizations <-> customer: one-to-many
      *
@@ -72,15 +85,4 @@ class Customer extends Model
     {
         return $this->belongsTo('App\Models\Organization', 'organization_id', 'id');
     }
-
-    /**
-     * customer_individual <-> customer: one-to-one
-     *
-     * Get the customer_individual record associated with the customer_individual
-     */
-    public function customer_individual()
-    {
-        return $this->hasOne('App\Models\CustomerIndividual', 'customer_id', 'id');
-    }
-
 }

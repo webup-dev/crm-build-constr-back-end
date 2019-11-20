@@ -141,7 +141,7 @@ class UsersSeeder extends Seeder
         // 16
         DB::table('users')->insert([
             'name'       => 'Customer A-WNY',
-            'email'      => 'wny-customer-individual@admin.com',
+            'email'      => 'wny-customer-a-individual@admin.com',
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
@@ -162,6 +162,29 @@ class UsersSeeder extends Seeder
             'created_at' => now()
         ]);
 
+        // 19
+        DB::table('users')->insert([
+            'name'       => 'Customer C-WNY',
+            'email'      => 'wny-customer-c-individual@admin.com',
+            'password'   => bcrypt('12345678'),
+            'created_at' => now()
+        ]);
+
+        // 20
+        DB::table('users')->insert([
+            'name'       => 'Customer D-WNY',
+            'email'      => 'wny-customer-d-individual@admin.com',
+            'password'   => bcrypt('12345678'),
+            'created_at' => now()
+        ]);
+
+        // 21
+        DB::table('users')->insert([
+            'name'       => 'Spring Superadmin',
+            'email'      => 'Spring-superadmin@admin.com',
+            'password'   => bcrypt('12345678'),
+            'created_at' => now()
+        ]);
 
     }
 }

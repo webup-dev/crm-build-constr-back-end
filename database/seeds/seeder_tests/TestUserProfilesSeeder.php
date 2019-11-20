@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,6 +17,7 @@ class TestUserProfilesSeeder extends Seeder
          * Add User Profiles
          *
          */
+        // 1
         DB::table('user_profiles')->insert([
             'user_id'          => 1,
             'first_name'       => 'Volodymyr',
@@ -197,6 +199,31 @@ class TestUserProfilesSeeder extends Seeder
             'last_name'        => 'Project-Manager',
             'title'            => '',
             'department_id'    => 7,
+            'phone_home'       => '',
+            'phone_work'       => '',
+            'phone_extension'  => '',
+            'phone_mob'        => '',
+            'email_personal'   => '',
+            'email_work'       => '',
+            'address_line_1'   => '1504 Scottsville Rd',
+            'address_line_2'   => '',
+            'city'             => 'New York',
+            'state'            => 'NY',
+            'zip'              => '14623',
+            'status'           => 'active',
+            'start_date'       => null,
+            'termination_date' => null,
+            'deleted_at'       => null,
+            'created_at'       => now()
+        ]);
+
+        // 9
+        DB::table('user_profiles')->insert([
+            'user_id'          => 21,
+            'first_name'       => 'Spring',
+            'last_name'        => 'Superadmin',
+            'title'            => '',
+            'department_id'    => 9,
             'phone_home'       => '',
             'phone_work'       => '',
             'phone_extension'  => '',

@@ -66,6 +66,7 @@ class Kernel extends HttpKernel
         'user_profiles_organization.admin'     => \App\Http\Middleware\UserProfiles_OrganizationAdmin::class,
         'user_profiles_organization.admin.own' => \App\Http\Middleware\UserProfiles_OrganizationAdminOwn::class,
         'customers_organization.admin'         => \App\Http\Middleware\Customers_OrganizationAdmin::class,
+        'customers_organization.superadmin'    => \App\Http\Middleware\Customers_OrganizationSuperadmin::class,
         'customers_organization.users'         => \App\Http\Middleware\Customers_OrganizationUsers::class,
         'customers_organization.admin.own'     => \App\Http\Middleware\Customers_OrganizationAdminOwn::class,
         'organization.user'                    => \App\Http\Middleware\OrganizationUser::class,

@@ -30,7 +30,7 @@ class CustomersController extends Controller
     public function __construct()
     {
         $this->middleware('customers_organization.users')->only(['index', 'store', 'show', 'update']);
-        $this->middleware('customers_organization.admin')->only(['softDestroy']);
+        $this->middleware('customers_organization.superadmin')->only(['softDestroy']);
         $this->middleware('platform.admin')->only(['indexSoftDeleted', 'restore', 'destroyPermanently']);
         $this->middleware('activity');
     }
@@ -48,24 +48,20 @@ class CustomersController extends Controller
      *  "success": true,
      *  "data": [{
      *    "id": 1,
-     *    "user_id": 1,
      *    "name": "Customer Test A",
      *    "organization_id": 1,
      *    "organization": "object",
      *    "type": "individual",
-     *    "note": "He is going to build a new building.",
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
      *   },
      *   {
      *    "id": 2,
-     *    "user_id": 2,
      *    "name": "Customer Test B",
      *    "organization_id": 1,
      *    "organization": "object",
      *    "type": "organization",
-     *    "note": "He is going to build a new building.",
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
@@ -108,13 +104,13 @@ class CustomersController extends Controller
             $departmentId = $userProfile->department_id;
 
             $customers = Customer::with('organization')
-                ->select('id', 'user_id', 'name', 'organization_id', 'type', 'type', 'note', 'deleted_at', 'created_at', 'updated_at')
+                ->select('id', 'name', 'organization_id', 'type', 'deleted_at', 'created_at', 'updated_at')
                 ->where('organization_id', $departmentId)
                 ->get();
         } else {
             // all organizations
             $customers = Customer::with('organization')
-                ->select('id', 'user_id', 'name', 'organization_id', 'type', 'type', 'note', 'deleted_at', 'created_at', 'updated_at')
+                ->select('id', 'name', 'organization_id', 'type', 'deleted_at', 'created_at', 'updated_at')
                 ->get();
         }
 
@@ -138,11 +134,6 @@ class CustomersController extends Controller
         return response()->json($response, 200);
     }
 
-    private function getNestedDepartmentIds($organization_id)
-    {
-
-    }
-
     /**
      * Get index of soft-deleted customers
      *
@@ -154,22 +145,18 @@ class CustomersController extends Controller
      *  "success": true,
      *  "data": [{
      *    "id": 1,
-     *    "user_id": 1,
      *    "name": "Customer Test A",
      *    "organization_id": 1,
      *    "type": "individual",
-     *    "note": "He is going to build a new building.",
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
      *   },
      *   {
      *    "id": 2,
-     *    "user_id": 2,
      *    "name": "Customer Test B",
      *    "organization_id": 1,
      *    "type": "individual",
-     *    "note": "He is going to build a new building.",
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
@@ -192,7 +179,7 @@ class CustomersController extends Controller
     {
         $customers = Customer::onlyTrashed()
             ->with('organization')
-            ->select('id', 'user_id', 'name', 'type', 'organization_id', 'note', 'deleted_at', 'created_at', 'updated_at')
+            ->select('id', 'name', 'type', 'organization_id', 'deleted_at', 'created_at', 'updated_at')
             ->get();
 
         if (!$customers->count()) {
@@ -220,7 +207,7 @@ class CustomersController extends Controller
      *
      * @bodyParam name string required Customer Name
      * @bodyParam type string required Customer Type
-     * @bodyParam note string Note
+     * @bodyParam organization_id integer Organization Id
      *
      * Access:
      *   direct access:
@@ -269,14 +256,15 @@ class CustomersController extends Controller
             return response()->json($response, 453);
         }
 
-       $data['user_id'] = $this->createUser($data);
-
         $customer = new Customer([
-            'user_id'         => $data['user_id'],
-            'name'            => $data['first_name'] . " " . $data['last_name'],
+            'name'            => $data['name'],
+            'organization_id' => $data['organization_id'],
             'type'            => $data['type'],
-            'note'            => $data['note'],
-            'organization_id' => $data['organization_id']
+            'line_1'          => $data['line_1'],
+            'line_2'          => $data['line_2'],
+            'city'            => $data['city'],
+            'state'           => $data['state'],
+            'zip'             => $data['zip'],
         ]);
 
         if ($customer->save()) {
@@ -286,27 +274,8 @@ class CustomersController extends Controller
             ];
             return response()->json($response, 200);
         } else {
-            $user = User::whereId($data['user_id'])->first();
-            $user->delete();
-            $user->forceDelete();
             return $this->response->error('Could not create Customer', 500);
         }
-    }
-
-    private
-    function createUser($data)
-    {
-        $user = new User([
-            'password' => bcrypt($data['password']),
-            'name'     => $data['first_name'] . ' ' . $data['last_name'],
-            'email'    => $data['email']
-        ]);
-
-        if (!$user->save()) {
-            throw new HttpException(500);
-        }
-
-        return $user->id;
     }
 
     /**
@@ -318,15 +287,12 @@ class CustomersController extends Controller
      *  "success": true,
      *  "data": {
      *     "id": 1,
-     *     "user_id": "Customer A",
      *     "name": "Central Office",
      *     "type": "individual",
-     *     "note": "Note",
      *     "organization_id": 1,
      *     "deleted_at": null,
      *     "created_at": "2019-12-08 13:25:36",
      *     "updated_at": "2019-12-08 13:25:36",
-     *     "user": "user object",
      *     "organization": "organization object"
      *  },
      *  "message": "Item is retrieved successfully."
@@ -352,7 +318,7 @@ class CustomersController extends Controller
      */
     public function show($id)
     {
-        $customer     = Customer::whereId($id)
+        $customer = Customer::whereId($id)
             ->first();
         if (!$customer) {
             $response = [
@@ -388,17 +354,15 @@ class CustomersController extends Controller
      *
      * @bodyParam name string required Customer Name
      * @bodyParam type string required Customer Type
-     * @bodyParam note string Note
+     * @bodyParam organization_id integer Organization Id
      *
      * @response 200 {
      *  "success": true,
      *  "data": {
      *    "id": 1,
-     *    "user_id": 1,
      *    "name": "Customer Test A",
      *    "organization_id": 1,
      *    "type": "individual",
-     *    "note": "He is going to build a new building.",
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
@@ -415,7 +379,12 @@ class CustomersController extends Controller
      *
      * @response 453 {
      *  "success": true,
-     *  "message": "Customer does not exist."
+     *  "message": "Permission is absent by the role."
+     * }
+     *
+     * @response 454 {
+     *  "success": false,
+     *  "message": "Permission to department is absent."
      * }
      *
      * @param UpdateCustomer $request
@@ -425,6 +394,7 @@ class CustomersController extends Controller
     public
     function update(UpdateCustomer $request, $id)
     {
+//        dd("here Controller");
         $customer = Customer::whereId($id)->first();
 
         if (!$customer) {
@@ -440,8 +410,8 @@ class CustomersController extends Controller
 
         // Check is organization_id available
         $organizations = Organization::all()->toArray();
-        $user        = Auth::guard()->user();
-        $userProfile = $user->user_profile;
+        $user          = Auth::guard()->user();
+        $userProfile   = $user->user_profile;
 
         if (!isOwn($organizations, $userProfile->department_id, $data['organization_id'])) {
             $response = [
@@ -476,7 +446,7 @@ class CustomersController extends Controller
      *   direct access:
      *     platform-admin and higher
      *   conditional access:
-     *     organization-user - to users of his organization
+     *     organization-superadmin - to users of his organization
      *
      * @queryParam id int required Customer ID
      *
@@ -514,8 +484,8 @@ class CustomersController extends Controller
 
         // Check is organization_id is available
         $organizations = Organization::all()->toArray();
-        $user        = Auth::guard()->user();
-        $userProfile = $user->user_profile;
+        $user          = Auth::guard()->user();
+        $userProfile   = $user->user_profile;
 
         if (!isOwn($organizations, $userProfile->department_id, $customer->organization_id)) {
             $response = [
@@ -526,18 +496,18 @@ class CustomersController extends Controller
             return response()->json($response, 453);
         }
 
-        $user = User::whereId($customer->user_id)->first();
-
-        // there are 3 DB tables that are bond to User: activities, user_roles, customers
-        Activity::truncate();
-
-        $userRoles = User_role::whereUserId($user->id)->get();
-        foreach ($userRoles as $userRole) {
-            $userRole->delete();
-        }
+//        $user = User::whereId($customer->user_id)->first();
+//
+//        // there are 3 DB tables that are bond to User: activities, user_roles, customers
+//        Activity::truncate();
+//
+//        $userRoles = User_role::whereUserId($user->id)->get();
+//        foreach ($userRoles as $userRole) {
+//            $userRole->delete();
+//        }
 
         $customer->delete();
-        $user->delete();
+//        $user->delete();
 
         $response = [
             'success' => true,
@@ -571,6 +541,11 @@ class CustomersController extends Controller
      *  "message": "You do not have permission."
      * }
      *
+     * * @response 454 {
+     *  "success": false,
+     *  "message": "Permission to department is absent."
+     * }
+     *
      * @param $id
      * @return void
      */
@@ -588,23 +563,20 @@ class CustomersController extends Controller
         }
 
         // Check is organization_id is available
+        $organizations = Organization::all()->toArray();
         $user        = Auth::guard()->user();
         $userProfile = $user->user_profile;
 
-//        if ($userProfile->department_id !== $customer->organization_id) {
-//            $response = [
-//                'success' => false,
-//                'message' => 'You do not have permissions.'
-//            ];
-//
-//            return response()->json($response, 453);
-//        }
+        if (!isOwn($organizations, $userProfile->department_id, $customer->organization_id)) {
+            $response = [
+                'success' => false,
+                'message' => 'Permission is absent by the role.'
+            ];
 
-        // Restore user
-        $user = User::onlyTrashed()->whereId($customer->user_id)->first();
-        $user->restore();
+            return response()->json($response, 453);
+        }
 
-        // Restore user profile
+        // Restore customer
         $customer->restore();
 
         $response = [

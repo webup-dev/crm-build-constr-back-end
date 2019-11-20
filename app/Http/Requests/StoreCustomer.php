@@ -24,13 +24,14 @@ class StoreCustomer extends FormRequest
     public function rules()
     {
         return [
-            'first_name'      => 'required|string',
-            'last_name'       => 'required|string',
-            'type'            => 'required|string',
-            'note'            => 'string',
+            'name'            => 'required|string',
             'organization_id' => 'required|integer',
-            'email'           => 'required|email',
-            'password'        => 'required|string'
+            'type'            => 'required|string',
+            'line_1'          => 'string',
+            'line_2'          => 'string',
+            'city'            => 'string',
+            'state'           => 'string',
+            'zip'             => 'string'
         ];
     }
 }

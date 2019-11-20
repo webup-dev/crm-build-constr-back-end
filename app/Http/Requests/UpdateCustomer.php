@@ -24,11 +24,14 @@ class UpdateCustomer extends FormRequest
     public function rules()
     {
         return [
-            'user_id'         => 'required|integer',
-            'name'            => 'required|string',
-            'type'            => 'required|string',
-            'note'            => 'string',
-            'organization_id' => 'required|integer'
+            'name'            => 'string',
+            'organization_id' => 'integer',
+            'type'            => 'string',
+            'line_1'          => 'string',
+            'line_2'          => 'string',
+            'city'            => 'string',
+            'state'           => 'string',
+            'zip'             => 'string'
         ];
     }
 }

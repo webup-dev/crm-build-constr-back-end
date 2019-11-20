@@ -35,6 +35,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Organization withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Organization withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Customer[] $customer
+ * @property int $level
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereLevel($value)
  */
 class Organization extends Model
 {

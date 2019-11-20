@@ -141,22 +141,4 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne('App\Models\Customer', 'user_id');
     }
-
-    /**
-     * user <-> customer_individual: one-to-many
-     * Get the created customer_individual.
-     */
-    public function customerIndividualCreated()
-    {
-        return $this->hasMany('App\Models\CustomerIndividual', 'created_by_id', 'id');
-    }
-
-    /**
-     * user <-> customer_individual: one-to-many
-     * Get the updated customer_individual.
-     */
-    public function customerIndividualUpdated()
-    {
-        return $this->hasMany('App\Models\CustomerIndividual', 'updated_by_id', 'id');
-    }
 }

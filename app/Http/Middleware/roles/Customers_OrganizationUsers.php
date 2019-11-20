@@ -56,6 +56,17 @@ class Customers_OrganizationUsers
             }
 
             // get department id of editing profile
+            $editingDepartment = Customer::whereId($id)->first();
+
+            if (!$editingDepartment) {
+                $response = [
+                    'success' => false,
+                    'message' => "The given data was invalid."
+                ];
+
+                return response()->json($response, 422);
+            }
+
             $editingDepartmentId = Customer::whereId($id)->first()->organization_id;
 //            dd($editingDepartmentId);
 

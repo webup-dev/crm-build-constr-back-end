@@ -1,12 +1,7 @@
 <?php
 
 /**
- * SetUp:
- *   Create 3 user
- *   Create 2 roles
- *   Bind users and roles
- *   Create 1 department
- *   Create 2 profiles
+ * SetUp: use TestsSeeder
  *
  * Check Index
  * Check Index If The Access Is Not Full
@@ -66,18 +61,10 @@ use App\WnyTestCase;
 
 class CustomersControllerTest extends WnyTestCase
 {
+    use DatabaseMigrations;
+
     /**
-     * SetUp:
-     *   Create 5 users (user A, user B, user C, customer A, customer B)
-     *   Create 3 roles (superadmin, organization-general-manager, customer-individual)
-     *   Create 2 customers (customer A, customer B)
-     *   Create 2 organizations (organization 1, organization 2)
-     *   Create 3 user_profiles (user A, user B, user C)
-     *   Bind users and roles (user A - superadmin, user B - organization-general-manager, user C - superadmin, customer A - customer-individual, customer B - customer-individual)
-     *   Bind users and user_profiles (user A - user A, user B - user B, user C - user C)
-     *   Bind user_profiles and organizations (user A - organization 1, user B - organization 1, user C - organization 2)
-     *   Bind users and customers (customer A - customer A, customer B - customer B)
-     *   Bind customers and organizations (customer A - organization 1, customer B - organization 1)
+     * SetUp with TestsSeeder
      *
      * @return mixed
      */
@@ -86,223 +73,8 @@ class CustomersControllerTest extends WnyTestCase
     {
         parent::setUp();
 
-        /*
-         | User        | User ID | Role                         | Organization       | Organization ID |
-         |-------------|---------|------------------------------|--------------------|-----------------|
-         | User A      | 1       | superadmin                   | Central Department | 1               |
-         | User B      | 2       | organization-general-manager | Central Department | 1               |
-         | User C      | 3       | organization-general-manager | Branch Department  | 2               |
-         | User D      | 6       | superadmin                   | Branch Department  | 2               |
-         | Customer A  | 4       | customer-individual          | Central Department | 1               |
-         | Customer B  | 5       | customer-individual          | Branch Department  | 2               |
-         */
-        $user1 = new User([
-            'name'     => 'User A',
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $user1->save();
-
-        $user2 = new User([
-            'name'     => 'User B',
-            'email'    => 'userB@email.com',
-            'password' => '123456'
-        ]);
-
-        $user2->save();
-
-        $user3 = new User([
-            'name'     => 'User C',
-            'email'    => 'userC@email.com',
-            'password' => '123456'
-        ]);
-
-        $user3->save();
-
-        $user4 = new User([
-            'name'     => 'Customer A',
-            'email'    => 'customerA@email.com',
-            'password' => '123456'
-        ]);
-
-        $user4->save();
-
-        $user5 = new User([
-            'name'     => 'Customer B',
-            'email'    => 'customerB@email.com',
-            'password' => '123456'
-        ]);
-
-        $user5->save();
-
-        $user6 = new User([
-            'name'     => 'User D',
-            'email'    => 'userD@email.com',
-            'password' => '123456'
-        ]);
-
-        $user6->save();
-
-        $role1 = new Role([
-            'name' => 'developer'
-        ]);
-
-        $role1->save();
-
-        $role2 = new Role([
-            'name' => 'organization-general-manager'
-        ]);
-
-        $role2->save();
-
-        $role3 = new Role([
-            'name' => 'customer-individual'
-        ]);
-
-        $role3->save();
-
-        $user1->roles()->attach(1);
-        $user2->roles()->attach(2);
-        $user3->roles()->attach(2);
-        $user4->roles()->attach(3);
-        $user5->roles()->attach(3);
-        $user6->roles()->attach(1);
-
-        $department1 = new Organization([
-            'name' => 'Central Department'
-        ]);
-
-        $department1->save();
-
-        $department2 = new Organization([
-            'name' => 'Branch Department'
-        ]);
-
-        $department2->save();
-
-        $customer1 = new Customer([
-            'user_id'         => 4,
-            'name'            => 'Customer A',
-            'type'            => 'individual',
-            'note'            => 'test note',
-            'organization_id' => 1
-        ]);
-
-        $customer1->save();
-
-        $customer2 = new Customer([
-            'user_id'         => 5,
-            'name'            => 'Customer B',
-            'type'            => 'individual',
-            'note'            => 'test note',
-            'organization_id' => 2
-        ]);
-
-        $customer2->save();
-
-        $userProfile1 = User_profile::create([
-            'user_id'          => 1,
-            'first_name'       => 'User A',
-            'last_name'        => 'User A',
-            'title'            => '',
-            'department_id'    => 1,
-            'phone_home'       => '',
-            'phone_work'       => '',
-            'phone_extension'  => '',
-            'phone_mob'        => '',
-            'email_personal'   => '',
-            'email_work'       => '',
-            'address_line_1'   => 'Williams 7',
-            'address_line_2'   => '',
-            'city'             => 'Kyiv',
-            'state'            => 'CA',
-            'zip'              => '90001',
-            'status'           => 'active',
-            'start_date'       => null,
-            'termination_date' => null,
-            'deleted_at'       => null
-        ]);
-
-        $userProfile1->save();
-
-        $userProfile2 = User_profile::create([
-            'user_id'          => 2,
-            'first_name'       => 'User B',
-            'last_name'        => 'User B',
-            'title'            => '',
-            'department_id'    => 1,
-            'phone_home'       => '',
-            'phone_work'       => '',
-            'phone_extension'  => '',
-            'phone_mob'        => '',
-            'email_personal'   => '',
-            'email_work'       => '',
-            'address_line_1'   => 'Williams 7',
-            'address_line_2'   => '',
-            'city'             => 'Kyiv',
-            'state'            => 'CA',
-            'zip'              => '90001',
-            'status'           => 'active',
-            'start_date'       => null,
-            'termination_date' => null,
-            'deleted_at'       => null
-        ]);
-
-        $userProfile2->save();
-
-        $userProfile3 = User_profile::create([
-            'user_id'          => 3,
-            'first_name'       => 'User C',
-            'last_name'        => 'User C',
-            'title'            => '',
-            'department_id'    => 2,
-            'phone_home'       => '',
-            'phone_work'       => '',
-            'phone_extension'  => '',
-            'phone_mob'        => '',
-            'email_personal'   => '',
-            'email_work'       => '',
-            'address_line_1'   => 'Williams 7',
-            'address_line_2'   => '',
-            'city'             => 'Kyiv',
-            'state'            => 'CA',
-            'zip'              => '90001',
-            'status'           => 'active',
-            'start_date'       => null,
-            'termination_date' => null,
-            'deleted_at'       => null
-        ]);
-
-        $userProfile3->save();
-
-        $userProfile4 = User_profile::create([
-            'user_id'          => 6,
-            'first_name'       => 'User D',
-            'last_name'        => 'User D',
-            'title'            => '',
-            'department_id'    => 2,
-            'phone_home'       => '',
-            'phone_work'       => '',
-            'phone_extension'  => '',
-            'phone_mob'        => '',
-            'email_personal'   => '',
-            'email_work'       => '',
-            'address_line_1'   => 'Williams 7',
-            'address_line_2'   => '',
-            'city'             => 'Kyiv',
-            'state'            => 'CA',
-            'zip'              => '90001',
-            'status'           => 'active',
-            'start_date'       => null,
-            'termination_date' => null,
-            'deleted_at'       => null
-        ]);
-
-        $userProfile4->save();
+        $this->artisan('db:seed --class=TestsSeeder');
     }
-
-    use DatabaseMigrations;
 
     /**
      * A basic unit test example.
@@ -315,29 +87,29 @@ class CustomersControllerTest extends WnyTestCase
     }
 
     /**
+     * Check seeder.
+     *
+     * @return void
+     */
+    public function testSeeder()
+    {
+        $customers = DB::table('customers')->get();
+        $this->assertEquals(4, $customers->count());
+
+        $user = DB::table('users')->where('id', 1)->first();
+        $this->assertEquals('Volodymyr Vadiasov', $user->name);
+    }
+
+    /**
      * Check Index:
-     *   Check login
+     *   Check login developer
      *   Check response status
      *   Check response structure
      *   Check response data
      */
     public function testIndex()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Request
         $response = $this->get('api/customers?token=' . $token, []);
@@ -353,12 +125,10 @@ class CustomersControllerTest extends WnyTestCase
                     [
                         [
                             "id",
-                            "user_id",
                             "name",
+                            "type",
                             "organization_id",
                             "organization",
-                            "type",
-                            "note",
                             "deleted_at",
                             "created_at",
                             "updated_at"
@@ -372,20 +142,19 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $success      = $responseJSON['success'];  // array
 
-        $this->assertEquals(2, count($data));
+        $this->assertEquals(4, count($data));
         $this->assertEquals(1, $data[0]['id']);
-        $this->assertEquals(4, $data[0]['user_id']);
-        $this->assertEquals('Customer A', $data[0]['name']);
-        $this->assertEquals('1', $data[0]['organization_id']);
+        $this->assertEquals('Customer A-WNY', $data[0]['name']);
         $this->assertEquals('individual', $data[0]['type']);
-        $this->assertEquals('test note', $data[0]['note']);
+        $this->assertEquals(2, $data[0]['organization_id']);
+        $this->assertEquals('Western New York Exteriors, LLC.', $data[0]['organization']['name']);
         $this->assertEquals("Customers are retrieved successfully.", $message);
         $this->assertEquals(true, $success);
     }
 
     /**
      * Check Index If The Access Is Not Full
-     *   User B id=2 role=organization-general-manager org=Central Department org_id=1
+     *   User role=organization-general-manager org=WNY org_id=d
      *   Check login
      *   Check response status
      *   Check response structure
@@ -393,21 +162,7 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testIndexIfTheAccessIsNotFull()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userB@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User B',
-            'email' => 'userB@email.com'
-        ])->isOk();
+        $token = $this->loginOrganizationWNYGeneralManager();
 
         // Request
         $response = $this->get('api/customers?token=' . $token, []);
@@ -423,12 +178,8 @@ class CustomersControllerTest extends WnyTestCase
                     [
                         [
                             "id",
-                            "user_id",
                             "name",
-                            "organization_id",
-                            "organization",
                             "type",
-                            "note",
                             "deleted_at",
                             "created_at",
                             "updated_at"
@@ -442,13 +193,12 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $success      = $responseJSON['success'];  // array
 
-        $this->assertEquals(1, count($data));
+        $this->assertEquals(3, count($data));
         $this->assertEquals(1, $data[0]['id']);
-        $this->assertEquals(4, $data[0]['user_id']);
-        $this->assertEquals('Customer A', $data[0]['name']);
-        $this->assertEquals('   1', $data[0]['organization_id']);
+        $this->assertEquals('Customer A-WNY', $data[0]['name']);
         $this->assertEquals('individual', $data[0]['type']);
-        $this->assertEquals('test note', $data[0]['note']);
+        $this->assertEquals(2, $data[0]['organization_id']);
+        $this->assertEquals('Western New York Exteriors, LLC.', $data[0]['organization']['name']);
         $this->assertEquals("Customers are retrieved successfully.", $message);
         $this->assertEquals(true, $success);
     }
@@ -465,43 +215,13 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testIndexIfContentIsEmpty()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userD@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User D',
-            'email' => 'userD@email.com'
-        ])->isOk();
+        $token = $this->loginOrganizationSpringSuperadmin();
 
         // Delete Customer 2
         $response = $this->delete('api/customers/2?token=' . $token, []);
 
         // Check response status
         $response->assertStatus(200);
-
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userC@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User C',
-            'email' => 'userC@email.com'
-        ])->isOk();
 
         $response = $this->get('api/customers?token=' . $token, []);
 
@@ -517,23 +237,9 @@ class CustomersControllerTest extends WnyTestCase
      *   Check response structure
      *   Check response data
      */
-    public function CheckIndexIfTheAccessIsAbsentByTheRole()
+    public function testIndexIfTheAccessIsAbsentByTheRole()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'customerA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Customer A',
-            'email' => 'customerA@email.com'
-        ])->isOk();
+        $token = $this->loginCustomerSpring();
 
         $response = $this->get('api/customers?token=' . $token, []);
 
@@ -557,7 +263,7 @@ class CustomersControllerTest extends WnyTestCase
 
     /**
      * Check IndexSoftDeleted:
-     *   Check login
+     *   Check login developer
      *   Create SoftDeleted
      *   Check response status
      *   Check response structure
@@ -565,21 +271,7 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testIndexSoftDeleted()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Create soft deleted
         $response = $this->delete('api/customers/1?token=' . $token, []);
@@ -599,12 +291,10 @@ class CustomersControllerTest extends WnyTestCase
                     [
                         [
                             "id",
-                            "user_id",
                             "name",
                             "organization_id",
                             "organization",
                             "type",
-                            "note",
                             "deleted_at",
                             "created_at",
                             "updated_at"
@@ -620,9 +310,8 @@ class CustomersControllerTest extends WnyTestCase
 
         $this->assertEquals(1, count($data));
         $this->assertEquals(1, $data[0]['id']);
-        $this->assertEquals('Customer A', $data[0]['name']);
-        $this->assertEquals('1', $data[0]['organization_id']);
-        $this->assertEquals('4', $data[0]['user_id']);
+        $this->assertEquals('Customer A-WNY', $data[0]['name']);
+        $this->assertEquals('2', $data[0]['organization_id']);
         $this->assertNotEquals(null, $data[0]['deleted_at']);
         $this->assertEquals("Soft-deleted customers are retrieved successfully.", $message);
         $this->assertEquals(true, $success);
@@ -630,28 +319,14 @@ class CustomersControllerTest extends WnyTestCase
 
     /**
      * Check IndexSoftDeleted If Content Is Empty:
-     *   Check login
+     *   Check login developer
      *   Check response status
      *   Check response structure
      *   Check response data
      */
     public function testIndexSoftDeletedIfContentIsEmpty()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         $response = $this->get('api/customers/soft-deleted?token=' . $token, []);
 
@@ -661,30 +336,16 @@ class CustomersControllerTest extends WnyTestCase
 
     /**
      * Check IndexSoftDeleted If Access Is Absent:
-     *   Check login
+     *   Check login Customer
      *   Check response status
      *   Check response structure
      *   Check response data
      */
     public function testIndexSoftDeletedIfAccessIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'customerA@email.com',
-            'password' => '123456'
-        ]);
+        $token = $this->loginCustomerSpring();
 
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Customer A',
-            'email' => 'customerA@email.com'
-        ])->isOk();
-
-        $response = $this->get('api/user-profiles/soft-deleted?token=' . $token, []);
+        $response = $this->get('api/customers/soft-deleted?token=' . $token, []);
 
         // Check response status
         $response->assertStatus(453);
@@ -706,7 +367,7 @@ class CustomersControllerTest extends WnyTestCase
 
     /**
      * Check store:
-     *   Check login
+     *   Check login developer
      *   Store a new Customer
      *   Check response status
      *   Check response structure
@@ -715,31 +376,18 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testStore()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Create data
         $data = [
-            'first_name'      => 'Customer C',
-            'last_name'       => 'CustomerC',
-            'organization_id' => 1,
+            'name'            => 'Customer New',
+            'organization_id' => 2,
             'type'            => 'organization',
-            'note'            => 'note test',
-            'email'           => 'customerC@admin.com',
-            'password'        => '12345678'
+            'line_1'          => 'Line 1',
+            'line_2'          => 'Line 2',
+            'city'            => 'City',
+            'state'           => 'CA',
+            'zip'             => '01234',
         ];
 
         // Store a new user, user-profile
@@ -764,17 +412,15 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
         $this->assertEquals("Customer is created successfully.", $message);
 
-        // Check DB table users
-        $user = DB::table('users')->where('email', '=', 'customerC@admin.com')->first();
-        $this->assertEquals(7, $user->id);
-        $this->assertEquals('Customer C CustomerC', $user->name);
-
         // Check DB table customers
-        $customer = DB::table('customers')->where('user_id', '=', 7)->first();
-        $this->assertEquals('Customer C CustomerC', $customer->name);
+        $customer = DB::table('customers')->where('name', '=', 'Customer New')->first();
         $this->assertEquals('organization', $customer->type);
-        $this->assertEquals('note test', $customer->note);
-        $this->assertEquals(1, $customer->organization_id);
+        $this->assertEquals('Line 1', $customer->line_1);
+        $this->assertEquals('Line 2', $customer->line_2);
+        $this->assertEquals('City', $customer->city);
+        $this->assertEquals('CA', $customer->state);
+        $this->assertEquals(2, $customer->organization_id);
+        $this->assertEquals('01234', $customer->zip);
     }
 
     /**
@@ -787,31 +433,18 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testStoreInvalidData()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Create data
         $data = [
-            'first_name'      => '',
-            'last_name'       => '',
-            'organization_id' => 'a',
+            'name'            => '',
+            'organization_id' => '',
             'type'            => '',
-            'note'            => 12,
-            'email'           => 'admin.com',
-            'password'        => ''
+            'line_1'          => [],
+            'line_2'          => [],
+            'city'            => [],
+            'state'           => [],
+            'zip'             => [],
         ];
 
         // Store a new user, user profile
@@ -836,7 +469,7 @@ class CustomersControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(7, count($error['errors']));
+        $this->assertEquals(8, count($error['errors']));
     }
 
     /**
@@ -849,42 +482,21 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testStoreIfAccessOfRoleIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'customerA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $response = $this->get('api/auth/me?token=' . $token, []);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        //Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $name         = $responseJSON['name'];  // array
-        $email        = $responseJSON['email'];  // array
-
-        $this->assertEquals('Customer A', $name);
-        $this->assertEquals("customerA@email.com", $email);
+        $token = $this->loginCustomerSpring();
 
         // Create data
         $data = [
-            'first_name'      => 'Customer C',
-            'last_name'       => 'CustomerC',
+            'name'            => 'Customer New',
             'organization_id' => 2,
             'type'            => 'organization',
-            'note'            => 'note test',
-            'email'           => 'customerC@admin.com',
-            'password'        => '12345678'
+            'line_1'          => 'Line 1',
+            'line_2'          => 'Line 2',
+            'city'            => 'City',
+            'state'           => 'CA',
+            'zip'             => '01234',
         ];
 
-        // Store a new organization
+        // Store a new customer
         $response = $this->post('api/customers?token=' . $token, $data, []);
 
         // Check response status
@@ -917,39 +529,18 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testStoreIfAccessToDepartmentIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $response = $this->get('api/auth/me?token=' . $token, []);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        //Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $name         = $responseJSON['name'];  // array
-        $email        = $responseJSON['email'];  // array
-
-        $this->assertEquals('User A', $name);
-        $this->assertEquals("userA@email.com", $email);
+        $token = $this->loginOrganizationSpringSuperadmin();
 
         // Create data
         $data = [
-            'first_name'      => 'Customer C',
-            'last_name'       => 'CustomerC',
+            'name'            => 'Customer New',
             'organization_id' => 2,
             'type'            => 'organization',
-            'note'            => 'note test',
-            'email'           => 'customerC@admin.com',
-            'password'        => '12345678'
+            'line_1'          => 'Line 1',
+            'line_2'          => 'Line 2',
+            'city'            => 'City',
+            'state'           => 'CA',
+            'zip'             => '01234',
         ];
 
         // Store a new organization
@@ -977,7 +568,7 @@ class CustomersControllerTest extends WnyTestCase
 
     /**
      * Check show:
-     *   Check login
+     *   Check login developer
      *   Get the specified Customer
      *   Check response status
      *   Check response structure
@@ -985,29 +576,7 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testShow()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $response = $this->get('api/auth/me?token=' . $token, []);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        //Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $name         = $responseJSON['name'];  // array
-        $email        = $responseJSON['email'];  // array
-
-        $this->assertEquals('User A', $name);
-        $this->assertEquals("userA@email.com", $email);
+        $token = $this->loginDeveloper();
 
         $response = $this->get('api/customers/1?token=' . $token, []);
         $response->assertStatus(200);
@@ -1019,15 +588,12 @@ class CustomersControllerTest extends WnyTestCase
                 'data' =>
                     [
                         'id',
-                        'user_id',
                         'name',
                         'type',
-                        'note',
                         'organization_id',
                         'deleted_at',
                         'created_at',
                         'updated_at',
-                        'user',
                         'organization'
                     ],
                 'message'
@@ -1041,21 +607,17 @@ class CustomersControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals("Item is retrieved successfully.", $message);
-        $this->assertEquals(4, $data['user_id']);
-        $this->assertEquals('Customer A', $data['name']);
+        $this->assertEquals('Customer A-WNY', $data['name']);
         $this->assertEquals('individual', $data['type']);
-        $this->assertEquals('test note', $data['note']);
-        $this->assertEquals(1, $data['organization_id']);
+        $this->assertEquals(2, $data['organization_id']);
         $this->assertEquals(null, $data['deleted_at']);
-        $this->assertEquals(4, $data['user']['id']);
-        $this->assertEquals("customerA@email.com", $data['user']['email']);
-        $this->assertEquals(1, $data['organization']['id']);
-        $this->assertEquals('Central Department', $data['organization']['name']);
+        $this->assertEquals(2, $data['organization']['id']);
+        $this->assertEquals('Western New York Exteriors, LLC.', $data['organization']['name']);
     }
 
     /**
      * Check show with Wrong ID:
-     *   Check login
+     *   Check login developer
      *   Get the specified Customer
      *   Check response status
      *   Check response structure
@@ -1063,29 +625,7 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testShowWithWrongId()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $response = $this->get('api/auth/me?token=' . $token, []);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        //Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $name         = $responseJSON['name'];  // array
-        $email        = $responseJSON['email'];  // array
-
-        $this->assertEquals('User A', $name);
-        $this->assertEquals("userA@email.com", $email);
+        $token = $this->loginDeveloper();
 
         $response = $this->get('api/customers/1111?token=' . $token, []);
         $response->assertStatus(422);
@@ -1116,31 +656,9 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testShowIfAccessOfRoleIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'customerA@email.com',
-            'password' => '123456'
-        ]);
+        $token = $this->loginCustomerSpring();
 
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $response = $this->get('api/auth/me?token=' . $token, []);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        //Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $name         = $responseJSON['name'];  // array
-        $email        = $responseJSON['email'];  // array
-
-        $this->assertEquals('Customer A', $name);
-        $this->assertEquals("customerA@email.com", $email);
-
-        $response = $this->get('api/customers/2?token=' . $token, []);
+        $response = $this->get('api/customers/1?token=' . $token, []);
         $response->assertStatus(453);
 
         // Check response structure
@@ -1161,39 +679,17 @@ class CustomersControllerTest extends WnyTestCase
 
     /**
      * Check show If Access To Department Is Absent:
-     *   Check login Customer
-     *   Get the specified Customer
+     *   Check login Spring Superadmin
+     *   Get the specified Customer of WNY
      *   Check response status
      *   Check response structure
      *   Check response data
      */
     public function testShowIfAccessToDepartmentIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userB@email.com',
-            'password' => '123456'
-        ]);
+        $token = $this->loginOrganizationSpringSuperadmin();
 
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $response = $this->get('api/auth/me?token=' . $token, []);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        //Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $name         = $responseJSON['name'];  // array
-        $email        = $responseJSON['email'];  // array
-
-        $this->assertEquals('User B', $name);
-        $this->assertEquals("userB@email.com", $email);
-
-        $response = $this->get('api/customers/2?token=' . $token, []);
+        $response = $this->get('api/customers/1?token=' . $token, []);
         $response->assertStatus(454);
 
         // Check response structure
@@ -1214,7 +710,7 @@ class CustomersControllerTest extends WnyTestCase
 
     /**
      * Check update:
-     *   Check login
+     *   Check login developer
      *   Update the Customer
      *   Check response status
      *   Check response structure
@@ -1222,37 +718,18 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testUpdate()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $response = $this->get('api/auth/me?token=' . $token, []);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        //Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $name         = $responseJSON['name'];  // array
-        $email        = $responseJSON['email'];  // array
-
-        $this->assertEquals('User A', $name);
-        $this->assertEquals("userA@email.com", $email);
+        $token = $this->loginDeveloper();
 
         // Create data
         $data = [
-            'user_id'         => 4,
-            'name'            => 'Customer A Updated',
-            'type'            => 'individual',
-            'note'            => 'note test',
-            'organization_id' => 1
+            'name'            => 'Customer A-WNY-edited',
+            'organization_id' => 2,
+            'type'            => 'organization',
+            'line_1'          => 'Line 1',
+            'line_2'          => 'Line 2',
+            'city'            => 'City',
+            'state'           => 'CA',
+            'zip'             => '01234',
         ];
 
         $response = $this->put('api/customers/1?token=' . $token, $data, []);
@@ -1266,17 +743,14 @@ class CustomersControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals("Customer is updated successfully.", $message);
-        $this->assertEquals("Customer A Updated", $data->name);
-
-        // Check DB
-        $customer = DB::table('customers')->where('name', 'Customer A Updated')->first();
-        $this->assertEquals(1, $customer->id);
-        $this->assertEquals('Customer A Updated', $customer->name);
+        $this->assertEquals("Customer A-WNY-edited", $data->name);
+        $this->assertEquals(1, $data->id);
+        $this->assertEquals('organization', $data->type);
     }
 
     /**
      * Check update If The Access Is Not Full
-     *   Check login
+     *   Check login Spring Superadmin
      *   Update the Customer
      *   Check response status
      *   Check response structure
@@ -1284,37 +758,18 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testUpdateIfTheAccessIsNotFull()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $response = $this->get('api/auth/me?token=' . $token, []);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        //Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $name         = $responseJSON['name'];  // array
-        $email        = $responseJSON['email'];  // array
-
-        $this->assertEquals('User A', $name);
-        $this->assertEquals("userA@email.com", $email);
+        $token = $this->loginOrganizationWNYSuperadmin();
 
         // Create data
         $data = [
-            'user_id'         => 4,
-            'name'            => 'Customer A Updated',
-            'type'            => 'individual',
-            'note'            => 'note test',
-            'organization_id' => 1
+            'name'            => 'Customer A-WNY-edited',
+            'organization_id' => 2,
+            'type'            => 'organization',
+            'line_1'          => 'Line 1',
+            'line_2'          => 'Line 2',
+            'city'            => 'City',
+            'state'           => 'CA',
+            'zip'             => '01234',
         ];
 
         $response = $this->put('api/customers/1?token=' . $token, $data, []);
@@ -1328,12 +783,9 @@ class CustomersControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals("Customer is updated successfully.", $message);
-        $this->assertEquals("Customer A Updated", $data->name);
-
-        // Check DB
-        $customer = DB::table('customers')->where('name', 'Customer A Updated')->first();
-        $this->assertEquals(1, $customer->id);
-        $this->assertEquals('Customer A Updated', $customer->name);
+        $this->assertEquals("Customer A-WNY-edited", $data->name);
+        $this->assertEquals(1, $data->id);
+        $this->assertEquals('organization', $data->type);
     }
 
     /**
@@ -1346,29 +798,18 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testUpdateIfDataIsInvalid()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginOrganizationWNYSuperadmin();
 
         // Create data
         $data = [
-            'user_id'         => 'a',
-            'name'            => '',
-            'type'            => '',
-            'note'            => 23,
-            'organization_id' => 'aa'
+            'name'            => [],
+            'organization_id' => [],
+            'type'            => [],
+            'line_1'          => [],
+            'line_2'          => [],
+            'city'            => [],
+            'state'           => [],
+            'zip'             => [],
         ];
 
         $response = $this->put('api/customers/1?token=' . $token, $data);
@@ -1391,7 +832,7 @@ class CustomersControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(5, count($error['errors']));
+        $this->assertEquals(8, count($error['errors']));
     }
 
     /**
@@ -1404,76 +845,55 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testUpdateIfTheIdIsWrong()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
+        $token = $this->loginOrganizationWNYSuperadmin();
 
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
 
         // Create data
         $data = [
-            'user_id'         => 4,
-            'name'            => 'Customer A Updated',
-            'type'            => 'individual',
-            'note'            => 'note test',
-            'organization_id' => 1
+            'name'            => 'Customer A-WNY-edited',
+            'organization_id' => 2,
+            'type'            => 'organization',
+            'line_1'          => 'Line 1',
+            'line_2'          => 'Line 2',
+            'city'            => 'City',
+            'state'           => 'CA',
+            'zip'             => '01234',
         ];
 
         $response = $this->put('api/customers/55555?token=' . $token, $data);
 
-        $response->assertStatus(453);
+        $response->assertStatus(422);
 
         $responseJSON = json_decode($response->getContent(), true);
         $success      = $responseJSON['success'];
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("Customer does not exist.", $message);
+        $this->assertEquals("The given data was invalid.", $message);
     }
 
     /**
      * Check update If Access Of Role Is Absent:
-     *   Check login
-     *   Update the Customer
+     *   Check login Spring Customer
+     *   Update the WNY Customer
      *   Check response status
      *   Check response structure
      *   Check response data
      */
     public function testUpdateIfAccessOfRoleIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'customerA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Customer A',
-            'email' => 'customerA@email.com'
-        ])->isOk();
+        $token = $this->loginCustomerSpring();
 
         // Create data
         $data = [
-            'user_id'         => 4,
-            'name'            => 'Customer A Updated',
-            'type'            => 'individual',
-            'note'            => 'note test',
-            'organization_id' => 1
+            'name'            => 'Customer A-WNY-edited',
+            'organization_id' => 2,
+            'type'            => 'organization',
+            'line_1'          => 'Line 1',
+            'line_2'          => 'Line 2',
+            'city'            => 'City',
+            'state'           => 'CA',
+            'zip'             => '01234',
         ];
 
         $response = $this->put('api/customers/1?token=' . $token, $data);
@@ -1490,76 +910,52 @@ class CustomersControllerTest extends WnyTestCase
 
     /**
      * Check update If Access To Department Is Absent:
-     *   Check login
-     *   Update the Customer
+     *   Check login Spring superadmin
+     *   Update the Customer WNY
      *   Check response status
      *   Check response structure
      *   Check response data
      */
     public function testUpdateIfAccessToDepartmentIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginOrganizationSpringSuperadmin();
 
         // Update data
         $data = [
-            'user_id'         => 4,
-            'name'            => 'Customer A Updated',
-            'type'            => 'individual',
-            'note'            => 'note test',
-            'organization_id' => 2
+            'name'            => 'Customer A-WNY-edited',
+            'organization_id' => 2,
+            'type'            => 'organization',
+            'line_1'          => 'Line 1',
+            'line_2'          => 'Line 2',
+            'city'            => 'City',
+            'state'           => 'CA',
+            'zip'             => '01234',
         ];
 
         $response = $this->put('api/customers/1?token=' . $token, $data);
 
-        $response->assertStatus(453);
+        $response->assertStatus(454);
 
         $responseJSON = json_decode($response->getContent(), true);
         $success      = $responseJSON['success'];
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("Permission is absent by the role.", $message);
+        $this->assertEquals("Permission to department is absent.", $message);
     }
 //
+
     /**
      * Check Soft Delete:
      *   We check that the customer account must change the field deleted_at from null to not null.
-     *     Check login
+     *     Check login developer
      *     Check response status
      *     Check response structure
      *     Check DB: deleted_at of the soft-deleted row
      */
     public function testSoftDelete()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Request
         $response = $this->delete('api/customers/1?token=' . $token, []);
@@ -1575,35 +971,18 @@ class CustomersControllerTest extends WnyTestCase
 
         $customer = DB::table('customers')->where('id', 1)->first();
         $this->assertNotEquals(null, $customer->deleted_at);
-
-        $user = DB::table('users')->where('id', 4)->first();
-        $this->assertNotEquals(null, $customer->deleted_at);
     }
 
     /**
      * Check Soft Delete If The Access Of Role Is Absent:
      *   We wait for a message about error.
-     *     Check login
+     *     Check login WNY Admin
      *     Check response status
      *     Check response structure
      */
     public function testSoftDeleteIfTheAccessOfRoleIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'customerA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Customer A',
-            'email' => 'customerA@email.com'
-        ])->isOk();
+        $token = $this->loginOrganizationWNYAdmin();
 
         // Request
         $response = $this->delete('api/customers/2?token=' . $token, []);
@@ -1621,65 +1000,37 @@ class CustomersControllerTest extends WnyTestCase
     /**
      * Check Soft Delete If The Access To Department Is Absent:
      *   We wait for a message about error.
-     *     Check login
+     *     Check login Spring
      *     Check response status
      *     Check response structure
      */
     public function testSoftDeleteIfTheAccessToDepartmentIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userC@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User C',
-            'email' => 'userC@email.com'
-        ])->isOk();
+        $token = $this->loginOrganizationSpringSuperadmin();
 
         // Request
-        $response = $this->delete('api/customers/2?token=' . $token, []);
+        $response = $this->delete('api/customers/1?token=' . $token, []);
 
-        $response->assertStatus(453);
+        $response->assertStatus(454);
 
         $responseJSON = json_decode($response->getContent(), true);
         $success      = $responseJSON['success'];
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("Permission is absent by the role.", $message);
+        $this->assertEquals("Permission to department is absent.", $message);
     }
 
     /**
      * Check Soft Delete If The Id Is Wrong:
      *   We wait for a message about error.
-     *     Check login
+     *     Check login developer
      *     Check response status
      *     Check response structure
      */
     public function testSoftDeleteIfTheIdIsWrong()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Request
         $response = $this->delete('api/customers/2222?token=' . $token, []);
@@ -1697,7 +1048,7 @@ class CustomersControllerTest extends WnyTestCase
     /**
      * Check Restore:
      *   We check that the Customer Account must change the field deleted_at from not null to null.
-     *     Check login
+     *     Check login developer
      *     Soft delete customer
      *     Repair customer
      *     Check response status
@@ -1706,27 +1057,11 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testRestore()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Preparation
-        $response  = $this->delete('api/customers/1?token=' . $token, []);
-        $customer = Customer::onlyTrashed()->where('user_id', 4)->first();
+        $response = $this->delete('api/customers/1?token=' . $token, []);
         $response->assertStatus(200);
-        $this->assertNotEquals(null, $customer->deleted_at);
 
         // Request
         $response = $this->put('api/customers/1/restore?token=' . $token, []);
@@ -1740,10 +1075,8 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
         $this->assertEquals("Customer is restored successfully.", $message);
 
-        $customer = Customer::where('user_id', 4)->first();
+        $customer = Customer::where('id', 1)->first();
         $this->assertEquals(null, $customer->deleted_at);
-        $user = User::where('id', $customer->user_id)->first();
-        $this->assertEquals(null, $user->deleted_at);
     }
 
     /**
@@ -1757,102 +1090,15 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testRestoreIfTheAccessIsAbsentInRole()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Preparation
-        $response = $this->delete('api/customers/2?token=' . $token, []);
+        $response = $this->delete('api/customers/1?token=' . $token, []);
 
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'customerA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Customer A',
-            'email' => 'customerA@email.com'
-        ])->isOk();
+        $token = $this->loginCustomerSpring();
 
         // Request
-        $response = $this->put('api/customers/2/restore?token=' . $token, []);
-
-        $response->assertStatus(453);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];
-        $message      = $responseJSON['message'];
-
-        $this->assertEquals(false, $success);
-        $this->assertEquals("Permission is absent by the role.", $message);
-    }
-
-    /**
-     * Check Restore If The Access Is Absent For Department:
-     *   We wait for a message about error.
-     *     Check login
-     *     Soft delete customer
-     *     Repair customer
-     *     Check response status
-     *     Check response structure
-     */
-    public function testRestoreIfTheAccessIsAbsentForDepartment()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
-
-        // Preparation
-        $response = $this->delete('api/customers/2?token=' . $token, []);
-
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'customerA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Customer A',
-            'email' => 'customerA@email.com'
-        ])->isOk();
-
-        // Request
-        $response = $this->put('api/customers/2/restore?token=' . $token, []);
+        $response = $this->put('api/customers/1/restore?token=' . $token, []);
 
         $response->assertStatus(453);
 
@@ -1874,21 +1120,7 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testRestoreIfTheIdIsWrong()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Request
         $response = $this->put('api/customers/2222/restore?token=' . $token, []);
@@ -1905,7 +1137,7 @@ class CustomersControllerTest extends WnyTestCase
 
     /**
      * Check Delete Permanently:
-     *     Check login
+     *     Check login developer
      *     Soft delete customer
      *     Delete Permanently customer
      *     Check response status
@@ -1914,21 +1146,7 @@ class CustomersControllerTest extends WnyTestCase
      */
     public function testDeletePermanently()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Preparation
         $response = $this->delete('api/customers/1?token=' . $token, []);
@@ -1950,109 +1168,23 @@ class CustomersControllerTest extends WnyTestCase
     }
 
     /**
-     * Check Delete Permanently If The Access To Department Is Absent:
-     *   We wait for a message about error.
-     *     Check login
-     *     Soft delete customer
-     *     Delete Permanently customer
-     *     Check response status
-     *     Check response structure
-     */
-    public function testDeletePermanentlyIfTheAccessToDepartmentIsAbsent()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
-
-        // Preparation
-        $response = $this->delete('api/customers/1?token=' . $token, []);
-
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userC@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User C',
-            'email' => 'userC@email.com'
-        ])->isOk();
-
-        // Request
-        $response = $this->delete('api/customers/2/permanently?token=' . $token, []);
-
-        $response->assertStatus(453);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];
-        $message      = $responseJSON['message'];
-
-        $this->assertEquals(false, $success);
-        $this->assertEquals("Permission is absent by the role.", $message);
-    }
-
-    /**
      * Check Delete Permanently If The Access Of Role Is Absent:
      *   We wait for a message about error.
-     *     Check login
+     *     Check login developer
      *     Soft delete customer
+     *     Check login organization superadmin
      *     Delete Permanently customer
      *     Check response status
      *     Check response structure
      */
     public function testDeletePermanentlyIfTheAccessOfRoleIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Preparation
         $response = $this->delete('api/customers/1?token=' . $token, []);
 
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'customerB@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Customer B',
-            'email' => 'customerB@email.com'
-        ])->isOk();
+        $token = $this->loginOrganizationSpringSuperadmin();
 
         // Request
         $response = $this->delete('api/customers/1/permanently?token=' . $token, []);
@@ -2070,27 +1202,13 @@ class CustomersControllerTest extends WnyTestCase
     /**
      * Check Delete Permanently If The ID Is Wrong:
      *   We wait for a message about error.
-     *     Check login
+     *     Check login developer
      *     Check response status
      *     Check response structure
      */
     public function testDeletePermanentlyIfTheIdIsWrong()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'userA@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'User A',
-            'email' => 'userA@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Request
         $response = $this->delete('api/customers/2222/permanently?token=' . $token, []);

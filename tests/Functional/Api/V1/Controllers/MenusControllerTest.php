@@ -34,17 +34,7 @@ class MenusControllerTest extends WnyTestCase
     use DatabaseMigrations;
 
     /**
-     * SetUp:
-     *   Create 5 users (user A, user B, user C, customer A, customer B)
-     *   Create 3 roles (superadmin, organization-general-manager, customer-individual)
-     *   Create 2 customers (customer A, customer B)
-     *   Create 2 organizations (organization 1, organization 2)
-     *   Create 3 user_profiles (user A, user B, user C)
-     *   Bind users and roles (user A - superadmin, user B - organization-general-manager, user C - superadmin, customer A - customer-individual, customer B - customer-individual)
-     *   Bind users and user_profiles (user A - user A, user B - user B, user C - user C)
-     *   Bind user_profiles and organizations (user A - organization 1, user B - organization 1, user C - organization 2)
-     *   Bind users and customers (customer A - customer A, customer B - customer B)
-     *   Bind customers and organizations (customer A - organization 1, customer B - organization 1)
+     * SetUp: useTestsSeeder
      *
      * @return mixed
      */
@@ -116,21 +106,7 @@ class MenusControllerTest extends WnyTestCase
      */
     public function testGetSoftDeleted()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'developer@admin.com',
-            'password' => '12345678'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Volodymyr Vadiasov',
-            'email' => 'developer@admin.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Deleting
         $response = $this->delete('api/customers/3?token=' . $token, []);
@@ -183,6 +159,54 @@ class MenusControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
     }
 
+//    public function testGetSoftDeleted1()
+//    {
+//        $token = $this->loginDeveloper();
+//
+//        // Deleting
+////        $response = $this->delete('api/user-profiles/7?token=' . $token, []);
+////        $response->assertStatus(200);
+//        $response = $this->delete('api/user-profiles/8?token=' . $token, []);
+//        $response->assertStatus(200);
+//
+//        // Request
+//        $response = $this->get('api/soft-deleted-items?token=' . $token, []);
+//
+//        // Check response status
+//        $response->assertStatus(200);
+//
+//        // Check response structure
+//        $response->assertJsonStructure(
+//            [
+//                'success',
+//                'code',
+//                'message',
+//                'data' =>
+//                    [
+//                        [
+//                            "name",
+//                            "url",
+//                            "count"
+//                        ]
+//                    ]
+//            ]
+//        );
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $success      = $responseJSON['success'];  // array
+//        $code         = $responseJSON['success'];  // array
+//        $message      = $responseJSON['message'];  // array
+//        $data         = $responseJSON['data'];  // array
+//
+//        $this->assertEquals(2, count($data));
+//        $this->assertEquals('User Profiles', $data[0]['name']);
+//        $this->assertEquals("user-profiles/soft-deleted", $data[0]['url']);
+//        $this->assertEquals(3, $data[1]['count']);
+//        $this->assertEquals('Customers', $data[1]['name']);
+//        $this->assertEquals("customers/soft-deleted", $data[1]['url']);
+//
+//        $this->assertEquals("Soft-deleted retrieved successfully.", $message);
+//        $this->assertEquals(true, $success);
+//    }
     /**
      * Check GetSoftDeleted If The Access Is Not Full
      *   Check login of developer

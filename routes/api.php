@@ -136,8 +136,6 @@ $api->version('v1', function (Router $api) {
         $api->get('customers', 'App\Api\V1\Controllers\CustomersController@index');
         $api->get('customers/soft-deleted', 'App\Api\V1\Controllers\CustomersController@indexSoftDeleted');
         $api->get('customers/{id}', 'App\Api\V1\Controllers\CustomersController@show');
-        $api->get('customers/{id}/individual', 'App\Api\V1\Controllers\CustomerIndividualsController@show');
-        $api->put('customers/{id}/individual', 'App\Api\V1\Controllers\CustomerIndividualsController@update');
         $api->post('customers', 'App\Api\V1\Controllers\CustomersController@store');
         $api->put('customers/{id}', 'App\Api\V1\Controllers\CustomersController@update');
         $api->delete('customers/{id}', 'App\Api\V1\Controllers\CustomersController@softDestroy');

@@ -17,7 +17,6 @@ class TestCustomersSeeder extends Seeder
          */
         DB::table('customers')->insert([
             'name'            => 'Customer A-WNY',
-            'user_id'         => 16,
             'type'            => 'individual',
             'organization_id' => 2,
             'deleted_at'      => null,
@@ -26,7 +25,6 @@ class TestCustomersSeeder extends Seeder
 
         DB::table('customers')->insert([
             'name'            => 'Customer B-Spring',
-            'user_id'         => 17,
             'type'            => 'organization',
             'organization_id' => 9,
             'deleted_at'      => null,
@@ -34,12 +32,21 @@ class TestCustomersSeeder extends Seeder
         ]);
 
         DB::table('customers')->insert([
-            'name'            => 'Customer B-WNY',
-            'user_id'         => 19,
+            'name'            => 'Customer C-WNY',
             'type'            => 'individual',
             'organization_id' => 2,
             'deleted_at'      => null,
             'created_at'      => now()
         ]);
+
+        DB::table('customers')->insert([
+            'name'            => 'Customer D-WNY',
+            'type'            => 'individual',
+            'organization_id' => 2,
+            'deleted_at'      => null,
+            'created_at'      => now()
+        ]);
+
+
     }
 }

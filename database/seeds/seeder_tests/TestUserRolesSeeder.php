@@ -87,5 +87,23 @@ class TestUserRolesSeeder extends Seeder
             'role_id'    => '8',
             'created_at' => now()
         ]);
+
+        $userRole = User_role::create([
+            'user_id'    => '19',
+            'role_id'    => '15',
+            'created_at' => now()
+        ]);
+
+        $userRole = User_role::create([
+            'user_id'    => '20',
+            'role_id'    => '15',
+            'created_at' => now()
+        ]);
+
+        $userRole = User_role::create([
+            'user_id'    => '21',
+            'role_id'    => '4',
+            'created_at' => now()
+        ]);
     }
 }
