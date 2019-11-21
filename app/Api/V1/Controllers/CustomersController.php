@@ -541,7 +541,7 @@ class CustomersController extends Controller
      *  "message": "You do not have permission."
      * }
      *
-     * * @response 454 {
+     * @response 454 {
      *  "success": false,
      *  "message": "Permission to department is absent."
      * }
