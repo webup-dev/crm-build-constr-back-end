@@ -147,6 +147,16 @@ $api->version('v1', function (Router $api) {
         $api->get('soft-deleted-items', 'App\Api\V1\Controllers\MenusController@getSoftDeleted');
     });
 
+    $api->group(['middleware' => ['api.auth']], function (Router $api) {
+        $api->get('customers/{id}/comments', 'App\Api\V1\Controllers\CustomerCommentsController@showAll');
+        $api->get('customers/{id}/comments/soft-deleted', 'App\Api\V1\Controllers\CustomerCommentsController@showAllSoftDeleted');
+        $api->post('customers/{id}/comments', 'App\Api\V1\Controllers\CustomerCommentsController@store');
+        $api->put('customers/{id}/comments/{comment_id}', 'App\Api\V1\Controllers\CustomerCommentsController@update');
+        $api->delete('customers/{id}/comments/{comment_id}', 'App\Api\V1\Controllers\CustomerCommentsController@softDestroy');
+        $api->put('customers/{id}/comments/{comment_id}/restore', 'App\Api\V1\Controllers\CustomerCommentsController@restore');
+        $api->delete('customers/{id}/comments/{comment_id}/permanently', 'App\Api\V1\Controllers\CustomerCommentsController@destroyPermanently');
+    });
+
 
 //    $api->get('book', 'App\Api\V1\Controllers\BookController@index');
 

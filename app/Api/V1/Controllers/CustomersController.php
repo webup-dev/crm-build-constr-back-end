@@ -546,6 +546,11 @@ class CustomersController extends Controller
      *  "message": "Permission to department is absent."
      * }
      *
+     * @response 455 {
+     *  "success": false,
+     *  "message": "There is a parent soft-deleted comment"
+     * }
+     *
      * @param $id
      * @return void
      */

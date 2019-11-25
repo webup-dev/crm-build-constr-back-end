@@ -23,6 +23,7 @@ class TestCustomersSeeder extends Seeder
             'created_at'      => now()
         ]);
 
+        // 2
         DB::table('customers')->insert([
             'name'            => 'Customer B-Spring',
             'type'            => 'organization',

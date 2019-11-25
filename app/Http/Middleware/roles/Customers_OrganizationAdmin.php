@@ -21,13 +21,9 @@ class Customers_OrganizationAdmin
      */
     public function handle($request, Closure $next)
     {
-//        dd($request);
         $user = Auth::guard()->user();
-
         $roles = $user->roles;
-
         $roleNamesArr = $roles->pluck('name')->all();
-//        dd($roleNamesArr);
 
         if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $next($request);

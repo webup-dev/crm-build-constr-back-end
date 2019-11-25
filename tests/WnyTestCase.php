@@ -18,6 +18,7 @@ abstract class WnyTestCase extends TestCase
         Schema::dropIfExists('methods');
         Schema::dropIfExists('controllers');
         Schema::dropIfExists('customer_individuals');
+        Schema::dropIfExists('customer_comments');
         Schema::dropIfExists('customers');
         Schema::dropIfExists('organizations');
         Schema::dropIfExists('activities');
@@ -105,6 +106,17 @@ abstract class WnyTestCase extends TestCase
         $data = [
             'name'  => 'Customer B-Spring',
             'email'    => 'spring-customer-organization@admin.com',
+            'password' => '12345678'
+        ];
+
+        return $this->loginUser($data);
+    }
+
+    public function loginCustomerWny()
+    {
+        $data = [
+            'name'  => 'Customer A-WNY',
+            'email'    => 'wny-customer-a-individual@admin.com',
             'password' => '12345678'
         ];
 

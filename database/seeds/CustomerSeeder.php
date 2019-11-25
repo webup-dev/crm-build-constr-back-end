@@ -15,6 +15,7 @@ class CustomerSeeder extends Seeder
          * Add User Profiles
          *
          */
+        // 1
         DB::table('customers')->insert([
             'name'            => 'Customer A-WNY',
             'type'            => 'individual',
@@ -23,6 +24,7 @@ class CustomerSeeder extends Seeder
             'created_at'      => now()
         ]);
 
+        // 2
         DB::table('customers')->insert([
             'name'            => 'Customer B-Spring',
             'type'            => 'organization',
