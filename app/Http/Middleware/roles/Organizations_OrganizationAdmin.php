@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Organization;
 use Closure;
 use Tymon\JWTAuth\JWTAuth;
 use Auth;
@@ -40,7 +41,8 @@ class Organizations_OrganizationAdmin
                 return $next($request);
             }
 
-            if ($id === $departmentId) {
+            $organizations = Organization::all()->toArray();
+            if (isOwn($organizations, $departmentId, $id)) {
                 return $next($request);
             }
 

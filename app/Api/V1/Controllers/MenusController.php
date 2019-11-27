@@ -54,24 +54,20 @@ class MenusController extends Controller
      */
     public function getSoftDeleted()
     {
-        $user                = Auth::guard()->user();
-//        dd($user);
+        $user                    = Auth::guard()->user();
         $userProfileDepartmentId = User_profile::with('organization')
             ->whereUserId($user->id)
             ->first()
             ->department_id;
-//        dd($userProfileDepartmentId);
 
-        $organizations = Organization::all()->toArray();
+        $organizations = Organization::withTrashed()->get()->toArray();
         $tree          = buildTree($organizations, $userProfileDepartmentId);
-//        dd($tree);
+
         $collectValues = collectValues($tree, 'id', [$userProfileDepartmentId]);
-//        dd($collectValues);
-//        dd('getSoftDeleted');
-        $res   = [];
-        $res[] = $this->getUserProfile($collectValues);
-        $res[] = $this->getCustomers($collectValues);
-//        dd($res);
+        $res           = [];
+        $res[]         = $this->getUserProfile($collectValues);
+        $res[]         = $this->getCustomers($collectValues);
+        $res[]         = $this->getOrganizations($collectValues);
 
         $response = [
             "success" => true,
@@ -103,7 +99,7 @@ class MenusController extends Controller
     private function getCustomers($collectValues)
     {
         $customersCount = Customer::onlyTrashed()
-            ->whereIn('organization_id', $collectValues)
+            ->whereIn('id', $collectValues)
             ->select('id')
             ->get()
             ->count();
@@ -112,6 +108,23 @@ class MenusController extends Controller
             "name"  => 'Customers',
             "url"   => 'customers/soft-deleted',
             "count" => $customersCount
+        ];
+
+        return $arr;
+    }
+
+    private function getOrganizations($collectValues)
+    {
+        $organizationsCount = Organization::onlyTrashed()
+            ->whereIn('id', $collectValues)
+            ->select('id')
+            ->get()
+            ->count();
+
+        $arr = [
+            "name"  => 'Organizations',
+            "url"   => 'organizations/soft-deleted',
+            "count" => $organizationsCount
         ];
 
         return $arr;

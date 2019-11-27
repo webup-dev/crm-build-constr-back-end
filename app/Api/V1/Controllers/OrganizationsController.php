@@ -144,6 +144,8 @@ class OrganizationsController extends Controller
      *
      * @response 200 {
      *  "success": true,
+     *  "code": 200,
+     *  "message": "Soft-deleted Roles are retrieved successfully.",
      *  "data": [{
      *    "id": 1,
      *    "level": 1,
@@ -163,8 +165,7 @@ class OrganizationsController extends Controller
      *    "deleted_a": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
-     *   }],
-     *  "message": "Soft-deleted Roles are retrieved successfully."
+     *   }]
      * }
      *
      * @response 204 {
@@ -173,19 +174,18 @@ class OrganizationsController extends Controller
      *
      * @response 453 {
      *  "success": false,
-     *  "message": "Permission is absent."
+     *  "message": "Permission is absent by the role."
      * }
      *
      * @return Response
      */
     public function indexSoftDeleted()
     {
-        $customers = Customer::onlyTrashed()
-            ->with('organization')
-            ->select('id', 'user_id', 'name', 'type', 'organization_id', 'note', 'deleted_at', 'created_at', 'updated_at')
+        $organizations = Organization::onlyTrashed()
+            ->select('id', 'level', 'order', 'name', 'parent_id', 'deleted_at', 'created_at', 'updated_at')
             ->get();
 
-        if (!$customers->count()) {
+        if (!$organizations->count()) {
             $response = [
                 'success' => true,
                 'message' => "Soft Deleted Customers are empty."
@@ -194,12 +194,13 @@ class OrganizationsController extends Controller
             return response()->json($response, 204);
         }
 
-        $data = $customers->toArray();
+        $data = $organizations->toArray();
 
         $response = [
             'success' => true,
-            'data'    => $data,
-            'message' => "Soft-deleted customers are retrieved successfully."
+            'code'    => 200,
+            'message' => "Soft-deleted customers are retrieved successfully.",
+            'data'    => $data
         ];
 
         return response()->json($response, 200);
@@ -212,6 +213,8 @@ class OrganizationsController extends Controller
      *
      * @response 200 {
      *  "success": true,
+     *  "code": 200,
+     *  "message": "Item is retrieved successfully.",
      *  "data": {
      *    "id": 1,
      *    "level": 1,
@@ -222,12 +225,6 @@ class OrganizationsController extends Controller
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
      *  },
-     *  "message": "Item is retrieved successfully."
-     * }
-     *
-     * @response 452 {
-     *    "success": false,
-     *    "message": "Method does not exist."
      * }
      *
      * @response 453 {
@@ -240,9 +237,11 @@ class OrganizationsController extends Controller
      *  "message": "Permission to department is absent."
      * }
      *
-     * @response 455 {
+     * @response 456 {
      *  "success": false,
-     *  "message": "ID is absent"
+     *  "code": 456,
+     *  "message": "Item is absent",
+     *  "data": null,
      * }
      *
      * @param int $id
@@ -254,18 +253,21 @@ class OrganizationsController extends Controller
         if (!$organization) {
             $response = [
                 'success' => false,
-                'message' => "Item is absent."
+                'code'    => 456,
+                'message' => "Item is absent.",
+                'data'    => null
             ];
 
-            return response()->json($response, 452);
+            return response()->json($response, 456);
         }
 
         $data = $organization->toArray();
 
         $response = [
             'success' => true,
-            'data'    => $data,
-            'message' => 'Item is retrieved successfully.'
+            'code'    => 200,
+            'message' => 'Item is retrieved successfully.',
+            'data'    => $data
         ];
 
         return response()->json($response, 200);
@@ -469,7 +471,7 @@ class OrganizationsController extends Controller
 
         $organization->fill($request->all());
 
-        $parentOrg = Organization::whereId($organization->parent_id)->first();
+        $parentOrg           = Organization::whereId($organization->parent_id)->first();
         $organization->level = $parentOrg->level + 1;
 
         $data = json_encode($organization);
@@ -534,6 +536,18 @@ class OrganizationsController extends Controller
             return response()->json($response, 455);
         }
 
+        $child = Organization::whereParentId($organization->id)->first();
+        if ($child) {
+            $response = [
+                'success' => false,
+                'code'    => 456,
+                'message' => 'Impossible to destroy due to child.',
+                'data'    => null
+            ];
+
+            return response()->json($response, 456);
+        }
+
         if ($organization->delete()) {
             $response = [
                 'success' => true,
@@ -558,12 +572,9 @@ class OrganizationsController extends Controller
      *
      * @response 200 {
      *  "success": true,
-     *  "message": "Organization is restored."
-     * }
-     *
-     * @response 422 {
-     *  "success": false,
-     *  "message": "Organization is absent."
+     *  "code": 200,
+     *  "message": "Organization is restored.",
+     *  "data": null
      * }
      *
      * @response 453 {
@@ -576,6 +587,13 @@ class OrganizationsController extends Controller
      *  "message": "Permission to department is absent."
      * }
      *
+     * @response 456 {
+     *  "success": false,
+     *  "code": 456,
+     *  "message": "Incorrect the Entity ID in the URL ",
+     *  "data": null
+     * }
+     *
      * @param $id
      * @return void
      */
@@ -586,18 +604,36 @@ class OrganizationsController extends Controller
         if (!$organization) {
             $response = [
                 'success' => false,
-                'message' => 'Organization is absent.'
+                'code'    => 456,
+                'message' => 'Incorrect the Entity ID in the URL',
+                'data'    => null
             ];
 
-            return response()->json($response, 422);
+            return response()->json($response, 456);
         }
 
-        // Restore organization profile
+        if ($organization->parent_id) {
+            $parent = Organization::onlyTrashed()->whereId($organization->parent_id)->first();
+            if ($parent) {
+                $response = [
+                    'success' => false,
+                    'code'    => 455,
+                    'message' => 'There is a parent soft-deleted organization.',
+                    'data'    => null
+                ];
+
+                return response()->json($response, 455);
+            }
+        }
+
+        // Restore organization
         $organization->restore();
 
         $response = [
             'success' => true,
-            'message' => 'Organization is restored successfully.'
+            'code'    => 200,
+            'message' => 'Organization is restored successfully.',
+            'data'    => null
         ];
 
         return response()->json($response, 200);
@@ -614,12 +650,9 @@ class OrganizationsController extends Controller
      *
      * @response 200 {
      *  "success": true,
-     *  "message": "Correct permanent destroy."
-     * }
-     *
-     * @response 455 {
-     *  "success": false,
-     *  "message": "ID is absent."
+     *  "code": 200,
+     *  "message": "Correct permanent destroy.",
+     *  "data": null
      * }
      *
      * @response 453 {
@@ -630,6 +663,20 @@ class OrganizationsController extends Controller
      * @response 454 {
      *  "success": false,
      *  "message": "Permission to department is absent."
+     * }
+     *
+     * @response 455 {
+     *  "success": false,
+     *  "code": 455,
+     *  "message": "There is soft-deleted organization.",
+     *  "data": null
+     * }
+     *
+     * @response 456 {
+     *  "success": false,
+     *  "code": 456,
+     *  "message": "Incorrect the Entity ID in the URL.",
+     *  "data": null
      * }
      *
      * @param $id
@@ -643,7 +690,21 @@ class OrganizationsController extends Controller
         if (!$organization) {
             $response = [
                 'success' => false,
-                'message' => 'ID is absent.'
+                'code'    => 456,
+                'message' => 'Incorrect the Entity ID in the URL.',
+                'data'    => null
+            ];
+
+            return response()->json($response, 456);
+        }
+
+        $child = Organization::onlyTrashed()->whereParentId($organization->id)->first();
+        if ($child) {
+            $response = [
+                'success' => false,
+                'code'    => 455,
+                'message' => 'There is a child soft-deleted organization.',
+                'data'    => null
             ];
 
             return response()->json($response, 455);
@@ -652,7 +713,9 @@ class OrganizationsController extends Controller
         $organization->forceDelete();
         $response = [
             'success' => true,
-            'message' => 'Organization is deleted permanently.'
+            'code' => 200,
+            'message' => 'Organization is deleted permanently.',
+            'data' => null
         ];
 
         return response()->json($response, 200);

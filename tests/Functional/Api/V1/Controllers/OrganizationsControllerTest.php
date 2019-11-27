@@ -1,199 +1,59 @@
 <?php
 
 /**
- * SetUp:
- *   Create user
- *   Create 7 organizations
- *
- * Test example
- *
- * Check Index:
+ * Standard checks:
  *   Check login
  *   Check response status
  *   Check response structure
  *   Check response data
  *
- * Check Index If There Are Not Organizations:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
+ * SetUp: use TestsSeeder
+ * TestExample
+ * Test current Seeder
  *
- * Check Index Permission Is Absent:
- *   Check login
- *   Get index
- *   Check response status
- *   Check response structure
- *   Check response data
+ * Check Index
+ * Check Index With Not Full Permissions
+ * Check Index If Permission Is Absent Due To Role
  *
- * Check Index With Restrictions:
- *   Check login
- *   Get index
- *   Check response status
- *   Check response structure
- *   Check response data
+ * Check Index SoftDeleted
+ * Check Index SoftDeleted If Content Is Empty
+ * Check Index SoftDeleted If Permission Is Absent Due To Role
  *
- * Check Show:
- *   Check login
- *   Get specified item
- *   Check response status
- *   Check response structure
- *   Check response data
+ * Check Show
+ * Check Show If Permission is absent by the role
+ * Check Show If Permission to department is absent
+ * Check Show Not Existing Item
  *
- * Check Show Permission is absent by the role:
- *   Check login
- *   Get specified item
- *   Check response status
- *   Check response structure
- *   Check response data
+ * Check store
+ * Check store If The given data was invalid
+ * Check store If Permission is absent due to Role
+ * Check store If Permission to the department is absent
  *
- * Check Show Permission to department is absent:
- *   Check login
- *   Get specified item
- *   Check response status
- *   Check response structure
- *   Check response data
+ * Check update
+ * Check update If The Id Is wrong
+ * Check update The given data was invalid
+ * Check update Permission is absent by the role
+ * Check update Permission to te department is absent
  *
- * Check Show Not Existing Item:
- *   Check login
- *   Get specified item
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check store:
- *   Check login
- *   Store a new organization
- *   Check response status
- *   Check response structure
- *   Check response data
- *   Get DB table Organizations and check last Organization
- *
- * Check store The given data was invalid:
- *   Check login
- *   Store a new organization
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check store Permission is absent:
- *   Check login
- *   Store a new organization
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check update:
- *   Check login
- *   Update the Organization
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check update If The Id Is Absent:
- *   Check login
- *   Update the Organization
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check update The given data was invalid:
- *   Check login
- *   Update the Organization
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Check update Permission is absent by the role:
- *   Check login
- *   Update the Organization
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Delete:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *   Check DB
- *
- * Delete ID is absent:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Delete Permission is absent by the role:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Delete Permission to department is absent:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *
+ * Delete
+ * Delete If Access Is not Full
+ * Delete If The Access Is Not Full
+ * Delete If ID is absent
+ * Delete If Permission is absent by the role
+ * Delete If The Permission to department is absent
  * Delete Impossible to destroy due to child
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
  *
- * Restore:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
+ * Restore
+ * Restore If ID is absent
+ * Restore If Permission is absent by the role
+ * Restore If Permission to department is absent
+ * Restore Is Impossible due to deleted parent
  *
- * Restore ID is absent:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Restore Permission is absent by the role:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Restore Permission to department is absent:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Permanent Destroy:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Permanent Destroy ID is absent:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Permanent Destroy Permission is absent by the role:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * Permanent Destroy Permission to department is absent:
- *   Check login
- *   Check response status
- *   Check response structure
- *   Check response data
- *
- * tearDown:
- *   Delete pivot tables
- *   Delete Organizations
- *   Delete user
+ * Permanent Destroy
+ * Permanent Destroy If ID is absent
+ * Permanent Destroy If Permission is absent by the role
+ * Permanent Destroy If Permission to department is absent
+ * Permanent Destroy Is Impossible due to soft-deleted child
  */
 
 namespace App\Functional\Api\V1\Controllers;
@@ -214,9 +74,7 @@ class OrganizationsControllerTest extends WnyTestCase
     use DatabaseMigrations;
 
     /**
-     * SetUp:
-     *   Create user
-     *   Create 6 organizations
+     * SetUp with TestsSeeder
      *
      * @return mixed
      */
@@ -225,178 +83,7 @@ class OrganizationsControllerTest extends WnyTestCase
     {
         parent::setUp();
 
-        /*
-         | User                   | User ID | Role                     | Organization   | Organization ID |
-         |------------------------|---------|--------------------------|----------------|-----------------|
-         | Test                   | 1       | developer                |                |                 |
-         | Estimator              | 2       | organization-estimator   |                |                 |
-         | Organizational Admin   | 2       | organization-admin       | Another Office | 3               |
-         */
-
-        $user1 = new User([
-            'name'     => 'Test',
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $user1->save();
-
-        $user2 = new User([
-            'name'     => 'Estimator',
-            'email'    => 'estimator@email.com',
-            'password' => '123456'
-        ]);
-
-        $user2->save();
-
-        $user3 = new User([
-            'name'     => 'Organizational Admin',
-            'email'    => 'Organizational-Admin@email.com',
-            'password' => '123456'
-        ]);
-
-        $user3->save();
-
-        $role1 = new Role([
-            'name' => 'developer'
-        ]);
-
-        $role1->save();
-
-        $role2 = new Role([
-            'name' => 'organization-estimator'
-        ]);
-
-        $role2->save();
-
-        $role3 = new Role([
-            'name' => 'organization-admin'
-        ]);
-
-        $role3->save();
-
-        $user1->roles()->attach(1);
-        $user2->roles()->attach(2);
-        $user3->roles()->attach(3);
-
-        // 1
-        $organization = new Organization([
-            'name'      => 'Platform',
-            'level'     => 1,
-            'order'     => 1,
-            'parent_id' => null,
-        ]);
-
-        $organization->save();
-
-        // 2
-        $organization = new Organization([
-            'name'      => 'Central Office',
-            'level'     => 2,
-            'order'     => 1,
-            'parent_id' => 1,
-        ]);
-
-        // 3
-        $organization->save();
-
-        $organization = new Organization([
-            'name'      => 'Another Office',
-            'level'     => 2,
-            'order'     => 2,
-            'parent_id' => 1,
-        ]);
-
-        $organization->save();
-
-        // 4
-        $organization = new Organization([
-            'name'      => 'Another Department 1',
-            'level'     => 3,
-            'order'     => 1,
-            'parent_id' => 3,
-        ]);
-
-        $organization->save();
-
-        $organization = new Organization([
-            'name'      => 'Department 1',
-            'level'     => 3,
-            'order'     => 1,
-            'parent_id' => 2,
-        ]);
-
-        $organization->save();
-
-        $organization = new Organization([
-            'name'      => 'Another Department 2',
-            'level'     => 3,
-            'order'     => 2,
-            'parent_id' => 3,
-        ]);
-
-        $organization->save();
-
-        $organization = new Organization([
-            'name'      => 'Department 2',
-            'level'     => 3,
-            'order'     => 2,
-            'parent_id' => 2,
-        ]);
-
-        $organization->save();
-
-        $userProfile1 = User_profile::create([
-            'user_id'          => 1,
-            'first_name'       => 'Test',
-            'last_name'        => 'Developer',
-            'title'            => '',
-            'department_id'    => 1,
-            'phone_home'       => '',
-            'phone_work'       => '',
-            'phone_extension'  => '',
-            'phone_mob'        => '',
-            'email_personal'   => '',
-            'email_work'       => '',
-            'address_line_1'   => 'Williams 7',
-            'address_line_2'   => '',
-            'city'             => 'Kyiv',
-            'state'            => 'CA',
-            'zip'              => '90001',
-            'status'           => 'active',
-            'start_date'       => null,
-            'termination_date' => null,
-            'deleted_at'       => null
-        ]);
-
-        $userProfile1->save();
-
-        $userProfile2 = User_profile::create([
-            'user_id'          => 3,
-            'first_name'       => 'Organizational',
-            'last_name'        => 'Admin',
-            'title'            => '',
-            'department_id'    => 3,
-            'phone_home'       => '',
-            'phone_work'       => '',
-            'phone_extension'  => '',
-            'phone_mob'        => '',
-            'email_personal'   => '',
-            'email_work'       => '',
-            'address_line_1'   => 'Williams 7',
-            'address_line_2'   => '',
-            'city'             => 'Kyiv',
-            'state'            => 'CA',
-            'zip'              => '90001',
-            'status'           => 'active',
-            'start_date'       => null,
-            'termination_date' => null,
-            'deleted_at'       => null
-        ]);
-
-        $userProfile2->save();
-
-
+        $this->artisan('db:seed --class=TestsSeeder');
     }
 
     /**
@@ -410,6 +97,20 @@ class OrganizationsControllerTest extends WnyTestCase
     }
 
     /**
+     * Check seeder.
+     *
+     * @return void
+     */
+    public function testSeeder()
+    {
+        $organizations = DB::table('organizations')->get();
+        $this->assertEquals(17, $organizations->count());
+
+        $user = DB::table('users')->where('id', 1)->first();
+        $this->assertEquals('Volodymyr Vadiasov', $user->name);
+    }
+
+    /**
      * Check Index:
      *   Check login
      *   Check response status
@@ -418,23 +119,9 @@ class OrganizationsControllerTest extends WnyTestCase
      */
     public function testIndex()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
+        $token = $this->loginDeveloper();
 
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
-
-        $response = $this->get('api/organizations?token=' . $token, []);
+        $response = $this->get('api/organizations?token=' . $token);
 
         // Check response status
         $response->assertStatus(200);
@@ -449,8 +136,9 @@ class OrganizationsControllerTest extends WnyTestCase
                             'id',
                             'level',
                             'order',
-                            'parent_id',
                             'name',
+                            'parent_id',
+                            'deleted_at',
                             'created_at',
                             'updated_at'
                         ]
@@ -464,42 +152,29 @@ class OrganizationsControllerTest extends WnyTestCase
         $success      = $responseJSON['success'];  // array
 
 
-        $this->assertEquals(7, count($data));
+        $this->assertEquals(17, count($data));
         $this->assertEquals(1, $data[0]['id']);
         $this->assertEquals('Platform', $data[0]['name']);
-        $this->assertEquals('1', $data[0]['level']);
+        $this->assertEquals('0', $data[0]['level']);
         $this->assertEquals('1', $data[0]['order']);
         $this->assertEquals('', $data[0]['parent_id']);
+        $this->assertEquals(null, $data[0]['deleted_at']);
         $this->assertEquals("Organizations retrieved successfully.", $message);
         $this->assertEquals(true, $success);
 
     }
 
     /**
-     * Check Index With Restrictions:
+     * Check Index With Not Full Permissions
      *   Check login
      *   Get index
      *   Check response status
      *   Check response structure
      *   Check response data
      */
-    public function testIndexWithRestrictions()
+    public function testIndexWithNotFullPermissions()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'Organizational-Admin@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Organizational Admin',
-            'email' => 'Organizational-Admin@email.com'
-        ])->isOk();
+        $token = $this->loginOrganizationWNYSuperadmin();
 
         $response = $this->get('api/organizations?token=' . $token, []);
 
@@ -516,8 +191,9 @@ class OrganizationsControllerTest extends WnyTestCase
                             'id',
                             'level',
                             'order',
-                            'parent_id',
                             'name',
+                            'parent_id',
+                            'deleted_at',
                             'created_at',
                             'updated_at'
                         ]
@@ -530,16 +206,122 @@ class OrganizationsControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $success      = $responseJSON['success'];  // array
 
-        $this->assertEquals(3, count($data));
-        $this->assertEquals(4, $data[1]['id']);
-        $this->assertEquals('Another Department 1', $data[1]['name']);
-        $this->assertEquals(3, $data[1]['level']);
-        $this->assertEquals(1, $data[1]['order']);
-        $this->assertEquals(3, $data[1]['parent_id']);
+        $this->assertEquals(8, count($data));
+        $this->assertEquals(2, $data[0]['id']);
+        $this->assertEquals('Western New York Exteriors, LLC.', $data[0]['name']);
+        $this->assertEquals(1, $data[0]['level']);
+        $this->assertEquals(1, $data[0]['order']);
+        $this->assertEquals(1, $data[0]['parent_id']);
         $this->assertEquals("Organizations retrieved successfully.", $message);
         $this->assertEquals(true, $success);
-
     }
+
+    /**
+     * Check Index SoftDeleted
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testIndexSoftDeleted()
+    {
+        $token = $this->loginDeveloper();
+
+        // preparation
+        $response = $this->delete('api/organizations/17?token=' . $token);
+        $response = $this->delete('api/organizations/16?token=' . $token);
+
+        // request
+        $response = $this->get('api/organizations/soft-deleted?token=' . $token);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'code',
+                'message',
+                'data' =>
+                    [
+                        [
+                            'id',
+                            'level',
+                            'order',
+                            'name',
+                            'parent_id',
+                            'deleted_at',
+                            'created_at',
+                            'updated_at'
+                        ]
+                    ],
+            ]
+        );
+        $responseJSON = json_decode($response->getContent(), true);
+        $data         = $responseJSON['data'];  // array
+        $message      = $responseJSON['message'];  // array
+        $success      = $responseJSON['success'];  // array
+        $code         = $responseJSON['code'];  // array
+
+        $this->assertEquals(2, count($data));
+        $this->assertEquals(16, $data[0]['id']);
+        $this->assertEquals('Administrative assistant', $data[0]['name']);
+        $this->assertEquals('3', $data[0]['level']);
+        $this->assertEquals('1', $data[0]['order']);
+        $this->assertEquals('10', $data[0]['parent_id']);
+        $this->assertNotEquals(null, $data[0]['deleted_at']);
+        $this->assertEquals("Soft-deleted customers are retrieved successfully.", $message);
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+    }
+
+    /**
+     * Check Index SoftDeleted If Content Is Empty
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testIndexSoftDeletedIfContentIsEmpty()
+    {
+        $token = $this->loginDeveloper();
+
+        // request
+        $response = $this->get('api/organizations/soft-deleted?token=' . $token);
+
+        // Check response status
+        $response->assertStatus(204);
+    }
+
+    /**
+     * Check Index SoftDeleted If Permission Is Absent Due To Role
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testIndexSoftDeletedIfPermissionIsAbsentDueToRole()
+    {
+        $token = $this->loginDeveloper();
+
+        // preparation
+        $response = $this->delete('api/organizations/17?token=' . $token);
+        $response = $this->delete('api/organizations/16?token=' . $token);
+
+        // request
+        $token    = $this->loginOrganizationWNYGeneralManager();
+        $response = $this->get('api/organizations/soft-deleted?token=' . $token);
+
+        // Check response status
+        $response->assertStatus(453);
+
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $message      = $responseJSON['message'];  // array
+        $success      = $responseJSON['success'];  // array
+
+        $this->assertEquals("Permission is absent by the role.", $message);
+        $this->assertEquals(false, $success);
+    }
+
 
     /**
      * Check show:
@@ -550,21 +332,7 @@ class OrganizationsControllerTest extends WnyTestCase
      */
     public function testShow()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Request
         $response = $this->get('api/organizations/2?token=' . $token, []);
@@ -579,10 +347,11 @@ class OrganizationsControllerTest extends WnyTestCase
                 'data' =>
                     [
                         'id',
-                        'name',
                         'level',
-                        'parent_id',
                         'order',
+                        'name',
+                        'parent_id',
+                        'deleted_at',
                         'created_at',
                         'updated_at'
                     ],
@@ -593,14 +362,86 @@ class OrganizationsControllerTest extends WnyTestCase
         //Check response data
         $responseJSON = json_decode($response->getContent(), true);
         $success      = $responseJSON['success'];  // array
+        $code         = $responseJSON['code'];  // array
         $message      = $responseJSON['message'];  // array
         $data         = $responseJSON['data'];  // array
 
         $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
         $this->assertEquals('Item is retrieved successfully.', $message);
-        $this->assertEquals('Central Office', $data['name']);
-        $this->assertEquals(1, $data['parent_id']);
+        $this->assertEquals('Western New York Exteriors, LLC.', $data['name']);
+        $this->assertEquals(1, $data['level']);
         $this->assertEquals(1, $data['order']);
+        $this->assertEquals(1, $data['parent_id']);
+        $this->assertEquals(null, $data['deleted_at']);
+    }
+
+    /**
+     * Check Show If Permission is absent by the role
+     *   Check login
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testShowIfPermissionIsAbsentByTheRole()
+    {
+        $token = $this->loginOrganizationWNYGeneralManager();
+
+        // Request
+        $response = $this->get('api/organizations/2?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(453);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'message'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $message      = $responseJSON['message'];  // array
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals('Permission is absent by the role.', $message);
+    }
+
+    /**
+     * Check Show If Permission to department is absent
+     *   Check login
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testShowIfPermissionToDepartmentIsAbsent()
+    {
+        $token = $this->loginOrganizationSpringSuperadmin();
+
+        // Request
+        $response = $this->get('api/organizations/2?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(454);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'message'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $message      = $responseJSON['message'];  // array
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals("Permission to department is absent.", $message);
     }
 
     /**
@@ -612,27 +453,13 @@ class OrganizationsControllerTest extends WnyTestCase
      */
     public function testShowNotExistingItem()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Request
         $response = $this->get('api/organizations/1111?token=' . $token, []);
 
         // Check response status
-        $response->assertStatus(452);
+        $response->assertStatus(456);
 
         // Check response structure
         $response->assertJsonStructure(
@@ -645,387 +472,392 @@ class OrganizationsControllerTest extends WnyTestCase
         //Check response data
         $responseJSON = json_decode($response->getContent(), true);
         $success      = $responseJSON['success'];  // array
+        $code         = $responseJSON['code'];  // array
         $message      = $responseJSON['message'];  // array
+        $data         = $responseJSON['data'];  // array
 
         $this->assertEquals(false, $success);
         $this->assertEquals('Item is absent.', $message);
+        $this->assertEquals(456, $code);
+        $this->assertEquals(null, $data);
+
     }
 
-    /**
-     * Check store:
-     *   Check login
-     *   Store a new organization
-     *   Check response status
-     *   Check response structure
-     *   Check response data
-     *   Get DB table Organizations and check last Organization
-     */
-    public function testStore()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
-
-        // Create data
-        $data = [
-            'name'      => 'Department 3',
-            'order'     => '4',
-            'parent_id' => 2
-        ];
-
-        // Store a new organization
-        $response = $this->post('api/organizations?token=' . $token, $data, []);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        // Check response structure
-        $response->assertJsonStructure(
-            [
-                'success',
-                'message'
-            ]
-        );
-
-        //Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];  // array
-        $message      = $responseJSON['message'];  // array
-
-        $this->assertEquals(true, $success);
-        $this->assertEquals("New Organization is created successfully.", $message);
-
-        // Check DB
-        $organization = DB::table('organizations')->where('name', 'Department 3')->first();
-
-        $this->assertEquals(8, $organization->id);
-        $this->assertEquals(2, $organization->parent_id);
-        $this->assertEquals(3, $organization->level);
-    }
-
-    /**
-     * Check store The given data was invalid:
-     *   Check login
-     *   Store a new organization
-     *   Check response status
-     *   Check response structure
-     *   Check response data
-     */
-    public function testStoreIfTheGivenDataWasInvalid()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
-
-        // Create data
-        $data = [
-            'order'     => 'b',
-            'name'      => '',
-            'parent_id' => 'c'
-        ];
-
-        // Store a new organization
-        $response = $this->post('api/organizations?token=' . $token, $data, []);
-
-        // Check response status
-        $response->assertStatus(452);
-
-        // Check response structure
-        $response->assertJsonStructure(
-            [
-                'errors'
-            ]
-        );
-
-        ///Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $errors       = $responseJSON['errors'];  // array
-
-        $this->assertEquals("The given data was invalid.", $errors['message']);
-        $this->assertEquals(3, count($errors['errors']));
-    }
-
-    /**
-     * Check store Permission is absent Due To Role:
-     *   Check login
-     *   Store a new organization
-     *   Check response status
-     *   Check response structure
-     *   Check response data
-     */
-    public function testStoreIfPermissionIsAbsentDueToRole()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'estimator@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Estimator',
-            'email' => 'estimator@email.com'
-        ])->isOk();
-
-        // Create data
-        $data = [
-            'order'     => '3',
-            'name'      => 'Test Test',
-            'parent_id' => 3
-        ];
-
-        // Store a new organization
-        $response = $this->post('api/organizations?token=' . $token, $data, []);
-
-        // Check response status
-        $response->assertStatus(453);
-
-        // Check response structure
-        $response->assertJsonStructure(
-            [
-                "success",
-                "message"
-            ]
-        );
-
-        ///Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];  // array
-        $message      = $responseJSON['message'];  // array
-
-        $this->assertEquals(false, $success);
-        $this->assertEquals("Permission is absent by the role.", $message);
-    }
-
-    /**
-     * Check update:
-     *   Check login
-     *   Update the Organization
-     *   Check response status
-     *   Check response structure
-     *   Check response data
-     */
-    public function testUpdate()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
-
-        // Create data
-        $data = [
-            'name'      => 'Department 1 Edited',
-            'order'     => 1,
-            'parent_id' => 4
-        ];
-
-        $response = $this->put('api/organizations/5/?token=' . $token, $data);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];
-        $message      = $responseJSON['message'];
-        $data         = $responseJSON['data'];
-        $data         = json_decode($data);
-
-        $this->assertEquals(true, $success);
-        $this->assertEquals("Organization is updated successfully.", $message);
-        $this->assertEquals("Department 1 Edited", $data->name);
-        $this->assertEquals(4, $data->level);
-        $this->assertEquals(4, $data->parent_id);
-    }
-
-    /**
-     * Check update If The Id Is Absent:
-     *   Check login
-     *   Update the Organization
-     *   Check response status
-     *   Check response structure
-     *   Check response data
-     */
-    public function testUpdateIfTheIdIsAbsent()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
-
-        // Create data
-        $data = [
-            'name'      => 'Department 1 Edited',
-            'order'     => '2',
-            'parent_id' => 1
-        ];
-
-        $response = $this->put('api/organizations/33/?token=' . $token, $data);
-
-        $response->assertStatus(452);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];
-        $message      = $responseJSON['message'];
-
-        $this->assertEquals(false, $success);
-        $this->assertEquals("Could not find Organization.", $message);
-    }
-
-    /**
-     * Check update The given data was invalid:
-     *   Check login
-     *   Update the Organization
-     *   Check response status
-     *   Check response structure
-     *   Check response data
-     */
-    public function testUpdateIfTheGivenDataWasInvalid()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
-
-        // Create data
-        $data = [
-            'name'      => '',
-            'order'     => 'a',
-            'parent_id' => 'c'
-        ];
-
-        $response = $this->put('api/organizations/2/?token=' . $token, $data);
-
-        $response->assertStatus(452);
-
-        // Check response structure
-        $response->assertJsonStructure(
-            [
-                'errors'
-            ]
-        );
-
-        ///Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $errors       = $responseJSON['errors'];  // array
-
-        $this->assertEquals("The given data was invalid.", $errors['message']);
-        $this->assertEquals(3, count($errors['errors']));
-    }
-
-    /**
-     * Check update Permission is absent by the role:
-     *   Check login
-     *   Update the Organization
-     *   Check response status
-     *   Check response structure
-     *   Check response data
-     */
-    public function testUpdateIfPermissionIsAbsentByTheRole()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'estimator@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Estimator',
-            'email' => 'estimator@email.com'
-        ])->isOk();
-
-        // Create data
-        $data = [
-            'name'      => 'Test',
-            'order'     => 1,
-            'parent_id' => 3
-        ];
-
-        $response = $this->put('api/organizations/4?token=' . $token, $data);
-
-        $response->assertStatus(453);
-
-        // Check response structure
-        $response->assertJsonStructure(
-            [
-                "success",
-                "message"
-            ]
-        );
-
-        ///Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];  // array
-        $message      = $responseJSON['message'];  // array
-
-        $this->assertEquals(false, $success);
-        $this->assertEquals("Permission is absent by the role.", $message);
-    }
-
+//    /**
+//     * Check store:
+//     *   Check login
+//     *   Store a new organization
+//     *   Check response status
+//     *   Check response structure
+//     *   Check response data
+//     *   Get DB table Organizations and check last Organization
+//     */
+//    public function testStore()
+//    {
+//        // Check login
+//        $response = $this->post('api/auth/login', [
+//            'email'    => 'test@email.com',
+//            'password' => '123456'
+//        ]);
+//
+//        $response->assertStatus(200);
+//
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $token        = $responseJSON['token'];
+//
+//        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+//            'name'  => 'Test',
+//            'email' => 'test@email.com'
+//        ])->isOk();
+//
+//        // Create data
+//        $data = [
+//            'name'      => 'Department 3',
+//            'order'     => '4',
+//            'parent_id' => 2
+//        ];
+//
+//        // Store a new organization
+//        $response = $this->post('api/organizations?token=' . $token, $data, []);
+//
+//        // Check response status
+//        $response->assertStatus(200);
+//
+//        // Check response structure
+//        $response->assertJsonStructure(
+//            [
+//                'success',
+//                'message'
+//            ]
+//        );
+//
+//        //Check response data
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $success      = $responseJSON['success'];  // array
+//        $message      = $responseJSON['message'];  // array
+//
+//        $this->assertEquals(true, $success);
+//        $this->assertEquals("New Organization is created successfully.", $message);
+//
+//        // Check DB
+//        $organization = DB::table('organizations')->where('name', 'Department 3')->first();
+//
+//        $this->assertEquals(8, $organization->id);
+//        $this->assertEquals(2, $organization->parent_id);
+//        $this->assertEquals(3, $organization->level);
+//    }
+//
+//    /**
+//     * Check store The given data was invalid:
+//     *   Check login
+//     *   Store a new organization
+//     *   Check response status
+//     *   Check response structure
+//     *   Check response data
+//     */
+//    public function testStoreIfTheGivenDataWasInvalid()
+//    {
+//        // Check login
+//        $response = $this->post('api/auth/login', [
+//            'email'    => 'test@email.com',
+//            'password' => '123456'
+//        ]);
+//
+//        $response->assertStatus(200);
+//
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $token        = $responseJSON['token'];
+//
+//        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+//            'name'  => 'Test',
+//            'email' => 'test@email.com'
+//        ])->isOk();
+//
+//        // Create data
+//        $data = [
+//            'order'     => 'b',
+//            'name'      => '',
+//            'parent_id' => 'c'
+//        ];
+//
+//        // Store a new organization
+//        $response = $this->post('api/organizations?token=' . $token, $data, []);
+//
+//        // Check response status
+//        $response->assertStatus(452);
+//
+//        // Check response structure
+//        $response->assertJsonStructure(
+//            [
+//                'errors'
+//            ]
+//        );
+//
+//        ///Check response data
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $errors       = $responseJSON['errors'];  // array
+//
+//        $this->assertEquals("The given data was invalid.", $errors['message']);
+//        $this->assertEquals(3, count($errors['errors']));
+//    }
+//
+//    /**
+//     * Check store Permission is absent Due To Role:
+//     *   Check login
+//     *   Store a new organization
+//     *   Check response status
+//     *   Check response structure
+//     *   Check response data
+//     */
+//    public function testStoreIfPermissionIsAbsentDueToRole()
+//    {
+//        // Check login
+//        $response = $this->post('api/auth/login', [
+//            'email'    => 'estimator@email.com',
+//            'password' => '123456'
+//        ]);
+//
+//        $response->assertStatus(200);
+//
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $token        = $responseJSON['token'];
+//
+//        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+//            'name'  => 'Estimator',
+//            'email' => 'estimator@email.com'
+//        ])->isOk();
+//
+//        // Create data
+//        $data = [
+//            'order'     => '3',
+//            'name'      => 'Test Test',
+//            'parent_id' => 3
+//        ];
+//
+//        // Store a new organization
+//        $response = $this->post('api/organizations?token=' . $token, $data, []);
+//
+//        // Check response status
+//        $response->assertStatus(453);
+//
+//        // Check response structure
+//        $response->assertJsonStructure(
+//            [
+//                "success",
+//                "message"
+//            ]
+//        );
+//
+//        ///Check response data
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $success      = $responseJSON['success'];  // array
+//        $message      = $responseJSON['message'];  // array
+//
+//        $this->assertEquals(false, $success);
+//        $this->assertEquals("Permission is absent by the role.", $message);
+//    }
+//
+//    /**
+//     * Check update:
+//     *   Check login
+//     *   Update the Organization
+//     *   Check response status
+//     *   Check response structure
+//     *   Check response data
+//     */
+//    public function testUpdate()
+//    {
+//        // Check login
+//        $response = $this->post('api/auth/login', [
+//            'email'    => 'test@email.com',
+//            'password' => '123456'
+//        ]);
+//
+//        $response->assertStatus(200);
+//
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $token        = $responseJSON['token'];
+//
+//        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+//            'name'  => 'Test',
+//            'email' => 'test@email.com'
+//        ])->isOk();
+//
+//        // Create data
+//        $data = [
+//            'name'      => 'Department 1 Edited',
+//            'order'     => 1,
+//            'parent_id' => 4
+//        ];
+//
+//        $response = $this->put('api/organizations/5/?token=' . $token, $data);
+//
+//        $response->assertStatus(200);
+//
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $success      = $responseJSON['success'];
+//        $message      = $responseJSON['message'];
+//        $data         = $responseJSON['data'];
+//        $data         = json_decode($data);
+//
+//        $this->assertEquals(true, $success);
+//        $this->assertEquals("Organization is updated successfully.", $message);
+//        $this->assertEquals("Department 1 Edited", $data->name);
+//        $this->assertEquals(4, $data->level);
+//        $this->assertEquals(4, $data->parent_id);
+//    }
+//
+//    /**
+//     * Check update If The Id Is Absent:
+//     *   Check login
+//     *   Update the Organization
+//     *   Check response status
+//     *   Check response structure
+//     *   Check response data
+//     */
+//    public function testUpdateIfTheIdIsAbsent()
+//    {
+//        // Check login
+//        $response = $this->post('api/auth/login', [
+//            'email'    => 'test@email.com',
+//            'password' => '123456'
+//        ]);
+//
+//        $response->assertStatus(200);
+//
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $token        = $responseJSON['token'];
+//
+//        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+//            'name'  => 'Test',
+//            'email' => 'test@email.com'
+//        ])->isOk();
+//
+//        // Create data
+//        $data = [
+//            'name'      => 'Department 1 Edited',
+//            'order'     => '2',
+//            'parent_id' => 1
+//        ];
+//
+//        $response = $this->put('api/organizations/33/?token=' . $token, $data);
+//
+//        $response->assertStatus(452);
+//
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $success      = $responseJSON['success'];
+//        $message      = $responseJSON['message'];
+//
+//        $this->assertEquals(false, $success);
+//        $this->assertEquals("Could not find Organization.", $message);
+//    }
+//
+//    /**
+//     * Check update The given data was invalid:
+//     *   Check login
+//     *   Update the Organization
+//     *   Check response status
+//     *   Check response structure
+//     *   Check response data
+//     */
+//    public function testUpdateIfTheGivenDataWasInvalid()
+//    {
+//        // Check login
+//        $response = $this->post('api/auth/login', [
+//            'email'    => 'test@email.com',
+//            'password' => '123456'
+//        ]);
+//
+//        $response->assertStatus(200);
+//
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $token        = $responseJSON['token'];
+//
+//        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+//            'name'  => 'Test',
+//            'email' => 'test@email.com'
+//        ])->isOk();
+//
+//        // Create data
+//        $data = [
+//            'name'      => '',
+//            'order'     => 'a',
+//            'parent_id' => 'c'
+//        ];
+//
+//        $response = $this->put('api/organizations/2/?token=' . $token, $data);
+//
+//        $response->assertStatus(452);
+//
+//        // Check response structure
+//        $response->assertJsonStructure(
+//            [
+//                'errors'
+//            ]
+//        );
+//
+//        ///Check response data
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $errors       = $responseJSON['errors'];  // array
+//
+//        $this->assertEquals("The given data was invalid.", $errors['message']);
+//        $this->assertEquals(3, count($errors['errors']));
+//    }
+//
+//    /**
+//     * Check update Permission is absent by the role:
+//     *   Check login
+//     *   Update the Organization
+//     *   Check response status
+//     *   Check response structure
+//     *   Check response data
+//     */
+//    public function testUpdateIfPermissionIsAbsentByTheRole()
+//    {
+//        // Check login
+//        $response = $this->post('api/auth/login', [
+//            'email'    => 'estimator@email.com',
+//            'password' => '123456'
+//        ]);
+//
+//        $response->assertStatus(200);
+//
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $token        = $responseJSON['token'];
+//
+//        $this->get('api/auth/me?token=' . $token, [])->assertJson([
+//            'name'  => 'Estimator',
+//            'email' => 'estimator@email.com'
+//        ])->isOk();
+//
+//        // Create data
+//        $data = [
+//            'name'      => 'Test',
+//            'order'     => 1,
+//            'parent_id' => 3
+//        ];
+//
+//        $response = $this->put('api/organizations/4?token=' . $token, $data);
+//
+//        $response->assertStatus(453);
+//
+//        // Check response structure
+//        $response->assertJsonStructure(
+//            [
+//                "success",
+//                "message"
+//            ]
+//        );
+//
+//        ///Check response data
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $success      = $responseJSON['success'];  // array
+//        $message      = $responseJSON['message'];  // array
+//
+//        $this->assertEquals(false, $success);
+//        $this->assertEquals("Permission is absent by the role.", $message);
+//    }
+//
     /**
      * Delete:
      *   Check login
@@ -1036,24 +868,10 @@ class OrganizationsControllerTest extends WnyTestCase
      */
     public function testDelete()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->delete('api/organizations/3?token=' . $token, []);
+        $response = $this->delete('api/organizations/17?token=' . $token, []);
 
         $response->assertStatus(200);
 
@@ -1064,12 +882,40 @@ class OrganizationsControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
         $this->assertEquals("Organization is deleted successfully.", $message);
 
-        $organization = DB::table('organizations')->where('id', 3)->first();
+        $organization = DB::table('organizations')->where('id', 17)->first();
         $this->assertNotEquals(null, $organization->deleted_at);
     }
 
     /**
-     * Delete ID is absent:
+     * Delete If Access Is not Full
+     *   Check login
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     *   Check DB
+     */
+    public function testDeleteIfAccessIsNotFull()
+    {
+        $token = $this->loginOrganizationWNYSuperadmin();
+
+        // Request
+        $response = $this->delete('api/organizations/17?token=' . $token, []);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $message      = $responseJSON['message'];
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals("Organization is deleted successfully.", $message);
+
+        $organization = DB::table('organizations')->where('id', 17)->first();
+        $this->assertNotEquals(null, $organization->deleted_at);
+    }
+
+    /**
+     * Delete If ID is absent
      *   Check login
      *   Check response status
      *   Check response structure
@@ -1077,21 +923,7 @@ class OrganizationsControllerTest extends WnyTestCase
      */
     public function testDeleteIfIdIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Request
         $response = $this->delete('api/organizations/33/?token=' . $token, []);
@@ -1107,7 +939,7 @@ class OrganizationsControllerTest extends WnyTestCase
     }
 
     /**
-     * Delete Permission is absent by the role:
+     * Delete If Permission is absent by the role:
      *   Check login
      *   Check response status
      *   Check response structure
@@ -1115,24 +947,10 @@ class OrganizationsControllerTest extends WnyTestCase
      */
     public function testDeleteIfPermissionIsAbsentByTheRole()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'estimator@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Estimator',
-            'email' => 'estimator@email.com'
-        ])->isOk();
+        $token = $this->loginOrganizationWNYGeneralManager();
 
         // Request
-        $response = $this->delete('api/organizations/33/?token=' . $token, []);
+        $response = $this->delete('api/organizations/17/?token=' . $token);
 
         $response->assertStatus(453);
 
@@ -1145,7 +963,7 @@ class OrganizationsControllerTest extends WnyTestCase
     }
 
     /**
-     * Delete Permission to department is absent:
+     * Delete If The Permission to department is absent
      *   Check login
      *   Check response status
      *   Check response structure
@@ -1153,24 +971,10 @@ class OrganizationsControllerTest extends WnyTestCase
      */
     public function testDeleteIfPermissionToDepartmentIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'Organizational-Admin@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Organizational Admin',
-            'email' => 'Organizational-Admin@email.com'
-        ])->isOk();
+        $token = $this->loginOrganizationSpringSuperadmin();
 
         // Request
-        $response = $this->delete('api/organizations/4?token=' . $token, []);
+        $response = $this->delete('api/organizations/17?token=' . $token, []);
 
         $response->assertStatus(454);
 
@@ -1183,148 +987,99 @@ class OrganizationsControllerTest extends WnyTestCase
     }
 
     /**
-     * Check Restore:
-     *   User "developer" soft-delete organization Another Department (id #4).
-     *   User "developer" restore the soft-deleted organization Another Department (id #4).
-     *     Check login
-     *     Soft delete organization #4
-     *     Restore organization #4
-     *     Check response status
-     *     Check response structure
-     *     Check response data
+     * Delete Impossible to destroy due to child
+     *   Check login
+     *   Check response status
+     *   Check response structure
+     *   Check response data
      */
-    public function testRestore()
+    public function testDeleteImpossibleToDestroyDueToChild()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
-
-        // Preparation
-        $response     = $this->delete('api/organizations/4?token=' . $token, []);
-        $organization = Organization::onlyTrashed()->where('id', 4)->first();
-        $response->assertStatus(200);
-        $this->assertNotEquals(null, $organization->deleted_at);
+        $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->put('api/organizations/4/restore?token=' . $token, []);
+        $response = $this->delete('api/organizations/8?token=' . $token, []);
 
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];
-        $message      = $responseJSON['message'];
-
-        $this->assertEquals(true, $success);
-        $this->assertEquals("Organization is restored successfully.", $message);
-
-        $organization = Organization::where('id', 4)->first();
-        $this->assertEquals(null, $organization->deleted_at);
-    }
-
-    /**
-     * Check Restore If The ID Is Wrong:
-     *   User "developer" restore absent soft-deleted organization (id #4444).
-     *     Check login
-     *     Soft delete organization #4
-     *     Restore organization #4
-     *     Check response status
-     *     Check response structure
-     *     Check response data
-     */
-    public function testRestoreIfTheIdIsWrong()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
-
-        // Request
-        $response = $this->put('api/organizations/4444/restore?token=' . $token, []);
-
-        $response->assertStatus(422);
+        $response->assertStatus(456);
 
         $responseJSON = json_decode($response->getContent(), true);
         $success      = $responseJSON['success'];
         $message      = $responseJSON['message'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("Organization is absent.", $message);
+        $this->assertEquals("Impossible to destroy due to child.", $message);
     }
 
     /**
-     * Check Restore If Permission is absent by the role:
-     *   User "developer" soft-deletes organization Another Department (id #4).
-     *   User "estimator" restores the soft-deleted organization Another Department (id #4).
-     *     Check login
-     *     Soft delete organization #4
-     *     Restore organization #4
-     *     Check response status
-     *     Check response structure
-     *     Check response data
+     * Check Restore
+     */
+    public function testRestore()
+    {
+        $token = $this->loginDeveloper();
+
+        // Preparation
+        $response     = $this->delete('api/organizations/17?token=' . $token);
+        $organization = Organization::onlyTrashed()->where('id', 17)->first();
+        $response->assertStatus(200);
+        $this->assertNotEquals(null, $organization->deleted_at);
+
+        // Request
+        $response = $this->put('api/organizations/17/restore?token=' . $token);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+        $this->assertEquals("Organization is restored successfully.", $message);
+        $this->assertEquals(null, $data);
+
+        $organization = Organization::where('id', 17)->first();
+        $this->assertEquals(null, $organization->deleted_at);
+    }
+
+    /**
+     * Check Restore If The ID Is Wrong
+     */
+    public function testRestoreIfTheIdIsWrong()
+    {
+        $token = $this->loginDeveloper();
+
+        // Request
+        $response = $this->put('api/organizations/4444/restore?token=' . $token, []);
+
+        $response->assertStatus(456);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals(456, $code);
+        $this->assertEquals("Incorrect the Entity ID in the URL", $message);
+        $this->assertEquals(null, $data);
+    }
+
+    /**
+     * Check Restore If Permission is absent by the role
      */
     public function testRestoreIfPermissionIsAbsentByTheRole()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
-
         // Preparation
-        $response     = $this->delete('api/organizations/4?token=' . $token, []);
-        $organization = Organization::onlyTrashed()->where('id', 4)->first();
-
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'estimator@email.com',
-            'password' => '123456'
-        ]);
-
+        $token    = $this->loginDeveloper();
+        $response = $this->delete('api/organizations/17?token=' . $token);
         $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Estimator',
-            'email' => 'estimator@email.com'
-        ])->isOk();
 
         // Request
-        $response = $this->put('api/organizations/4/restore?token=' . $token, []);
+        $token    = $this->loginOrganizationWNYGeneralManager();
+        $response = $this->put('api/organizations/17/restore?token=' . $token);
 
         $response->assertStatus(453);
 
@@ -1337,56 +1092,18 @@ class OrganizationsControllerTest extends WnyTestCase
     }
 
     /**
-     * Restore Permission to department is absent:
-     *   User "developer" soft-deletes organization Department 1 (id #6).
-     *   User "organizational-admin" restores the soft-deleted organization Department 1 (id #6).
-     *     Check login
-     *     Soft delete organization #6
-     *     Restore organization #6
-     *     Check response status
-     *     Check response structure
-     *     Check response data
+     * Restore Permission to department is absent
      */
     public function testRestoreIfPermissionToDepartmentIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
-
         // Preparation
-        $response     = $this->delete('api/organizations/6?token=' . $token, []);
-        $organization = Organization::onlyTrashed()->where('id', 6)->first();
-
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'Organizational-Admin@email.com',
-            'password' => '123456'
-        ]);
-
+        $token    = $this->loginDeveloper();
+        $response = $this->delete('api/organizations/17?token=' . $token, []);
         $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Organizational Admin',
-            'email' => 'Organizational-Admin@email.com'
-        ])->isOk();
 
         // Request
-        $response = $this->put('api/organizations/6/restore?token=' . $token, []);
+        $token    = $this->loginOrganizationSpringSuperadmin();
+        $response = $this->put('api/organizations/17/restore?token=' . $token, []);
 
         $response->assertStatus(454);
 
@@ -1399,138 +1116,102 @@ class OrganizationsControllerTest extends WnyTestCase
     }
 
     /**
-     * Check Delete Permanently:
-     *   User Developer deletes deletes permanently the soft-deleted organization Department 1 (is #5).
-     *     Check login
-     *     Soft delete organization #5
-     *     Delete Permanently #5
-     *     Check response status
-     *     Check response structure
-     *     Check DB: row with ID=5 must be absent
+     * Restore Is Impossible due to deleted parent
      */
-    public function testDeletePermanently()
+    public function testRestoreIfItIsImpossibleDueToDeletedParent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Preparation
-        $response = $this->delete('api/organizations/5?token=' . $token, []);
-
-        // Request
-        $response = $this->delete('api/organizations/5/permanently?token=' . $token, []);
-
+        $response = $this->delete('api/organizations/17?token=' . $token, []);
+        $response = $this->delete('api/organizations/8?token=' . $token, []);
         $response->assertStatus(200);
 
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];
-        $message      = $responseJSON['message'];
-
-        $this->assertEquals(true, $success);
-        $this->assertEquals("Organization is deleted permanently.", $message);
-
-        $organization = DB::table('organizations')->where('id', 5)->first();
-        $this->assertEquals(null, $organization);
-    }
-
-    /**
-     * Check Delete Permanently If The ID Is Wrong:
-     *   User Developer deletes deletes permanently the soft-deleted organization with id #5555).
-     *   We wait for a message about error.
-     *     Check login
-     *     Check response status
-     *     Check response structure
-     */
-    public function testDeletePermanentlyIfTheIdIsWrong()
-    {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
-
         // Request
-        $response = $this->delete('api/organizations/5555/permanently?token=' . $token, []);
+        $response = $this->put('api/organizations/17/restore?token=' . $token, []);
 
         $response->assertStatus(455);
 
         $responseJSON = json_decode($response->getContent(), true);
         $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
         $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
 
         $this->assertEquals(false, $success);
-        $this->assertEquals("ID is absent.", $message);
+        $this->assertEquals(455, $code);
+        $this->assertEquals("There is a parent soft-deleted organization.", $message);
+        $this->assertEquals(null, $data);
     }
 
     /**
-     * Permanent Destroy Permission is absent by the role:
-     *   User Developer deletes soft-delete organization with id #6).
-     *   User Administration Admin deletes permanently the soft-deleted organization with id #6).
-     *   We wait for a message about error.
-     *     Check response status
-     *     Check response structure
+     * Check Delete Permanently
      */
-    public function testDeletePermanentlyIfTheAccessIsAbsent()
+    public function testDeletePermanently()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
 
         // Preparation
-        $response = $this->delete('api/organizations/6?token=' . $token, []);
+        $response = $this->delete('api/organizations/17?token=' . $token, []);
+        $response->assertStatus(200);
 
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'estimator@email.com',
-            'password' => '123456'
-        ]);
+        // Request
+        $response = $this->delete('api/organizations/17/permanently?token=' . $token, []);
 
         $response->assertStatus(200);
 
         $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
+        $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
 
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Estimator',
-            'email' => 'estimator@email.com'
-        ])->isOk();
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+        $this->assertEquals("Organization is deleted permanently.", $message);
+        $this->assertEquals(null, $data);
+
+        $organization = DB::table('organizations')->where('id', 17)->first();
+        $this->assertEquals(null, $organization);
+    }
+
+    /**
+     * Check Delete Permanently If The ID Is Wrong
+     */
+    public function testDeletePermanentlyIfTheIdIsWrong()
+    {
+        $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->delete('api/organizations/6/permanently?token=' . $token, []);
+        $response = $this->delete('api/organizations/5555/permanently?token=' . $token, []);
+
+        $response->assertStatus(456);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals(456, $code);
+        $this->assertEquals("Incorrect the Entity ID in the URL.", $message);
+        $this->assertEquals(null, $data);
+    }
+
+    /**
+     * Permanent Destroy Permission is absent by the role
+     */
+    public function testDeletePermanentlyIfPermissionIsAbsentByTheRole()
+    {
+        // Preparation
+        $token = $this->loginDeveloper();
+        $response = $this->delete('api/organizations/17?token=' . $token);
+
+        $token = $this->loginOrganizationWNYGeneralManager();
+
+        // Request
+        $response = $this->delete('api/organizations/17/permanently?token=' . $token);
 
         $response->assertStatus(453);
 
@@ -1543,52 +1224,17 @@ class OrganizationsControllerTest extends WnyTestCase
     }
 
     /**
-     * Permanent Destroy Permission to department is absent:
-     *   User Developer deletes soft-delete organization with id #6).
-     *   User Administration Admin deletes permanently the soft-deleted organization with id #6).
-     *   We wait for a message about error.
-     *     Check response status
-     *     Check response structure
+     * Permanent Destroy Permission to department is absent
      */
     public function testDeletePermanentlyIfPermissionToDepartmentIsAbsent()
     {
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'test@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Test',
-            'email' => 'test@email.com'
-        ])->isOk();
-
         // Preparation
-        $response = $this->delete('api/organizations/6?token=' . $token, []);
-
-        // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => 'Organizational-Admin@email.com',
-            'password' => '123456'
-        ]);
-
-        $response->assertStatus(200);
-
-        $responseJSON = json_decode($response->getContent(), true);
-        $token        = $responseJSON['token'];
-
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => 'Organizational Admin',
-            'email' => 'Organizational-Admin@email.com'
-        ])->isOk();
+        $token = $this->loginDeveloper();
+        $response = $this->delete('api/organizations/17?token=' . $token);
 
         // Request
-        $response = $this->delete('api/organizations/6/permanently?token=' . $token, []);
+        $token = $this->loginOrganizationSpringSuperadmin();
+        $response = $this->delete('api/organizations/6/permanently?token=' . $token);
 
         $response->assertStatus(454);
 
@@ -1598,5 +1244,33 @@ class OrganizationsControllerTest extends WnyTestCase
 
         $this->assertEquals(false, $success);
         $this->assertEquals("Permission to department is absent.", $message);
+    }
+
+    /**
+     * Permanent Destroy Is Impossible due to soft-deleted child
+     */
+    public function testDeletePermanentlyIfThisIsImpossibleDueToSoftDeletedChild()
+    {
+        $token = $this->loginDeveloper();
+
+        // Preparation
+        $response = $this->delete('api/organizations/17?token=' . $token);
+        $response = $this->delete('api/organizations/8?token=' . $token);
+
+        // Request
+        $response = $this->delete('api/organizations/8/permanently?token=' . $token);
+
+        $response->assertStatus(455);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals(455, $code);
+        $this->assertEquals("There is a child soft-deleted organization.", $message);
+        $this->assertEquals(null, $data);
     }
 }
