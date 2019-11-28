@@ -42,6 +42,8 @@
  * Delete If Permission is absent by the role
  * Delete If The Permission to department is absent
  * Delete Impossible to destroy due to child
+ * Delete Is Impossible Due To Customer Of Organization
+ * Delete Is Impossible Due To User Of Organization
  *
  * Restore
  * Restore If ID is absent
@@ -252,7 +254,8 @@ class OrganizationsControllerTest extends WnyTestCase
                             'parent_id',
                             'deleted_at',
                             'created_at',
-                            'updated_at'
+                            'updated_at',
+                            'subline'
                         ]
                     ],
             ]
@@ -269,6 +272,7 @@ class OrganizationsControllerTest extends WnyTestCase
         $this->assertEquals('3', $data[0]['level']);
         $this->assertEquals('1', $data[0]['order']);
         $this->assertEquals('10', $data[0]['parent_id']);
+        $this->assertEquals('Spring Sheet Metal & Roofing Co.:Administration', $data[0]['subline']);
         $this->assertNotEquals(null, $data[0]['deleted_at']);
         $this->assertEquals("Soft-deleted customers are retrieved successfully.", $message);
         $this->assertEquals(true, $success);
@@ -1011,6 +1015,70 @@ class OrganizationsControllerTest extends WnyTestCase
     }
 
     /**
+     * Delete Is Impossible Due To Customer Of Organization
+     */
+    public function testDeleteIsImpossibleDueToCustomerOfOrganization()
+    {
+        $token = $this->loginDeveloper();
+
+        // Request
+        $response = $this->delete('api/user-profiles/8?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/user-profiles/7?token=' . $token);
+        $response->assertStatus(200);
+
+        $response = $this->delete('api/organizations/17?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/organizations/8?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/organizations/7?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/organizations/6?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/organizations/5?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/organizations/4?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/organizations/3?token=' . $token);
+        $response->assertStatus(200);
+
+        $response = $this->delete('api/organizations/2?token=' . $token);
+        $response->assertStatus(462);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals(462, $code);
+        $this->assertEquals("Id of this Entity is used as foreign key", $message);
+        $this->assertEquals(null, $data);
+    }
+
+    /**
+     * Delete Is Impossible Due To User Of Organization
+     */
+    public function testDeleteIsImpossibleDueToUserOfOrganization()
+    {
+        $token = $this->loginDeveloper();
+
+        // Request
+        $response = $this->delete('api/organizations/17?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/organizations/8?token=' . $token);
+        $response->assertStatus(200);
+
+        $response = $this->delete('api/organizations/7?token=' . $token);
+        $response->assertStatus(462);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $message      = $responseJSON['message'];
+        $this->assertEquals("There is profile.", $message);
+    }
+
+    /**
      * Check Restore
      */
     public function testRestore()
@@ -1205,7 +1273,7 @@ class OrganizationsControllerTest extends WnyTestCase
     public function testDeletePermanentlyIfPermissionIsAbsentByTheRole()
     {
         // Preparation
-        $token = $this->loginDeveloper();
+        $token    = $this->loginDeveloper();
         $response = $this->delete('api/organizations/17?token=' . $token);
 
         $token = $this->loginOrganizationWNYGeneralManager();
@@ -1229,11 +1297,11 @@ class OrganizationsControllerTest extends WnyTestCase
     public function testDeletePermanentlyIfPermissionToDepartmentIsAbsent()
     {
         // Preparation
-        $token = $this->loginDeveloper();
+        $token    = $this->loginDeveloper();
         $response = $this->delete('api/organizations/17?token=' . $token);
 
         // Request
-        $token = $this->loginOrganizationSpringSuperadmin();
+        $token    = $this->loginOrganizationSpringSuperadmin();
         $response = $this->delete('api/organizations/6/permanently?token=' . $token);
 
         $response->assertStatus(454);

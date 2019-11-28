@@ -20,6 +20,10 @@ class Organizations_OrganizationAdmin
      */
     public function handle($request, Closure $next)
     {
+//        $id = $request->route('id');
+//        if ($id == 2) {
+//            dd('middleware');
+//        }
 //        dd($request);
         $user = Auth::guard()->user();
 

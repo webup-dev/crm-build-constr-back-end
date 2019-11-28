@@ -3,6 +3,7 @@
 namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\Organization;
 use App\Models\Role;
 use App\Models\User_profile;
@@ -13,6 +14,7 @@ use JWTAuth;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Api\V1\Traits\ApiResponsesVadis;
 
 /**
  * @group Organizations
@@ -20,6 +22,7 @@ use Illuminate\Http\Response;
 class OrganizationsController extends Controller
 {
     use Helpers;
+    use ApiResponsesVadis;
 
     public function __construct()
     {
@@ -86,7 +89,6 @@ class OrganizationsController extends Controller
 
         // check organizational roles
         $organizations = $this->getParentAndChildsByParentId($organizations, $parentId);
-
 
         $data = $organizations->toArray();
 
@@ -194,6 +196,10 @@ class OrganizationsController extends Controller
             return response()->json($response, 204);
         }
 
+        foreach ($organizations as $organization) {
+            $organization->subline = $this->getParentBranch($organization);
+        }
+
         $data = $organizations->toArray();
 
         $response = [
@@ -204,6 +210,25 @@ class OrganizationsController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
+
+    private function getParentBranch(Organization $organization)
+    {
+        $parentId = $organization->parent_id;
+        $subline = '';
+
+        while ($parentId !== null) {
+            $parent = Organization::withTrashed()->whereId($parentId)->first();
+            $parentId = $parent->parent_id;
+            if ($parentId != null) {
+                if ($subline === '') {
+                    $subline = $parent->name;
+                } else {
+                    $subline = $parent->name . ':' . $subline;
+                }
+            }
+        }
+        return $subline;
     }
 
     /**
@@ -546,6 +571,20 @@ class OrganizationsController extends Controller
             ];
 
             return response()->json($response, 456);
+        }
+
+        // check customers
+        $customer = Customer::whereOrganizationId($organization->id)->first();
+
+        if ($customer) {
+            return response()->json($this->apiResponses(462), 462);
+        }
+
+        // check profiles
+        $profile = User_profile::whereDepartmentId($organization->id)->first();
+
+        if ($profile) {
+            return response()->json($this->apiResponses(462, "There is profile."), 462);
         }
 
         if ($organization->delete()) {
