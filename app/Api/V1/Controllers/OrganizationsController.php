@@ -183,7 +183,18 @@ class OrganizationsController extends Controller
      */
     public function indexSoftDeleted()
     {
+//        dd('controller');
+        $parentId = $this->userOrganizationId();
+//        dd($parentId);
+        $elements = Organization::withTrashed()
+            ->get()
+            ->toArray();
+
+        $tree= buildTree($elements, $parentId);
+        $collectValues = collectValues($tree, 'id', [2]);
+//        dd($collectValues);
         $organizations = Organization::onlyTrashed()
+            ->whereIn('id', $collectValues)
             ->select('id', 'level', 'order', 'name', 'parent_id', 'deleted_at', 'created_at', 'updated_at')
             ->get();
 

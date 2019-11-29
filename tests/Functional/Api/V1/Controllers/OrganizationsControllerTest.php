@@ -56,6 +56,8 @@
  * Permanent Destroy If Permission is absent by the role
  * Permanent Destroy If Permission to department is absent
  * Permanent Destroy Is Impossible due to soft-deleted child
+ *
+ * Special Test. Bug 435
  */
 
 namespace App\Functional\Api\V1\Controllers;
@@ -277,6 +279,64 @@ class OrganizationsControllerTest extends WnyTestCase
         $this->assertEquals("Soft-deleted customers are retrieved successfully.", $message);
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
+    }
+
+    /**
+     * Check Index SoftDeleted If Access Is Restricted
+     *   Check response status
+     *   Check response structure
+     *   Check response data
+     */
+    public function testIndexSoftDeletedIfAccessIsRestricted()
+    {
+        // preparation
+        $token = $this->loginDeveloper();
+        $response = $this->delete('api/organizations/17?token=' . $token);
+        $response = $this->delete('api/organizations/16?token=' . $token);
+
+        // request
+        $token = $this->loginOrganizationWNYSuperadmin();
+        $response = $this->get('api/organizations/soft-deleted?token=' . $token);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'code',
+                'message',
+                'data' =>
+                    [
+                        [
+                            'id',
+                            'level',
+                            'order',
+                            'name',
+                            'parent_id',
+                            'deleted_at',
+                            'created_at',
+                            'updated_at',
+                            'subline'
+                        ]
+                    ],
+            ]
+        );
+        $responseJSON = json_decode($response->getContent(), true);
+        $data         = $responseJSON['data'];  // array
+        $message      = $responseJSON['message'];  // array
+        $success      = $responseJSON['success'];  // array
+        $code         = $responseJSON['code'];  // array
+
+        $this->assertEquals(1, count($data));
+        $this->assertEquals(17, $data[0]['id']);
+        $this->assertEquals('Back-end developer', $data[0]['name']);
+        $this->assertEquals('3', $data[0]['level']);
+        $this->assertEquals('1', $data[0]['order']);
+        $this->assertEquals('8', $data[0]['parent_id']);
+        $this->assertEquals('Western New York Exteriors, LLC.:Web Support', $data[0]['subline']);
+        $this->assertNotEquals(null, $data[0]['deleted_at']);
     }
 
     /**
