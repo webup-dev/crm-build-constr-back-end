@@ -394,7 +394,6 @@ class CustomersController extends Controller
     public
     function update(UpdateCustomer $request, $id)
     {
-//        dd("here Controller");
         $customer = Customer::whereId($id)->first();
 
         if (!$customer) {
@@ -407,13 +406,14 @@ class CustomersController extends Controller
         }
 
         $data = $request->all();
+        $customer->fill($data);
 
         // Check is organization_id available
         $organizations = Organization::all()->toArray();
         $user          = Auth::guard()->user();
         $userProfile   = $user->user_profile;
 
-        if (!isOwn($organizations, $userProfile->department_id, $data['organization_id'])) {
+        if (!isOwn($organizations, $userProfile->department_id, $customer['organization_id'])) {
             $response = [
                 'success' => false,
                 'message' => 'Permission is absent by the role.'
@@ -421,8 +421,6 @@ class CustomersController extends Controller
 
             return response()->json($response, 453);
         }
-
-        $customer->fill($data);
 
         $data = json_encode($customer);
 

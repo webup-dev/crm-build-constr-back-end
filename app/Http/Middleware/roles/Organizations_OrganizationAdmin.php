@@ -20,16 +20,11 @@ class Organizations_OrganizationAdmin
      */
     public function handle($request, Closure $next)
     {
-//        $id = $request->route('id');
-//        if ($id == 2) {
-//            dd('middleware');
-//        }
-//        dd($request);
         $user = Auth::guard()->user();
 
         $roles = $user->roles;
 
-        $roleNamesArr= $roles->pluck('name')->all();
+        $roleNamesArr = $roles->pluck('name')->all();
 
         if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $next($request);
@@ -45,7 +40,10 @@ class Organizations_OrganizationAdmin
                 return $next($request);
             }
 
-            $organizations = Organization::all()->toArray();
+            $organizations = Organization::withTrashed()
+                ->get()
+                ->toArray();
+
             if (isOwn($organizations, $departmentId, $id)) {
                 return $next($request);
             }
@@ -56,9 +54,6 @@ class Organizations_OrganizationAdmin
             ];
 
             return response()->json($response, 454);
-        } else {
-            // own account
-
         }
 
         $response = [

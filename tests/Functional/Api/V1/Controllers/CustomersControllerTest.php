@@ -43,6 +43,8 @@
  * Check Delete Permanently
  * Check Delete Permanently If The Access Is Absent:
  * Check Delete Permanently If The ID Is Wrong:
+ *
+ * Check update. Special test bug 347
  */
 
 namespace App;
@@ -145,7 +147,7 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals(4, count($data));
         $this->assertEquals(1, $data[0]['id']);
         $this->assertEquals('Customer A-WNY', $data[0]['name']);
-        $this->assertEquals('individual', $data[0]['type']);
+        $this->assertEquals('Individual(s)', $data[0]['type']);
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals('Western New York Exteriors, LLC.', $data[0]['organization']['name']);
         $this->assertEquals("Customers are retrieved successfully.", $message);
@@ -196,7 +198,7 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals(3, count($data));
         $this->assertEquals(1, $data[0]['id']);
         $this->assertEquals('Customer A-WNY', $data[0]['name']);
-        $this->assertEquals('individual', $data[0]['type']);
+        $this->assertEquals('Individual(s)', $data[0]['type']);
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals('Western New York Exteriors, LLC.', $data[0]['organization']['name']);
         $this->assertEquals("Customers are retrieved successfully.", $message);
@@ -382,7 +384,7 @@ class CustomersControllerTest extends WnyTestCase
         $data = [
             'name'            => 'Customer New',
             'organization_id' => 2,
-            'type'            => 'organization',
+            'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'city'            => 'City',
@@ -414,7 +416,7 @@ class CustomersControllerTest extends WnyTestCase
 
         // Check DB table customers
         $customer = DB::table('customers')->where('name', '=', 'Customer New')->first();
-        $this->assertEquals('organization', $customer->type);
+        $this->assertEquals('Business', $customer->type);
         $this->assertEquals('Line 1', $customer->line_1);
         $this->assertEquals('Line 2', $customer->line_2);
         $this->assertEquals('City', $customer->city);
@@ -488,7 +490,7 @@ class CustomersControllerTest extends WnyTestCase
         $data = [
             'name'            => 'Customer New',
             'organization_id' => 2,
-            'type'            => 'organization',
+            'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'city'            => 'City',
@@ -535,7 +537,7 @@ class CustomersControllerTest extends WnyTestCase
         $data = [
             'name'            => 'Customer New',
             'organization_id' => 2,
-            'type'            => 'organization',
+            'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'city'            => 'City',
@@ -608,7 +610,7 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
         $this->assertEquals("Item is retrieved successfully.", $message);
         $this->assertEquals('Customer A-WNY', $data['name']);
-        $this->assertEquals('individual', $data['type']);
+        $this->assertEquals('Individual(s)', $data['type']);
         $this->assertEquals(2, $data['organization_id']);
         $this->assertEquals(null, $data['deleted_at']);
         $this->assertEquals(2, $data['organization']['id']);
@@ -724,7 +726,7 @@ class CustomersControllerTest extends WnyTestCase
         $data = [
             'name'            => 'Customer A-WNY-edited',
             'organization_id' => 2,
-            'type'            => 'organization',
+            'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'city'            => 'City',
@@ -745,7 +747,7 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals("Customer is updated successfully.", $message);
         $this->assertEquals("Customer A-WNY-edited", $data->name);
         $this->assertEquals(1, $data->id);
-        $this->assertEquals('organization', $data->type);
+        $this->assertEquals('Business', $data->type);
     }
 
     /**
@@ -764,7 +766,7 @@ class CustomersControllerTest extends WnyTestCase
         $data = [
             'name'            => 'Customer A-WNY-edited',
             'organization_id' => 2,
-            'type'            => 'organization',
+            'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'city'            => 'City',
@@ -785,7 +787,7 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals("Customer is updated successfully.", $message);
         $this->assertEquals("Customer A-WNY-edited", $data->name);
         $this->assertEquals(1, $data->id);
-        $this->assertEquals('organization', $data->type);
+        $this->assertEquals('Business', $data->type);
     }
 
     /**
@@ -852,7 +854,7 @@ class CustomersControllerTest extends WnyTestCase
         $data = [
             'name'            => 'Customer A-WNY-edited',
             'organization_id' => 2,
-            'type'            => 'organization',
+            'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'city'            => 'City',
@@ -888,7 +890,7 @@ class CustomersControllerTest extends WnyTestCase
         $data = [
             'name'            => 'Customer A-WNY-edited',
             'organization_id' => 2,
-            'type'            => 'organization',
+            'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'city'            => 'City',
@@ -924,7 +926,7 @@ class CustomersControllerTest extends WnyTestCase
         $data = [
             'name'            => 'Customer A-WNY-edited',
             'organization_id' => 2,
-            'type'            => 'organization',
+            'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'city'            => 'City',
@@ -1221,5 +1223,32 @@ class CustomersControllerTest extends WnyTestCase
 
         $this->assertEquals(false, $success);
         $this->assertEquals("Customer is absent.", $message);
+    }
+
+    /**
+     * Special test bug 347
+     */
+    public function testUpdateSpecialTestBug347()
+    {
+        $token = $this->loginDeveloper();
+
+        $data = [
+            'type' => 'Individual(s)'
+        ];
+
+        $response = $this->put('api/customers/2?token=' . $token, $data, []);
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+        $data         = json_decode($data);
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals("Customer is updated successfully.", $message);
+        $this->assertEquals("Customer B-Spring", $data->name);
+        $this->assertEquals(2, $data->id);
+        $this->assertEquals('Individual(s)', $data->type);
     }
 }

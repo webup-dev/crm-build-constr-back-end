@@ -15,9 +15,10 @@ class TestCustomersSeeder extends Seeder
          * Add User Profiles
          *
          */
+        // 1
         DB::table('customers')->insert([
             'name'            => 'Customer A-WNY',
-            'type'            => 'individual',
+            'type'            => 'Individual(s)',
             'organization_id' => 2,
             'deleted_at'      => null,
             'created_at'      => now()
@@ -26,7 +27,7 @@ class TestCustomersSeeder extends Seeder
         // 2
         DB::table('customers')->insert([
             'name'            => 'Customer B-Spring',
-            'type'            => 'organization',
+            'type'            => 'Business',
             'organization_id' => 9,
             'deleted_at'      => null,
             'created_at'      => now()
@@ -34,7 +35,7 @@ class TestCustomersSeeder extends Seeder
 
         DB::table('customers')->insert([
             'name'            => 'Customer C-WNY',
-            'type'            => 'individual',
+            'type'            => 'Individual(s)',
             'organization_id' => 2,
             'deleted_at'      => null,
             'created_at'      => now()
@@ -42,12 +43,10 @@ class TestCustomersSeeder extends Seeder
 
         DB::table('customers')->insert([
             'name'            => 'Customer D-WNY',
-            'type'            => 'individual',
+            'type'            => 'Individual(s)',
             'organization_id' => 2,
             'deleted_at'      => null,
             'created_at'      => now()
         ]);
-
-
     }
 }

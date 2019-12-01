@@ -57,7 +57,8 @@
  * Permanent Destroy If Permission to department is absent
  * Permanent Destroy Is Impossible due to soft-deleted child
  *
- * Special Test. Bug 435
+ * Special Test. Bug CCFEC-384
+ * Special Test. Bug CCFEC-385
  */
 
 namespace App\Functional\Api\V1\Controllers;
@@ -290,12 +291,12 @@ class OrganizationsControllerTest extends WnyTestCase
     public function testIndexSoftDeletedIfAccessIsRestricted()
     {
         // preparation
-        $token = $this->loginDeveloper();
+        $token    = $this->loginDeveloper();
         $response = $this->delete('api/organizations/17?token=' . $token);
         $response = $this->delete('api/organizations/16?token=' . $token);
 
         // request
-        $token = $this->loginOrganizationWNYSuperadmin();
+        $token    = $this->loginOrganizationWNYSuperadmin();
         $response = $this->get('api/organizations/soft-deleted?token=' . $token);
 
         // Check response status
@@ -1400,5 +1401,70 @@ class OrganizationsControllerTest extends WnyTestCase
         $this->assertEquals(455, $code);
         $this->assertEquals("There is a child soft-deleted organization.", $message);
         $this->assertEquals(null, $data);
+    }
+
+    /**
+     * Special Test. Bug CCFEC-384
+     * OrganizationWNYSuperadmin tries to restore
+     */
+    public function testRestoreBugCcfec_384()
+    {
+        // Preparation
+        $token    = $this->loginDeveloper();
+        $response = $this->delete('api/organizations/17?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/organizations/8?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/organizations/3?token=' . $token);
+        $response->assertStatus(200);
+
+        // Request
+        $token    = $this->loginOrganizationWNYSuperadmin();
+        $response = $this->put('api/organizations/8/restore?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->put('api/organizations/3/restore?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->put('api/organizations/17/restore?token=' . $token);
+        $response->assertStatus(200);
+
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+        $this->assertEquals("Organization is restored successfully.", $message);
+        $this->assertEquals(null, $data);
+
+        $organization = Organization::where('id', 17)->first();
+        $this->assertEquals(null, $organization->deleted_at);
+    }
+
+    /**
+     * Special Test. Bug CCFEC-384
+     * OrganizationWNYSuperadmin tries to destroy permanently
+     */
+    public function testDeletePermanentlyBugCcfec_384()
+    {
+        // Preparation
+        $token    = $this->loginDeveloper();
+        $response = $this->delete('api/organizations/17?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/organizations/8?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/organizations/3?token=' . $token);
+        $response->assertStatus(200);
+
+        // Request
+        $token    = $this->loginOrganizationWNYSuperadmin();
+        $response = $this->delete('api/organizations/3/permanently?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/organizations/17/permanently?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/organizations/8/permanently?token=' . $token);
+        $response->assertStatus(200);
     }
 }

@@ -13,6 +13,8 @@
  * Check GetSoftDeleted
  * Check GetSoftDeleted If The Access Is Not Full
  * Check GetSoftDeleted If The Access Is Absent By The Role
+ *
+ * Special Test. Bug CCFEC-385
  */
 
 namespace App;
@@ -284,5 +286,60 @@ class MenusControllerTest extends WnyTestCase
 
         $this->assertEquals(false, $success);
         $this->assertEquals("Permission is absent by the role.", $message);
+    }
+
+    /**
+     * Special Test. Bug CCFEC-385
+     * OrganizationWNYAdmin tries to get Data for dashboard
+     */
+    public function testGetSoftDeletedSpecialTestBug385()
+    {
+        $token = $this->loginOrganizationWNYAdmin();
+
+        // Request
+        $response = $this->get('api/soft-deleted-items?token=' . $token, []);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'code',
+                'message',
+                'data' =>
+                    [
+                        [
+                            "name",
+                            "url",
+                            "count"
+                        ]
+                    ]
+            ]
+        );
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $code         = $responseJSON['code'];  // array
+        $message      = $responseJSON['message'];  // array
+        $data         = $responseJSON['data'];  // array
+
+        $this->assertEquals(3, count($data));
+
+        $this->assertEquals(0, $data[0]['count']);
+        $this->assertEquals('User Profiles', $data[0]['name']);
+        $this->assertEquals("user-profiles/soft-deleted", $data[0]['url']);
+
+        $this->assertEquals(0, $data[1]['count']);
+        $this->assertEquals('Customers', $data[1]['name']);
+        $this->assertEquals("customers/soft-deleted", $data[1]['url']);
+
+        $this->assertEquals(0, $data[2]['count']);
+        $this->assertEquals('Organizations', $data[2]['name']);
+        $this->assertEquals("organizations/soft-deleted", $data[2]['url']);
+
+        $this->assertEquals("Soft-deleted retrieved successfully.", $message);
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
     }
 }

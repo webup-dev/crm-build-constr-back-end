@@ -27,11 +27,11 @@ class UpdateCustomer extends FormRequest
             'name'            => 'string',
             'organization_id' => 'integer',
             'type'            => 'string',
-            'line_1'          => 'string',
-            'line_2'          => 'string',
-            'city'            => 'string',
-            'state'           => 'string',
-            'zip'             => 'string'
+            'line_1'          => 'string|nullable',
+            'line_2'          => 'string|nullable',
+            'city'            => 'string|nullable',
+            'state'           => 'string|nullable',
+            'zip'             => 'string|nullable'
         ];
     }
 }
