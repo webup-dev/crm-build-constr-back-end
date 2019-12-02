@@ -29,7 +29,6 @@ class UpdateCustomer extends FormRequest
             'type'            => 'string',
             'line_1'          => 'string|nullable',
             'line_2'          => 'string|nullable',
-            'city'            => 'string|nullable',
             'state'           => 'string|nullable',
             'zip'             => 'string|nullable'
         ];

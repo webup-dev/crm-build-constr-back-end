@@ -21,7 +21,6 @@ class CreateCustomersTable extends Migration
             $table->enum('type', ['Individual(s)', 'Business']);
             $table->string('line_1')->nullable();
             $table->string('line_2')->nullable();
-            $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->string('zip')->nullable();
             $table->softDeletes();

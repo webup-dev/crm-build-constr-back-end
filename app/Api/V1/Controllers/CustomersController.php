@@ -262,7 +262,6 @@ class CustomersController extends Controller
             'type'            => $data['type'],
             'line_1'          => $data['line_1'],
             'line_2'          => $data['line_2'],
-            'city'            => $data['city'],
             'state'           => $data['state'],
             'zip'             => $data['zip'],
         ]);

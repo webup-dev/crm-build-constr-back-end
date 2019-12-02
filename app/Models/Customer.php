@@ -43,7 +43,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $city
  * @property string|null $state
  * @property string|null $zip
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereLine1($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereLine2($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereState($value)
@@ -60,7 +59,6 @@ class Customer extends Model
         'organization_id',
         'line_1',
         'line_2',
-        'city',
         'state',
         'zip',
         'deleted_at'

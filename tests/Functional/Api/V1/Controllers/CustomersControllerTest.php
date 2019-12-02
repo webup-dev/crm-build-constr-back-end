@@ -387,7 +387,6 @@ class CustomersControllerTest extends WnyTestCase
             'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
-            'city'            => 'City',
             'state'           => 'CA',
             'zip'             => '01234',
         ];
@@ -419,7 +418,6 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals('Business', $customer->type);
         $this->assertEquals('Line 1', $customer->line_1);
         $this->assertEquals('Line 2', $customer->line_2);
-        $this->assertEquals('City', $customer->city);
         $this->assertEquals('CA', $customer->state);
         $this->assertEquals(2, $customer->organization_id);
         $this->assertEquals('01234', $customer->zip);
@@ -444,7 +442,6 @@ class CustomersControllerTest extends WnyTestCase
             'type'            => '',
             'line_1'          => [],
             'line_2'          => [],
-            'city'            => [],
             'state'           => [],
             'zip'             => [],
         ];
@@ -471,7 +468,7 @@ class CustomersControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(8, count($error['errors']));
+        $this->assertEquals(7, count($error['errors']));
     }
 
     /**
@@ -493,7 +490,6 @@ class CustomersControllerTest extends WnyTestCase
             'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
-            'city'            => 'City',
             'state'           => 'CA',
             'zip'             => '01234',
         ];
@@ -540,7 +536,6 @@ class CustomersControllerTest extends WnyTestCase
             'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
-            'city'            => 'City',
             'state'           => 'CA',
             'zip'             => '01234',
         ];
@@ -729,7 +724,6 @@ class CustomersControllerTest extends WnyTestCase
             'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
-            'city'            => 'City',
             'state'           => 'CA',
             'zip'             => '01234',
         ];
@@ -769,7 +763,6 @@ class CustomersControllerTest extends WnyTestCase
             'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
-            'city'            => 'City',
             'state'           => 'CA',
             'zip'             => '01234',
         ];
@@ -809,7 +802,6 @@ class CustomersControllerTest extends WnyTestCase
             'type'            => [],
             'line_1'          => [],
             'line_2'          => [],
-            'city'            => [],
             'state'           => [],
             'zip'             => [],
         ];
@@ -834,7 +826,7 @@ class CustomersControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(8, count($error['errors']));
+        $this->assertEquals(7, count($error['errors']));
     }
 
     /**
@@ -857,7 +849,6 @@ class CustomersControllerTest extends WnyTestCase
             'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
-            'city'            => 'City',
             'state'           => 'CA',
             'zip'             => '01234',
         ];
@@ -893,7 +884,6 @@ class CustomersControllerTest extends WnyTestCase
             'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
-            'city'            => 'City',
             'state'           => 'CA',
             'zip'             => '01234',
         ];
@@ -929,7 +919,6 @@ class CustomersControllerTest extends WnyTestCase
             'type'            => 'Business',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
-            'city'            => 'City',
             'state'           => 'CA',
             'zip'             => '01234',
         ];
