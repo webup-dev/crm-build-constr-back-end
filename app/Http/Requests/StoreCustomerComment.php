@@ -27,7 +27,8 @@ class StoreCustomerComment extends FormRequest
             'customer_id' => 'required|integer',
             'author_id'   => 'required|integer',
             'comment'     => 'required|string',
-            'parent_id'   => 'nullable|integer'
+            'parent_id'   => 'nullable|integer',
+            'level'       => 'required|integer'
         ];
     }
 }

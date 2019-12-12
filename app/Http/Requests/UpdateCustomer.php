@@ -26,6 +26,7 @@ class UpdateCustomer extends FormRequest
         return [
             'name'            => 'string',
             'organization_id' => 'integer',
+            'city'            => 'string',
             'type'            => 'string',
             'line_1'          => 'string|nullable',
             'line_2'          => 'string|nullable',

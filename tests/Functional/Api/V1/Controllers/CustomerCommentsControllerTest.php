@@ -47,6 +47,7 @@
 namespace App;
 
 use App\Models\Customer;
+use App\Models\CustomerComment;
 use App\Models\Organization;
 use App\Models\Role;
 use App\Models\User_profile;
@@ -93,7 +94,7 @@ class CustomerCommentsControllerTest extends WnyTestCase
     public function testSeeder()
     {
         $customerComments = DB::table('customer_comments')->get();
-        $this->assertEquals(3, $customerComments->count());
+        $this->assertEquals(4, $customerComments->count());
 
         $user = DB::table('users')->where('id', 1)->first();
         $this->assertEquals('Volodymyr Vadiasov', $user->name);
@@ -132,6 +133,7 @@ class CustomerCommentsControllerTest extends WnyTestCase
                                 "author_id",
                                 "comment",
                                 "parent_id",
+                                "level",
                                 "deleted_at",
                                 "created_at",
                                 "updated_at"
@@ -150,13 +152,14 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $this->assertEquals(200, $code);
         $this->assertEquals("Customer's comments are retrieved successfully.", $message);
         $this->assertEquals(2, count($data));
-        $this->assertEquals(3, count($data['comments']));
+        $this->assertEquals(4, count($data['comments']));
         $this->assertEquals(1, $data['customer']['id']);
         $this->assertEquals('Customer A-WNY', $data['customer']['name']);
         $this->assertEquals(1, $data['comments'][0]['id']);
         $this->assertEquals(1, $data['comments'][0]['customer_id']);
         $this->assertEquals(16, $data['comments'][0]['author_id']);
         $this->assertEquals('Comment #1 by Customer A-WNY', $data['comments'][0]['comment']);
+        $this->assertEquals(1, $data['comments'][0]['level']);
         $this->assertEquals(null, $data['comments'][0]['parent_id']);
         $this->assertEquals(null, $data['comments'][0]['deleted_at']);
     }
@@ -213,7 +216,7 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $this->assertEquals(200, $code);
         $this->assertEquals("Customer's comments are retrieved successfully.", $message);
         $this->assertEquals(2, count($data));
-        $this->assertEquals(3, count($data['comments']));
+        $this->assertEquals(4, count($data['comments']));
         $this->assertEquals(1, $data['customer']['id']);
         $this->assertEquals('Customer A-WNY', $data['customer']['name']);
         $this->assertEquals(1, $data['comments'][0]['id']);
@@ -221,6 +224,7 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $this->assertEquals(16, $data['comments'][0]['author_id']);
         $this->assertEquals('Comment #1 by Customer A-WNY', $data['comments'][0]['comment']);
         $this->assertEquals(null, $data['comments'][0]['parent_id']);
+        $this->assertEquals(1, $data['comments'][0]['level']);
         $this->assertEquals(null, $data['comments'][0]['deleted_at']);
     }
 
@@ -319,11 +323,11 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $token = $this->loginCustomerWny();
 
         // Create soft deleted
-        $response = $this->delete('api/customers/1/comments/3?token=' . $token, []);
+        $response = $this->delete('api/customers/1/comments/4?token=' . $token, []);
         $response->assertStatus(200);
 
-        $token = $this->loginDeveloper();
-        $response = $this->delete('api/customers/1/comments/2?token=' . $token, []);
+        $token    = $this->loginDeveloper();
+        $response = $this->delete('api/customers/1/comments/3?token=' . $token, []);
         $response->assertStatus(200);
 
         // Request
@@ -369,10 +373,11 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $this->assertEquals(2, count($data['comments']));
         $this->assertEquals(1, $data['customer']['id']);
         $this->assertEquals('Customer A-WNY', $data['customer']['name']);
-        $this->assertEquals(2, $data['comments'][0]['id']);
+        $this->assertEquals(3, $data['comments'][0]['id']);
         $this->assertEquals(1, $data['comments'][0]['customer_id']);
         $this->assertEquals(1, $data['comments'][0]['author_id']);
-        $this->assertEquals('Comment #2 by developer', $data['comments'][0]['comment']);
+        $this->assertEquals(2, $data['comments'][0]['level']);
+        $this->assertEquals('Comment #3 by developer', $data['comments'][0]['comment']);
         $this->assertEquals(1, $data['comments'][0]['parent_id']);
         $this->assertNotEquals(null, $data['comments'][0]['deleted_at']);
     }
@@ -444,7 +449,8 @@ class CustomerCommentsControllerTest extends WnyTestCase
             'customer_id' => 1,
             'author_id'   => 1,
             'comment'     => 'Comment #4 by developer',
-            'parent_id'   => 1
+            'parent_id'   => 1,
+            'level'       => 2
         ];
 
         // Store the comment
@@ -477,7 +483,7 @@ class CustomerCommentsControllerTest extends WnyTestCase
 
         // Check DB table customer_comments
         $comment = DB::table('customer_comments')->where('comment', '=', 'Comment #4 by developer')->first();
-        $this->assertEquals(4, $comment->id);
+        $this->assertEquals(5, $comment->id);
         $this->assertEquals(1, $comment->customer_id);
         $this->assertEquals(1, $comment->author_id);
         $this->assertEquals(1, $comment->parent_id);
@@ -501,7 +507,8 @@ class CustomerCommentsControllerTest extends WnyTestCase
             'customer_id' => 1,
             'author_id'   => 4,
             'comment'     => 'Comment #4 by WNY superadmin',
-            'parent_id'   => 1
+            'parent_id'   => 1,
+            'level'       => 2
         ];
 
         // Store the comment
@@ -534,7 +541,7 @@ class CustomerCommentsControllerTest extends WnyTestCase
 
         // Check DB table customer_comments
         $comment = DB::table('customer_comments')->where('comment', '=', 'Comment #4 by WNY superadmin')->first();
-        $this->assertEquals(4, $comment->id);
+        $this->assertEquals(5, $comment->id);
         $this->assertEquals(1, $comment->customer_id);
         $this->assertEquals(4, $comment->author_id);
         $this->assertEquals(1, $comment->parent_id);
@@ -582,7 +589,7 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(4, count($error['errors']));
+        $this->assertEquals(5, count($error['errors']));
     }
 
     /**
@@ -602,7 +609,8 @@ class CustomerCommentsControllerTest extends WnyTestCase
             'customer_id' => 10,
             'author_id'   => 1,
             'comment'     => 'Comment #4 by developer',
-            'parent_id'   => null
+            'parent_id'   => null,
+            'level'       => 1
         ];
 
         // Store a new user, user profile
@@ -801,10 +809,10 @@ class CustomerCommentsControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            'error' => 1,
-            'author_id'   => 16,
-            'comment'     => null,
-            'parent_id'   => null
+            'error'     => 1,
+            'author_id' => 16,
+            'comment'   => null,
+            'parent_id' => null
         ];
 
         $response = $this->put('api/customers/1/comments/1?token=' . $token, $data);
@@ -843,7 +851,7 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $token = $this->loginCustomerWny();
 
         // Request
-        $response = $this->delete('api/customers/1/comments/3?token=' . $token, []);
+        $response = $this->delete('api/customers/1/comments/4?token=' . $token, []);
 
         $response->assertStatus(200);
 
@@ -858,7 +866,7 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $this->assertEquals("Customer's comment is soft-deleted successfully.", $message);
         $this->assertEquals(null, $data);
 
-        $customer = DB::table('customer_comments')->where('id', 3)->first();
+        $customer = DB::table('customer_comments')->where('id', 4)->first();
         $this->assertNotEquals(null, $customer->deleted_at);
     }
 
@@ -902,7 +910,7 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->delete('api/customers/1/comments/2?token=' . $token, []);
+        $response = $this->delete('api/customers/1/comments/3?token=' . $token, []);
 
         $response->assertStatus(455);
 
@@ -933,13 +941,13 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $token = $this->loginCustomerWny();
 
         // Preparation
-        $response = $this->delete('api/customers/1/comments/3?token=' . $token, []);
+        $response = $this->delete('api/customers/1/comments/4?token=' . $token, []);
         $response->assertStatus(200);
 
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->put('api/customers/1/comments/3/restore?token=' . $token, []);
+        $response = $this->put('api/customers/1/comments/4/restore?token=' . $token, []);
 
         $response->assertStatus(200);
 
@@ -948,10 +956,10 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];
 
         $this->assertEquals(true, $success);
-        $this->assertEquals("Customer is restored successfully.", $message);
+        $this->assertEquals("Customer Comment restored successfully.", $message);
 
-        $customer = Customer::where('id', 1)->first();
-        $this->assertEquals(null, $customer->deleted_at);
+        $comment = CustomerComment::where('id', 4)->first();
+        $this->assertEquals(null, $comment->deleted_at);
     }
 
     /**
@@ -1046,17 +1054,17 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $token = $this->loginCustomerWny();
 
         // Preparation
-        $response = $this->delete('api/customers/1/comments/3?token=' . $token, []);
+        $response = $this->delete('api/customers/1/comments/4?token=' . $token, []);
         $response->assertStatus(200);
 
         // Preparation
         $token = $this->loginDeveloper();
 
-        $response = $this->delete('api/customers/1/comments/2?token=' . $token, []);
+        $response = $this->delete('api/customers/1/comments/3?token=' . $token, []);
         $response->assertStatus(200);
 
         // Request
-        $response = $this->put('api/customers/1/comments/3/restore?token=' . $token, []);
+        $response = $this->put('api/customers/1/comments/4/restore?token=' . $token, []);
 
         $response->assertStatus(455);
 
@@ -1084,12 +1092,12 @@ class CustomerCommentsControllerTest extends WnyTestCase
     public function testDeletePermanently()
     {
         // Preparation
-        $token = $this->loginCustomerWny();
-        $response = $this->delete('api/customers/1/comments/3?token=' . $token, []);
+        $token    = $this->loginCustomerWny();
+        $response = $this->delete('api/customers/1/comments/4?token=' . $token, []);
 
         // Request
-        $token = $this->loginDeveloper();
-        $response = $this->delete('api/customers/1/comments/3/permanently?token=' . $token, []);
+        $token    = $this->loginDeveloper();
+        $response = $this->delete('api/customers/1/comments/4/permanently?token=' . $token, []);
 
         $response->assertStatus(200);
 
@@ -1100,7 +1108,7 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
         $this->assertEquals("Customer's comment is destroyed permanently.", $message);
 
-        $comment = DB::table('customer_comments')->where('id', 3)->first();
+        $comment = DB::table('customer_comments')->where('id', 4)->first();
         $this->assertEquals(null, $comment);
     }
 
@@ -1173,11 +1181,11 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $token = $this->loginCustomerWny();
 
         // Preparation
-        $response = $this->delete('api/customers/1/comments/3?token=' . $token);
+        $response = $this->delete('api/customers/1/comments/4?token=' . $token);
         $response->assertStatus(200);
 
         // Request
-        $response = $this->delete('api/customers/1/comments/3/permanently?token=' . $token);
+        $response = $this->delete('api/customers/1/comments/4/permanently?token=' . $token);
 
         $response->assertStatus(453);
 
@@ -1203,15 +1211,15 @@ class CustomerCommentsControllerTest extends WnyTestCase
         $token = $this->loginCustomerWny();
 
         // Preparation
+        $response = $this->delete('api/customers/1/comments/4?token=' . $token);
+        $response->assertStatus(200);
+
+        $token    = $this->loginDeveloper();
         $response = $this->delete('api/customers/1/comments/3?token=' . $token);
         $response->assertStatus(200);
 
-        $token = $this->loginDeveloper();
-        $response = $this->delete('api/customers/1/comments/2?token=' . $token);
-        $response->assertStatus(200);
-
         // Request
-        $response = $this->delete('api/customers/1/comments/2/permanently?token=' . $token);
+        $response = $this->delete('api/customers/1/comments/3/permanently?token=' . $token);
 
         $response->assertStatus(455);
 

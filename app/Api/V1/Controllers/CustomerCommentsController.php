@@ -53,6 +53,7 @@ class CustomerCommentsController extends Controller
      *      "author_id": 16,
      *      "comment": "Comment.",
      *      "parent_id": null,
+     *      "level": 1,
      *      "deleted_at": null,
      *      "created_at": "2019-06-24 07:12:03",
      *      "updated_at": "2019-06-24 07:12:03",
@@ -64,6 +65,7 @@ class CustomerCommentsController extends Controller
      *      "author_id": 2,
      *      "comment": "Comment.",
      *      "parent_id": 1,
+     *      "level": 1,
      *      "deleted_at": null,
      *      "created_at": "2019-06-24 07:12:03",
      *      "updated_at": "2019-06-24 07:12:03",
@@ -92,7 +94,8 @@ class CustomerCommentsController extends Controller
     public function showAll($id)
     {
         $customer = Customer::whereId($id)->first();
-        $comments = CustomerComment::whereCustomerId($id)
+        $comments = CustomerComment::with('user')
+            ->whereCustomerId($id)
             ->get();
 
         if ($comments->count() === 0) {
@@ -306,7 +309,8 @@ class CustomerCommentsController extends Controller
             'customer_id' => $data['customer_id'],
             'author_id'   => $data['author_id'],
             'comment'     => $data['comment'],
-            'parent_id'   => $data['parent_id']
+            'parent_id'   => $data['parent_id'],
+            'level'       => $data['level'],
         ]);
 
         if ($comment->save()) {
@@ -445,6 +449,12 @@ class CustomerCommentsController extends Controller
      *  "message": "Permission to the department is absent."
      * }
      *
+     *
+     * @response 455 {
+     *  "success": false,
+     *  "message": "There is a child comment."
+     * }
+     *
      * @param $id
      * @param $commentId
      * @return void
@@ -574,7 +584,7 @@ class CustomerCommentsController extends Controller
         $response = [
             'success' => true,
             'code'    => 200,
-            'message' => 'Customer is restored successfully.',
+            'message' => 'Customer Comment restored successfully.',
             'data'    => null
         ];
 

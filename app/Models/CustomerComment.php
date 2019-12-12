@@ -34,6 +34,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CustomerComment withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CustomerComment withoutTrashed()
  * @mixin \Eloquent
+ * @property-read \App\Models\User $user
+ * @property string|null $level
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CustomerComment whereLevel($value)
  */
 class CustomerComment extends Model
 {
@@ -45,6 +48,7 @@ class CustomerComment extends Model
         'author_id',
         'comment',
         'parent_id',
+        'level',
         'deleted_at'
     ];
 
@@ -56,5 +60,15 @@ class CustomerComment extends Model
     public function customer()
     {
         return $this->belongsTo('App\Models\Customer', 'customer_id', 'id');
+    }
+
+    /**
+     * users <-> comments: one-to-many
+     *
+     * Get the user that wrote the comment.
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'author_id', 'id');
     }
 }

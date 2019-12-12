@@ -27,6 +27,7 @@ class StoreCustomer extends FormRequest
             'name'            => 'required|string',
             'organization_id' => 'required|integer',
             'type'            => 'required|string',
+            'city'            => 'required|string',
             'line_1'          => 'string|nullable',
             'line_2'          => 'string|nullable',
             'state'           => 'string|nullable',

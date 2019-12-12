@@ -50,6 +50,7 @@ class CustomersController extends Controller
      *    "id": 1,
      *    "name": "Customer Test A",
      *    "organization_id": 1,
+     *    "city": "New York",
      *    "organization": "object",
      *    "type": "individual",
      *    "deleted_at": null,
@@ -60,6 +61,7 @@ class CustomersController extends Controller
      *    "id": 2,
      *    "name": "Customer Test B",
      *    "organization_id": 1,
+     *    "city": "New York",
      *    "organization": "object",
      *    "type": "organization",
      *    "deleted_at": null,
@@ -148,6 +150,7 @@ class CustomersController extends Controller
      *    "name": "Customer Test A",
      *    "organization_id": 1,
      *    "type": "individual",
+     *    "city": "New York",
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
@@ -157,6 +160,7 @@ class CustomersController extends Controller
      *    "name": "Customer Test B",
      *    "organization_id": 1,
      *    "type": "individual",
+     *    "city": "New York",
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
@@ -260,12 +264,14 @@ class CustomersController extends Controller
             'name'            => $data['name'],
             'organization_id' => $data['organization_id'],
             'type'            => $data['type'],
+            'city'            => $data['city'],
             'line_1'          => $data['line_1'],
             'line_2'          => $data['line_2'],
             'state'           => $data['state'],
             'zip'             => $data['zip'],
         ]);
 
+//        dd($customer);
         if ($customer->save()) {
             $response = [
                 'success' => true,
@@ -286,9 +292,14 @@ class CustomersController extends Controller
      *  "success": true,
      *  "data": {
      *     "id": 1,
-     *     "name": "Central Office",
+     *     "name": "Customer A-WNY",
      *     "type": "individual",
      *     "organization_id": 1,
+     *     "city": "New York",
+     *     "line_1": "Line 1",
+     *     "line_2": "Line 2",
+     *     "state": "CA",
+     *     "zip": "123456",
      *     "deleted_at": null,
      *     "created_at": "2019-12-08 13:25:36",
      *     "updated_at": "2019-12-08 13:25:36",
@@ -362,6 +373,7 @@ class CustomersController extends Controller
      *    "name": "Customer Test A",
      *    "organization_id": 1,
      *    "type": "individual",
+     *    "city": "New York",
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"

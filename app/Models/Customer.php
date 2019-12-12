@@ -47,6 +47,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereLine2($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereState($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereZip($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereCity($value)
  */
 class Customer extends Model
 {
@@ -56,6 +57,7 @@ class Customer extends Model
     protected $fillable = [
         'name',
         'type',
+        'city',
         'organization_id',
         'line_1',
         'line_2',

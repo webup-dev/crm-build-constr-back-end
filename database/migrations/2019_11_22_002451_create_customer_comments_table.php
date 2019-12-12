@@ -23,6 +23,7 @@ class CreateCustomerCommentsTable extends Migration
             $table->integer('parent_id')->unsigned()->nullable();
             $table->foreign('parent_id')->references('id')->on('customer_comments')->onDelete('cascade');
             $table->softDeletes();
+            $table->integer('level');
             $table->timestamps();
         });
     }

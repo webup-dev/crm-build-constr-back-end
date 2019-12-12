@@ -19,7 +19,8 @@ class CreateCustomersTable extends Migration
             $table->integer('organization_id')->unsigned();
             $table->foreign('organization_id')->references('id')->on('organizations')->onDelete('cascade');
             $table->enum('type', ['Individual(s)', 'Business']);
-            $table->string('line_1')->nullable();
+            $table->string('city');
+            $table->string('line_1');
             $table->string('line_2')->nullable();
             $table->string('state')->nullable();
             $table->string('zip')->nullable();

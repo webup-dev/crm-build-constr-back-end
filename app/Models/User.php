@@ -44,6 +44,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read \App\Models\Customer $customer
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerIndividual[] $customerIndividualCreated
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerIndividual[] $customerIndividualUpdated
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerComment[] $comment
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -140,5 +141,15 @@ class User extends Authenticatable implements JWTSubject
     public function customer()
     {
         return $this->hasOne('App\Models\Customer', 'user_id');
+    }
+
+    /**
+     * user <-> comment: one-to-many
+     *
+     * Get the customer record associated with the user.
+     */
+    public function comment()
+    {
+        return $this->hasMany('App\Models\CustomerComment', 'author_id');
     }
 }

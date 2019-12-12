@@ -182,6 +182,8 @@ class CustomersControllerTest extends WnyTestCase
                             "id",
                             "name",
                             "type",
+                            "organization_id",
+                            "organization",
                             "deleted_at",
                             "created_at",
                             "updated_at"
@@ -294,9 +296,9 @@ class CustomersControllerTest extends WnyTestCase
                         [
                             "id",
                             "name",
+                            "type",
                             "organization_id",
                             "organization",
-                            "type",
                             "deleted_at",
                             "created_at",
                             "updated_at"
@@ -385,6 +387,7 @@ class CustomersControllerTest extends WnyTestCase
             'name'            => 'Customer New',
             'organization_id' => 2,
             'type'            => 'Business',
+            'city'            => 'New York',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'state'           => 'CA',
@@ -393,6 +396,7 @@ class CustomersControllerTest extends WnyTestCase
 
         // Store a new user, user-profile
         $response = $this->post('api/customers?token=' . $token, $data, []);
+//        dd($response);
 
         // Check response status
         $response->assertStatus(200);
@@ -416,6 +420,7 @@ class CustomersControllerTest extends WnyTestCase
         // Check DB table customers
         $customer = DB::table('customers')->where('name', '=', 'Customer New')->first();
         $this->assertEquals('Business', $customer->type);
+        $this->assertEquals('New York', $customer->city);
         $this->assertEquals('Line 1', $customer->line_1);
         $this->assertEquals('Line 2', $customer->line_2);
         $this->assertEquals('CA', $customer->state);
@@ -440,6 +445,7 @@ class CustomersControllerTest extends WnyTestCase
             'name'            => '',
             'organization_id' => '',
             'type'            => '',
+            'city'            => '',
             'line_1'          => [],
             'line_2'          => [],
             'state'           => [],
@@ -468,7 +474,7 @@ class CustomersControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(7, count($error['errors']));
+        $this->assertEquals(8, count($error['errors']));
     }
 
     /**
@@ -488,6 +494,7 @@ class CustomersControllerTest extends WnyTestCase
             'name'            => 'Customer New',
             'organization_id' => 2,
             'type'            => 'Business',
+            'city'            => 'New York',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'state'           => 'CA',
@@ -534,6 +541,7 @@ class CustomersControllerTest extends WnyTestCase
             'name'            => 'Customer New',
             'organization_id' => 2,
             'type'            => 'Business',
+            'city'            => 'New York',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'state'           => 'CA',
@@ -584,14 +592,19 @@ class CustomersControllerTest extends WnyTestCase
                 'success',
                 'data' =>
                     [
-                        'id',
-                        'name',
-                        'type',
-                        'organization_id',
-                        'deleted_at',
-                        'created_at',
-                        'updated_at',
-                        'organization'
+                        "id",
+                        "name",
+                        "type",
+                        "organization_id",
+                        "city",
+                        "line_1",
+                        "line_2",
+                        "state",
+                        "zip",
+                        "organization",
+                        "deleted_at",
+                        "created_at",
+                        "updated_at"
                     ],
                 'message'
             ]
@@ -606,6 +619,7 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals("Item is retrieved successfully.", $message);
         $this->assertEquals('Customer A-WNY', $data['name']);
         $this->assertEquals('Individual(s)', $data['type']);
+        $this->assertEquals('New York', $data['city']);
         $this->assertEquals(2, $data['organization_id']);
         $this->assertEquals(null, $data['deleted_at']);
         $this->assertEquals(2, $data['organization']['id']);
@@ -722,6 +736,7 @@ class CustomersControllerTest extends WnyTestCase
             'name'            => 'Customer A-WNY-edited',
             'organization_id' => 2,
             'type'            => 'Business',
+            'city'            => 'New York',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'state'           => 'CA',
@@ -742,6 +757,7 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals("Customer A-WNY-edited", $data->name);
         $this->assertEquals(1, $data->id);
         $this->assertEquals('Business', $data->type);
+        $this->assertEquals('New York', $data->city);
     }
 
     /**
@@ -761,6 +777,7 @@ class CustomersControllerTest extends WnyTestCase
             'name'            => 'Customer A-WNY-edited',
             'organization_id' => 2,
             'type'            => 'Business',
+            'city'            => 'New York',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'state'           => 'CA',
@@ -781,6 +798,7 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals("Customer A-WNY-edited", $data->name);
         $this->assertEquals(1, $data->id);
         $this->assertEquals('Business', $data->type);
+        $this->assertEquals('New York', $data->city);
     }
 
     /**
@@ -800,6 +818,7 @@ class CustomersControllerTest extends WnyTestCase
             'name'            => [],
             'organization_id' => [],
             'type'            => [],
+            'city'            => [],
             'line_1'          => [],
             'line_2'          => [],
             'state'           => [],
@@ -826,7 +845,7 @@ class CustomersControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(7, count($error['errors']));
+        $this->assertEquals(8, count($error['errors']));
     }
 
     /**
@@ -847,6 +866,7 @@ class CustomersControllerTest extends WnyTestCase
             'name'            => 'Customer A-WNY-edited',
             'organization_id' => 2,
             'type'            => 'Business',
+            'city'            => 'New York',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'state'           => 'CA',
@@ -882,6 +902,7 @@ class CustomersControllerTest extends WnyTestCase
             'name'            => 'Customer A-WNY-edited',
             'organization_id' => 2,
             'type'            => 'Business',
+            'city'            => 'New York',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'state'           => 'CA',
@@ -917,6 +938,7 @@ class CustomersControllerTest extends WnyTestCase
             'name'            => 'Customer A-WNY-edited',
             'organization_id' => 2,
             'type'            => 'Business',
+            'city'            => 'New York',
             'line_1'          => 'Line 1',
             'line_2'          => 'Line 2',
             'state'           => 'CA',
