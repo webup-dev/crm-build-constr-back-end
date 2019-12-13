@@ -381,7 +381,7 @@ class CustomerCommentsController extends Controller
     public
     function update(UpdateCustomerComment $request, $id, $comment_id)
     {
-        $comment = CustomerComment::whereId($id)->first();
+        $comment = CustomerComment::whereId($comment_id)->first();
 
         if (!$comment) {
             $response = [

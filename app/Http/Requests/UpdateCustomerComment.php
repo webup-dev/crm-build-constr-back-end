@@ -24,10 +24,11 @@ class UpdateCustomerComment extends FormRequest
     public function rules()
     {
         return [
-            'customer_id' => 'integer',
-            'author_id'   => 'integer',
+            'customer_id' => 'nullable|integer',
+            'author_id'   => 'nullable|integer',
             'comment'     => 'string',
-            'parent_id'   => 'nullable|integer'
+            'parent_id'   => 'nullable|integer',
+            'level'       => 'nullable|integer'
         ];
     }
 }
