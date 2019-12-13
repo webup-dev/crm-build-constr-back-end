@@ -2,7 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [0.18.0] - 2019-12-13
+### Changed
 - Customer. Field "City" is implemented. Fields "City", "Line 1" are required.
+### Added
+- Module CustomerComments.
 
 ## [0.17.0] - 2019-11-21
 ### Changed
