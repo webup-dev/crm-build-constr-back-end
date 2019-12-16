@@ -48,6 +48,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereState($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereZip($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Customer whereCity($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerFile[] $customer_file
  */
 class Customer extends Model
 {
@@ -84,5 +85,15 @@ class Customer extends Model
     public function organization()
     {
         return $this->belongsTo('App\Models\Organization', 'organization_id', 'id');
+    }
+
+    /**
+     * customer <-> file: one-to-many
+     *
+     * Get the customer-file record associated with the customer.
+     */
+    public function customer_file()
+    {
+        return $this->hasMany('App\Models\CustomerFile', 'customer_id');
     }
 }

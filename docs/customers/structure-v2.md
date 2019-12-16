@@ -48,6 +48,11 @@ Billing City
 Billing State
 Billing Zip
 
+### User-Customers
+id
+user_id
+customer_id
+
 ### Customer-notes
 id
 customer_id

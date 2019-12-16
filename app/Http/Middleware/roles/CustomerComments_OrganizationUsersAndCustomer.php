@@ -86,6 +86,10 @@ class CustomerComments_OrganizationUsersAndCustomer
 
             return response()->json($response, 454);
         }
+        if (one_from_arr_in_other_arr(['customer-individual', 'customer-organization'], $roleNamesArr)) {
+
+
+        }
 
         // check is the customer?
         // @todo after Contacts implementation

@@ -1,0 +1,27 @@
+Issue Type,Summary,Story Point Estimate
+Story,Create new Branch,0.5
+Story,Planning,3
+Story,Create file structure of API,3
+Story,Create endpoints for CustomerFiles,3
+Story,Rewrite requests in CustomerFiles module with API module,3
+Story,Handling network errors and logging,3
+Story,Check CustomerFiles module,3
+
+Story,Create plan of the tests,8
+Story,Create buttons Comments in the index of customers,0.5
+Story,Create routes,0.5
+Story,Copy vue dir for component,0.5
+Story,Setup testing environment,3
+Story,Create test for the access to the Component,0.5
+Story,Create simple Component to test link from the index,1
+Story,Create a test of the block Customer Main Data,1
+Story,Create the block Customer Main Data,2
+Story,Create a test of the block Comments,3
+Story,Create the block Comments,3
+Story,Create a test of the block New Comment,3
+Story,Import validation lib,0.5
+Story,Create validation rules,0.5
+Story,Add descriptions for validation,0.5
+Story,Create the block New Comment,5
+Story,Deployment,3
+Story,Report,1

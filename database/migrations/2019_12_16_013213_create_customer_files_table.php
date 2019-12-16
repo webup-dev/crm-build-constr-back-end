@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCustomerCommentsTable extends Migration
+class CreateCustomerFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,14 @@ class CreateCustomerCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('customer_comments', function (Blueprint $table) {
+        Schema::create('customer_files', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('customer_id')->unsigned();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-            $table->integer('author_id')->unsigned();
-            $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
-            $table->text('comment');
-            $table->integer('parent_id')->unsigned()->nullable();
-            $table->foreign('parent_id')->references('id')->on('customer_comments')->onDelete('cascade');
-            $table->integer('level');
+            $table->string('description')->nullable();
+            $table->string('filename');
+            $table->integer('owner_user_id')->unsigned();
+            $table->foreign('owner_user_id')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -35,6 +33,6 @@ class CreateCustomerCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customer_comments');
+        Schema::dropIfExists('customer_files');
     }
 }

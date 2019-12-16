@@ -18,5 +18,6 @@ class TestsSeeder extends Seeder
          $this->call(TestUserRolesSeeder::class);
          $this->call(TestCustomersSeeder::class);
          $this->call(TestCustomerCommentsSeeder::class);
+         $this->call(TestCustomerFilesSeeder::class);
     }
 }

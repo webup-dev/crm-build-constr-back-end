@@ -19,6 +19,7 @@ abstract class WnyTestCase extends TestCase
         Schema::dropIfExists('controllers');
         Schema::dropIfExists('customer_individuals');
         Schema::dropIfExists('customer_comments');
+        Schema::dropIfExists('customer_files');
         Schema::dropIfExists('customers');
         Schema::dropIfExists('organizations');
         Schema::dropIfExists('activities');
