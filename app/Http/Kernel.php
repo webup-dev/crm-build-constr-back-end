@@ -74,5 +74,6 @@ class Kernel extends HttpKernel
         'customer_comments_organization.users.customer' => \App\Http\Middleware\CustomerComments_OrganizationUsersAndCustomer::class,
         'customer_comments_author'                      => \App\Http\Middleware\CustomerComments_Author::class,
         'customer_files_author'                         => \App\Http\Middleware\CustomerFiles_Author::class,
+        'user_customer'                                 => \App\Http\Middleware\UserCustomers::class,
     ];
 }

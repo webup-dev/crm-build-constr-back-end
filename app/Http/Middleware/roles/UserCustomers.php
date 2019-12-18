@@ -4,11 +4,12 @@ namespace App\Http\Middleware;
 
 use App\Models\Customer;
 use App\Models\Organization;
+use App\Models\UserCustomer;
 use Closure;
 use Tymon\JWTAuth\JWTAuth;
 use Auth;
 
-class Customers_OrganizationUsers
+class UserCustomers
 {
     /**
      * Middleware for routes with Customers ID in URL.
@@ -22,32 +23,48 @@ class Customers_OrganizationUsers
      */
     public function handle($request, Closure $next)
     {
-        $user = Auth::guard()->user();
-        $roles = $user->roles;
+        $user         = Auth::guard()->user();
+        $roles        = $user->roles;
         $roleNamesArr = $roles->pluck('name')->all();
-        $id = $request->route('id');
+        $id           = $request->route('id');
 
         if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $next($request);
         }
 
-        if (one_from_arr_in_other_arr(['organization-superadmin',
-                                       'organization-admin',
-                                       'organization-general-manager',
-                                       'organization-sales-manager',
-                                       'organization-production-manager',
-                                       'organization-administrative-leader',
-                                       'organization-estimator',
-                                       'organization-project-manager',
-                                       'organization-administrative-assistant'], $roleNamesArr)) {
+        if (one_from_arr_in_other_arr([
+            'organization-superadmin',
+            'organization-admin',
+            'organization-general-manager',
+            'organization-sales-manager',
+            'organization-production-manager',
+            'organization-administrative-leader',
+            'organization-estimator',
+            'organization-project-manager',
+            'organization-administrative-assistant'
+        ], $roleNamesArr)) {
             if ($id == '') {
                 return $next($request);
             }
 
-            // get department id of editing profile
-            $editingDepartment = Customer::whereId($id)->first();
+            // get department id of the user-customer
+            $userCustomer = UserCustomer::whereId($id)->first();
 
-            if (!$editingDepartment) {
+            if (!$userCustomer) {
+                $response = [
+                    'success' => false,
+                    'code'    => 456,
+                    'message' => "Incorrect entity ID.",
+                    'data'    => null
+                ];
+
+                return response()->json($response, 456);
+            }
+
+            $customerId = $userCustomer->customer_id;
+            $customer   = Customer::whereId($customerId)->first();
+
+            if (!$customer) {
                 $response = [
                     'success' => false,
                     'message' => "The given data was invalid."
@@ -56,7 +73,7 @@ class Customers_OrganizationUsers
                 return response()->json($response, 422);
             }
 
-            $editingDepartmentId = Customer::whereId($id)->first()->organization_id;
+            $organizationId = $customer->organization_id;
 
             // department id of editor
             $editorDepartmentId = $user->user_profile->department_id;
@@ -64,7 +81,7 @@ class Customers_OrganizationUsers
             // check editingDepartmentId is editorDepartmentId or its child
             $organizations = Organization::all()->toArray();
 
-            if (isOwn($organizations, $editorDepartmentId, $editingDepartmentId) or $editingDepartmentId === $editorDepartmentId) {
+            if (isOwn($organizations, $editorDepartmentId, $organizationId) or $organizationId === $editorDepartmentId) {
                 return $next($request);
             }
 

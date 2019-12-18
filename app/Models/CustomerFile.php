@@ -37,6 +37,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CustomerFile withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CustomerFile withoutTrashed()
  * @mixin \Eloquent
+ * @property string|null $description
+ * @property string $filename
+ * @property int $owner_user_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CustomerFile whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CustomerFile whereFilename($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CustomerFile whereOwnerUserId($value)
  */
 class CustomerFile extends Model
 {

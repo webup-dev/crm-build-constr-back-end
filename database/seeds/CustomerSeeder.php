@@ -37,6 +37,7 @@ class CustomerSeeder extends Seeder
             'created_at'      => now()
         ]);
 
+        // 3
         DB::table('customers')->insert([
             'name'            => 'Customer C-WNY',
             'type'            => 'Individual(s)',
@@ -47,8 +48,20 @@ class CustomerSeeder extends Seeder
             'created_at'      => now()
         ]);
 
+        // 4
         DB::table('customers')->insert([
             'name'            => 'Customer D-WNY',
+            'type'            => 'Individual(s)',
+            'city'            => 'New York',
+            'line_1'          => 'Line 1',
+            'organization_id' => 2,
+            'deleted_at'      => null,
+            'created_at'      => now()
+        ]);
+
+        // 5
+        DB::table('customers')->insert([
+            'name'            => 'Customer E-WNY',
             'type'            => 'Individual(s)',
             'city'            => 'New York',
             'line_1'          => 'Line 1',

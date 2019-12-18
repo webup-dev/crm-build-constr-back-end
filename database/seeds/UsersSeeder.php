@@ -186,5 +186,12 @@ class UsersSeeder extends Seeder
             'created_at' => now()
         ]);
 
+        // 22
+        DB::table('users')->insert([
+            'name'       => 'Customer E-WNY',
+            'email'      => 'wny-customer-e-individual@admin.com',
+            'password'   => bcrypt('12345678'),
+            'created_at' => now()
+        ]);
     }
 }
