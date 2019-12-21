@@ -43,5 +43,13 @@ class TestUserCustomersSeeder extends Seeder
             'deleted_at'  => null,
             'created_at'  => now()
         ]);
+
+        // 5
+        $userCustomer = UserCustomer::create([
+            'user_id'     => '22',
+            'customer_id' => '1',
+            'deleted_at'  => null,
+            'created_at'  => now()
+        ]);
     }
 }

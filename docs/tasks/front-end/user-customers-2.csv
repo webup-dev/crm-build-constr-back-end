@@ -1,0 +1,23 @@
+Issue Type,Summary,Story Point Estimate
+Story,Create route Create,0.5
+Story,Create button 'Create' in 'Index',0.5
+Story,Develop Component 'Store',3
+Story,Import validation lib,0.5
+Story,Create validation rules,0.5
+Story,Add descriptions for validation,1
+Story,Change model add Style in layout for validation,0.5
+Story,Create route 'Edit',0.5
+Story,Create buttons 'Edit' in 'Index',0.5
+Story,Develop Component 'Edit',3
+Story,Import validation lib,0.5
+Story,Create validation rules,0.5
+Story,Add descriptions for validation,1
+Story,Change model add Style in layout for validation,1
+Story,Create buttons 'Delete' in 'Index',0.5
+Story,Develop Component 'Delete',3
+Story,Create route 'IndexSoftDeleted',0.5
+Story,Develop Component 'IndexSoftDeleted',3
+Story,Create buttons 'Restore' in 'SoftDeleted',0.5
+Story,Develop Component 'Restore',3
+Story,Create buttons 'PermanentDelete' in 'SoftDeleted',0.5
+Story,Develop Component 'PermanentDelete',3

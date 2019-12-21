@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Organization;
 use App\Models\User_profile;
+use App\Models\UserCustomer;
 use Dingo\Api\Routing\Helpers;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @group Menus
@@ -64,10 +66,12 @@ class MenusController extends Controller
         $tree          = buildTree($organizations, $userProfileDepartmentId);
 
         $collectValues = collectValues($tree, 'id', [$userProfileDepartmentId]);
-        $res           = [];
-        $res[]         = $this->getUserProfile($collectValues);
-        $res[]         = $this->getCustomers($collectValues);
-        $res[]         = $this->getOrganizations($collectValues);
+
+        $res   = [];
+        $res[] = $this->getUserProfile($collectValues);
+        $res[] = $this->getCustomers($collectValues);
+        $res[] = $this->getOrganizations($collectValues);
+        $res[] = $this->getUserCustomers($collectValues, $userProfileDepartmentId);
 
         $response = [
             "success" => true,
@@ -91,6 +95,28 @@ class MenusController extends Controller
             "name"  => 'User Profiles',
             "url"   => 'user-profiles/soft-deleted',
             "count" => $userProfilesCount
+        ];
+
+        return $arr;
+    }
+
+    private function getUserCustomers($collectValues)
+    {
+        // 1. get all watched by current user organizations IDs ($collectValues)
+        // 2. get all watched by current user customers (their IDs)
+        $customerIds = Customer::withTrashed()
+            ->whereIn('organization_id', $collectValues)
+            ->get()
+            ->pluck('id');
+        // 3. get al watched by current user soft-deleted user-customers
+        $userCustomersCount = UserCustomer::onlyTrashed()
+            ->whereIn('customer_id', $customerIds)
+            ->get()
+            ->count();
+        $arr = [
+            "name"  => 'User-Customers',
+            "url"   => 'user-customers/soft-deleted',
+            "count" => $userCustomersCount
         ];
 
         return $arr;

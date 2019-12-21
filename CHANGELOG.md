@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- Module User-Customers.
 
 ## [0.18.0] - 2019-12-13
 ### Changed

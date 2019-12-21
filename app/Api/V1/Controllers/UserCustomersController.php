@@ -4,6 +4,7 @@ namespace App\Api\V1\Controllers;
 
 use App\Http\Requests\CreateCustomerFile;
 use App\Http\Requests\CreateUserCustomer;
+use App\Http\Requests\EditUserCustomer;
 use App\Http\Requests\UpdateCustomerFile;
 use App\Models\Customer;
 use App\Models\Organization;
@@ -14,6 +15,7 @@ use Dingo\Api\Routing\Helpers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Auth;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * @group User Customers
@@ -384,20 +386,6 @@ class UserCustomersController extends Controller
             return response()->json($response, 456);
         }
 
-        // Check is user_id is available
-        $userFromData = User::whereId($data['user_id'])->first();
-
-        if (!$userFromData) {
-            $response = [
-                "success" => false,
-                "code"    => 456,
-                "message" => "Incorrect Entity ID.",
-                "data"    => null
-            ];
-
-            return response()->json($response, 456);
-        }
-
         $user        = Auth::guard()->user();
         $userProfile = $user->user_profile;
 
@@ -412,9 +400,19 @@ class UserCustomersController extends Controller
             return response()->json($response, 454);
         }
 
+        // Check does email exist
+        $userFromData = User::whereEmail($data['email'])->first();
+
+        if (!$userFromData) {
+            // create user and get its id
+            $userId = $this->createUser($data['email']);
+        } else {
+            $userId = $userFromData->id;
+        }
+
         $userCustomer = new UserCustomer([
             'customer_id' => $data['customer_id'],
-            'user_id'     => $data['user_id']
+            'user_id'     => $userId
         ]);
 
         if ($userCustomer->save()) {
@@ -428,6 +426,37 @@ class UserCustomersController extends Controller
         } else {
             return $this->response->error("Could not create User-Customer", 500);
         }
+    }
+
+    private function createUser($email)
+    {
+        $rules = array(
+            'email' => 'required|email'
+        );
+
+        $messages = array(
+            'email.required' => 'Email is required.',
+            'email.email'    => 'Must be Email.'
+        );
+
+        $validator = Validator::make(['email' => $email], $rules, $messages);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
+            $errors   = $messages->all();
+            return $errors;
+            $string = '';
+            foreach ($errors as $error) {
+                $string .= ' ' . $error;
+            }
+            return $this->response->error($string, 500);
+        }
+        $user = new User();
+        $user->email = $email;
+        $user->name  = 'Customer 123456';
+        $user->password  = bcrypt('12345678');
+        $user->save();
+
+        return $user->id;
     }
 
     /**
@@ -484,12 +513,12 @@ class UserCustomersController extends Controller
      *  "data": null
      * }
      *
-     * @param CreateUserCustomer $request
+     * @param EditUserCustomer $request
      * @param $id
      * @return void
      */
     public
-    function update(CreateUserCustomer $request, $id)
+    function update(EditUserCustomer $request, $id)
     {
         $userCustomer = UserCustomer::whereId($id)->first();
 
@@ -637,7 +666,7 @@ class UserCustomersController extends Controller
      */
     public function restore($id)
     {
-        $userCustomer  = UserCustomer::onlyTrashed()->whereId($id)->first();
+        $userCustomer = UserCustomer::onlyTrashed()->whereId($id)->first();
 
         if (!$userCustomer) {
             $response = [

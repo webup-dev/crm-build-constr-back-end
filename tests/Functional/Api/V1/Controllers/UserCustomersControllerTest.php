@@ -16,7 +16,8 @@
  * Check Show If The Access To The Department Is Absent
  * Check Show If ID is invalid
  *
- * Check Store for platform roles
+ * Check Store for platform roles If User exist
+ * Check Store for platform roles If User does not exist
  * Check Store for organization roles
  * Check Store For invalid Data
  * Check Store If Access Is Absent By The Role
@@ -521,15 +522,15 @@ class UserCustomersControllerTest extends WnyTestCase
 
 
     /**
-     * Check Store for platform roles
+     * Check Store for platform roles If User exist
      */
-    public function testStoreForPlatformRoles()
+    public function testStoreForPlatformRolesIfUserExist()
     {
         $token = $this->loginDeveloper();
 
         // Create data
         $data = [
-            'user_id'     => 22,
+            'email'       => 'wny-customer-e-individual@admin.com',
             'customer_id' => 5
         ];
 
@@ -567,15 +568,15 @@ class UserCustomersControllerTest extends WnyTestCase
     }
 
     /**
-     * Check Store for organization roles
+     * Check Store for platform roles If User does not exist
      */
-    public function testStoreForOrganizationRoles()
+    public function testStoreForPlatformRolesIfUserDoesNotExist()
     {
-        $token = $this->loginOrganizationWNYGeneralManager();
+        $token = $this->loginDeveloper();
 
         // Create data
         $data = [
-            'user_id'     => 22,
+            'email'       => 'wny-customer-f-individual@admin.com',
             'customer_id' => 5
         ];
 
@@ -608,8 +609,54 @@ class UserCustomersControllerTest extends WnyTestCase
         $this->assertEquals(null, $data);
 
         // Check DB table customer_comments
-        $userComment = DB::table('user_customers')->where('user_id', '=', 22)->first();
+        $userComment = DB::table('user_customers')->where('user_id', '=', 23)->first();
         $this->assertEquals(5, $userComment->id);
+    }
+
+    /**
+     * Check Store for organization roles
+     */
+    public function testStoreForOrganizationRoles()
+    {
+        $token = $this->loginOrganizationWNYGeneralManager();
+
+        // Create data
+        $data = [
+            'email'       => 'wny-customer-f-individual@admin.com',
+            'customer_id' => 5
+        ];
+
+        // Store the comment
+        $response = $this->post('api/user-customers?token=' . $token, $data);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'code',
+                'message',
+                'data'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $code         = $responseJSON['code'];  // array
+        $message      = $responseJSON['message'];  // array
+        $data         = $responseJSON['data'];  // array
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+        $this->assertEquals("User-Customer is created successfully.", $message);
+        $this->assertEquals(null, $data);
+
+        // Check DB table customer_comments
+        $userCustomer = DB::table('user_customers')->where('user_id', '=', 23)->first();
+        $this->assertEquals(5, $userCustomer->id);
     }
 
     /**
@@ -693,7 +740,7 @@ class UserCustomersControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            'user_id'     => 22,
+            'email'       => 'wny-customer-f-individual@admin.com',
             'customer_id' => 5
         ];
 

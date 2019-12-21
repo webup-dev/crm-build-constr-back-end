@@ -1,0 +1,19 @@
+Issue Type,Summary,Story Point Estimate
+Story,Create new Branch,0.5
+Story,Planning,3
+Story,Create endpoints for the UserCustomers,3
+Story,Handling network errors and logging,3
+Story,Create plan of the tests,8
+Story,Create menu for Developer,0.5
+Story,Create routes,0.5
+Story,Create empty SFC 'index' to test route,0.5
+Story,Create file for the tests of UserCustomerIndex,0.5
+Story,Create test 'There is a button Create-New-User-Customer',0.5
+Story,Create test 'It renders a table. Checking a number of rows of the table.',0.5
+Story,Create test 'Checking a number of the columns of the table.',0.5
+Story,Create test 'Checking a values of the specific row of the table.',0.5
+Story,Create test 'Check button Delete (check Delete request).',0.5
+Story,Create test 'Check button Edit (check Edit request).',0.5
+Story,Create table User-Customer,3
+Story,Deployment,3
+Story,Report,1

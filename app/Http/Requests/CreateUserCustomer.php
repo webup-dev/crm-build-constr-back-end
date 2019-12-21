@@ -24,7 +24,7 @@ class CreateUserCustomer extends FormRequest
     public function rules()
     {
         return [
-            'user_id'     => 'required|integer',
+            'email'       => 'required|email',
             'customer_id' => 'required|integer'
         ];
     }
