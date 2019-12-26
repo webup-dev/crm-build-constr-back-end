@@ -1,0 +1,15 @@
+Issue Type,Summary,Story Point Estimate
+Story,Create new Branch,0.5
+Story,Edit migration,0.5
+Story,Edit Model,1
+Story,Edit seed,2
+Story,Edit Tests Documentation,1
+Story,Edit PHP test functions,10
+Story,Edit module documentation,3
+Story,Edit API functions. show,2
+Story,Edit API functions. destroy,1
+Story,Edit API functions. IndexSoftDestroy,1
+Story,Edit API functions. restore,1
+Story,Edit API functions. permanentDelete,1
+Story,Testing of functions,5
+Story,Deployment,3

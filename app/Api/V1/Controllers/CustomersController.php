@@ -6,10 +6,12 @@ use App\Http\Requests\StoreCustomer;
 use App\Http\Requests\UpdateCustomer;
 use App\Models\Activity;
 use App\Models\Customer;
+use App\Models\CustomerComment;
 use App\Models\Organization;
 use App\Models\User;
 use App\Models\User_profile;
 use App\Models\User_role;
+use App\Models\UserCustomer;
 use Config;
 use App\Http\Controllers\Controller;
 use Auth;
@@ -50,23 +52,25 @@ class CustomersController extends Controller
      *    "id": 1,
      *    "name": "Customer Test A",
      *    "organization_id": 1,
-     *    "city": "New York",
-     *    "organization": "object",
      *    "type": "individual",
+     *    "customer_owner_user_id",
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object",
+     *    "customer_owner_user": "object"
      *   },
      *   {
      *    "id": 2,
      *    "name": "Customer Test B",
      *    "organization_id": 1,
-     *    "city": "New York",
-     *    "organization": "object",
      *    "type": "organization",
+     *    "customer_owner_user_id",
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object",
+     *    "customer_owner_user": "object"
      *   }],
      *  "message": "Customers are retrieved successfully."
      * }
@@ -105,14 +109,14 @@ class CustomersController extends Controller
             $userProfile  = $user->user_profile;
             $departmentId = $userProfile->department_id;
 
-            $customers = Customer::with('organization')
-                ->select('id', 'name', 'organization_id', 'type', 'deleted_at', 'created_at', 'updated_at')
+            $customers = Customer::with('organization', 'customer_owner_user')
+                ->select('id', 'name', 'organization_id', 'type', 'customer_owner_user_id', 'deleted_at', 'created_at', 'updated_at')
                 ->where('organization_id', $departmentId)
                 ->get();
         } else {
             // all organizations
-            $customers = Customer::with('organization')
-                ->select('id', 'name', 'organization_id', 'type', 'deleted_at', 'created_at', 'updated_at')
+            $customers = Customer::with('organization', 'customer_owner_user')
+                ->select('id', 'name', 'organization_id', 'type', 'customer_owner_user_id', 'deleted_at', 'created_at', 'updated_at')
                 ->get();
         }
 
@@ -150,20 +154,24 @@ class CustomersController extends Controller
      *    "name": "Customer Test A",
      *    "organization_id": 1,
      *    "type": "individual",
-     *    "city": "New York",
+     *    "customer_owner_user_id",
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object",
+     *    "customer_owner_user": "object"
      *   },
      *   {
      *    "id": 2,
      *    "name": "Customer Test B",
      *    "organization_id": 1,
-     *    "type": "individual",
-     *    "city": "New York",
+     *    "type": "organization",
+     *    "customer_owner_user_id",
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object",
+     *    "customer_owner_user": "object"
      *   }],
      *  "message": "Soft-deleted Customers are retrieved successfully."
      * }
@@ -182,8 +190,8 @@ class CustomersController extends Controller
     public function indexSoftDeleted()
     {
         $customers = Customer::onlyTrashed()
-            ->with('organization')
-            ->select('id', 'name', 'type', 'organization_id', 'deleted_at', 'created_at', 'updated_at')
+            ->with('organization', 'customer_owner_user')
+            ->select('id', 'name', 'type', 'organization_id', 'customer_owner_user_id', 'deleted_at', 'created_at', 'updated_at')
             ->get();
 
         if (!$customers->count()) {
@@ -261,17 +269,17 @@ class CustomersController extends Controller
         }
 
         $customer = new Customer([
-            'name'            => $data['name'],
-            'organization_id' => $data['organization_id'],
-            'type'            => $data['type'],
-            'city'            => $data['city'],
-            'line_1'          => $data['line_1'],
-            'line_2'          => $data['line_2'],
-            'state'           => $data['state'],
-            'zip'             => $data['zip'],
+            'name'                   => $data['name'],
+            'organization_id'        => $data['organization_id'],
+            'type'                   => $data['type'],
+            'city'                   => $data['city'],
+            'line_1'                 => $data['line_1'],
+            'line_2'                 => $data['line_2'],
+            'state'                  => $data['state'],
+            'zip'                    => $data['zip'],
+            'customer_owner_user_id' => $data['customer_owner_user_id']
         ]);
 
-//        dd($customer);
         if ($customer->save()) {
             $response = [
                 'success' => true,
@@ -300,10 +308,13 @@ class CustomersController extends Controller
      *     "line_2": "Line 2",
      *     "state": "CA",
      *     "zip": "123456",
+     *     "customer_owner_user_id": 4,
      *     "deleted_at": null,
      *     "created_at": "2019-12-08 13:25:36",
      *     "updated_at": "2019-12-08 13:25:36",
-     *     "organization": "organization object"
+     *     "organization": "organization object",
+     *     "customer_owner_user": "user object",
+     *     "users": "array of users object"
      *  },
      *  "message": "Item is retrieved successfully."
      * }
@@ -339,8 +350,9 @@ class CustomersController extends Controller
             return response()->json($response, 422);
         }
 
-        $user         = $customer->user;
-        $organization = $customer->organization;
+        $users               = $customer->users;
+        $organization        = $customer->organization;
+        $customer_owner_user = $customer->customer_owner_user;
 
         $data = $customer->toArray();
 
@@ -374,9 +386,11 @@ class CustomersController extends Controller
      *    "organization_id": 1,
      *    "type": "individual",
      *    "city": "New York",
+     *    "customer_owner_user_id": 4,
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "customer_owner_user": "user object"
      *   },
      *  "message": "User Profile is updated successfully."
      * }
@@ -505,18 +519,21 @@ class CustomersController extends Controller
             return response()->json($response, 453);
         }
 
-//        $user = User::whereId($customer->user_id)->first();
-//
-//        // there are 3 DB tables that are bond to User: activities, user_roles, customers
-//        Activity::truncate();
-//
-//        $userRoles = User_role::whereUserId($user->id)->get();
-//        foreach ($userRoles as $userRole) {
-//            $userRole->delete();
-//        }
+        // there are 3 DB tables that are bond to Customer: customer_comments, (customer_files,) user_customers
+        // they are needed to be soft-deleted first
+        $customerComments = CustomerComment::whereCustomerId($id)
+            ->get()
+            ->sortByDesc('level');
+        foreach ($customerComments as $item) {
+            $item->delete();
+        }
+
+        $userCustomers = UserCustomer::whereCustomerId($id)->get();
+        foreach ($userCustomers as $item) {
+            $item->delete();
+        }
 
         $customer->delete();
-//        $user->delete();
 
         $response = [
             'success' => true,
@@ -578,8 +595,8 @@ class CustomersController extends Controller
 
         // Check is organization_id is available
         $organizations = Organization::all()->toArray();
-        $user        = Auth::guard()->user();
-        $userProfile = $user->user_profile;
+        $user          = Auth::guard()->user();
+        $userProfile   = $user->user_profile;
 
         if (!isOwn($organizations, $userProfile->department_id, $customer->organization_id)) {
             $response = [
@@ -592,6 +609,22 @@ class CustomersController extends Controller
 
         // Restore customer
         $customer->restore();
+
+        // Restore user_customers
+        $userCustomers = UserCustomer::onlyTrashed()
+            ->whereCustomerId($id)
+            ->get();
+        foreach ($userCustomers as $item) {
+            $item->restore();
+        }
+
+        // Restore customer_comments
+        $customerComments = CustomerComment::onlyTrashed()
+            ->whereCustomerId($id)
+            ->get();
+        foreach ($customerComments as $item) {
+            $item->restore();
+        }
 
         $response = [
             'success' => true,
@@ -631,8 +664,6 @@ class CustomersController extends Controller
     public
     function destroyPermanently($id)
     {
-//        $checkOrganization = $this->checkUserFromOrganization($id);
-
         $customer = Customer::withTrashed()->whereId($id)->first();
 
         if (!$customer) {
@@ -642,6 +673,21 @@ class CustomersController extends Controller
             ];
 
             return response()->json($response, 422);
+        }
+
+        // Delete userCustomers, customerComments first
+        $customerComments = CustomerComment::onlyTrashed()
+            ->whereCustomerId($id)
+            ->get();
+        foreach ($customerComments as $item) {
+            $item->forceDelete();
+        }
+
+        $userCustomer = UserCustomer::onlyTrashed()
+            ->whereCustomerId($id)
+            ->get();
+        foreach ($userCustomer as $item) {
+            $item->forceDelete();
         }
 
         $user      = User::withTrashed()->whereId($customer->user_id)->first();

@@ -2,19 +2,39 @@
 
 ## Used DB tables
 users
-contacts // includes user_id, one-to-one
-customers // includes organization_id, one-to-one
-contact-customers // one-to-many 
-customer-notes // one-to-many 
-customer-files // one-to-many 
-contact-notes // one-to-many 
-contact-files // one-to-many 
-customer-contacts // one-to-many
+customers
+user_customers 
+user_contacts
+customer_notes 
+customer_files
+user_contact_notes
+user_contact_files 
 organizations
 
-### Contacts
+### Customers
+#### customers <-> organizations: many-to-one
 id
-Prefix (Mr. Mrs. Ms. Dr.)
+Account Name
+Account Type
+Organization ID
+Billing Address Line 1
+Billing Address Line 2
+Billing City
+Billing State
+Billing Zip
+customer_owner_user_id default organizational super admin
+
+### User-Customers (pivot table)
+#### Users <-> Customers: many-to-many
+id
+user_id
+customer_id
+
+### User_contacts
+#### users <-> users_contacts: one-to-one
+id
+user_id
+Prefix (Mr., Mrs., Ms., Dr.)
 First Name
 Last Name
 Suffix
@@ -35,59 +55,41 @@ State
 Zip
 Status
 Contact_owner_id default organizational super admin
-Comments
-Files
 
-### Customers
-id
-Account Name
-Account Type
-Billing Address Line 1
-Billing Address Line 2
-Billing City
-Billing State
-Billing Zip
-
-### User-Customers
-id
-user_id
-customer_id
-
-### Customer-notes
+### Customer_notes
+#### Customer <-> Customer_notes: one-to-many
 id
 customer_id
-author_user_id
-note
+author_id
+comment
+parent_id
+level
+deleted_at
 
-### Customer-files
+### Customer_files
+####  Customer <-> Customer_files: one-to-many 
 id
 customer_id
+description
 filename
 owner_user_id
+deleted_at
 
-### Contact-notes
+### Contact_notes
+#### Contact <-> Contact_notes: one-to-many 
 id
 contact_id
-author_user_id
-note
+author_id
+comment
+parent_id
+level
+deleted_at
 
-### Contact-files
+### Contact_files
+#### User <-> Contact_files: one-to-many
 id
 contact_id
+description
 filename
 owner_user_id
-
-### Customer-contacts
-id
-customer_id
-contact_id
-customer_owner_user_id default organizational super admin
-
-
-
-
-
-
-## Creating of a new customer
-
-
+deleted_at

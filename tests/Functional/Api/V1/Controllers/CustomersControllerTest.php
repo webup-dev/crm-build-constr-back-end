@@ -50,10 +50,12 @@
 namespace App;
 
 use App\Models\Customer;
+use App\Models\CustomerComment;
 use App\Models\Organization;
 use App\Models\Role;
 use App\Models\User_profile;
 use App\Models\User_role;
+use App\Models\UserCustomer;
 use Hash;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -103,11 +105,7 @@ class CustomersControllerTest extends WnyTestCase
     }
 
     /**
-     * Check Index:
-     *   Check login developer
-     *   Check response status
-     *   Check response structure
-     *   Check response data
+     * Check Index
      */
     public function testIndex()
     {
@@ -128,12 +126,14 @@ class CustomersControllerTest extends WnyTestCase
                         [
                             "id",
                             "name",
-                            "type",
                             "organization_id",
-                            "organization",
+                            "type",
+                            "customer_owner_user_id",
                             "deleted_at",
                             "created_at",
-                            "updated_at"
+                            "updated_at",
+                            "organization",
+                            "customer_owner_user"
                         ]
                     ],
                 'message'
@@ -149,7 +149,9 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals('Customer A-WNY', $data[0]['name']);
         $this->assertEquals('Individual(s)', $data[0]['type']);
         $this->assertEquals(2, $data[0]['organization_id']);
+        $this->assertEquals(4, $data[0]['customer_owner_user_id']);
         $this->assertEquals('Western New York Exteriors, LLC.', $data[0]['organization']['name']);
+        $this->assertEquals('WNY SuperAdmin', $data[0]['customer_owner_user']['name']);
         $this->assertEquals("Customers are retrieved successfully.", $message);
         $this->assertEquals(true, $success);
     }
@@ -184,9 +186,11 @@ class CustomersControllerTest extends WnyTestCase
                             "type",
                             "organization_id",
                             "organization",
+                            "customer_owner_user_id",
                             "deleted_at",
                             "created_at",
-                            "updated_at"
+                            "updated_at",
+                            "customer_owner_user"
                         ]
                     ],
                 'message'
@@ -202,6 +206,7 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals('Customer A-WNY', $data[0]['name']);
         $this->assertEquals('Individual(s)', $data[0]['type']);
         $this->assertEquals(2, $data[0]['organization_id']);
+        $this->assertEquals(4, $data[0]['customer_owner_user_id']);
         $this->assertEquals('Western New York Exteriors, LLC.', $data[0]['organization']['name']);
         $this->assertEquals("Customers are retrieved successfully.", $message);
         $this->assertEquals(true, $success);
@@ -299,9 +304,11 @@ class CustomersControllerTest extends WnyTestCase
                             "type",
                             "organization_id",
                             "organization",
+                            "customer_owner_user_id",
                             "deleted_at",
                             "created_at",
-                            "updated_at"
+                            "updated_at",
+                            "customer_owner_user"
                         ]
                     ],
                 'message'
@@ -315,10 +322,14 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals(1, count($data));
         $this->assertEquals(1, $data[0]['id']);
         $this->assertEquals('Customer A-WNY', $data[0]['name']);
-        $this->assertEquals('2', $data[0]['organization_id']);
+        $this->assertEquals(2, $data[0]['organization_id']);
+        $this->assertEquals(4, $data[0]['customer_owner_user_id']);
         $this->assertNotEquals(null, $data[0]['deleted_at']);
         $this->assertEquals("Soft-deleted customers are retrieved successfully.", $message);
         $this->assertEquals(true, $success);
+
+//        $response = $this->get('api/user-customers?token=' . $token);
+//        dd($response);
     }
 
     /**
@@ -384,19 +395,19 @@ class CustomersControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            'name'            => 'Customer New',
-            'organization_id' => 2,
-            'type'            => 'Business',
-            'city'            => 'New York',
-            'line_1'          => 'Line 1',
-            'line_2'          => 'Line 2',
-            'state'           => 'CA',
-            'zip'             => '01234',
+            'name'                   => 'Customer New',
+            'organization_id'        => 2,
+            'type'                   => 'Business',
+            'city'                   => 'New York',
+            'line_1'                 => 'Line 1',
+            'line_2'                 => 'Line 2',
+            'state'                  => 'CA',
+            'zip'                    => '01234',
+            'customer_owner_user_id' => 4
         ];
 
         // Store a new user, user-profile
         $response = $this->post('api/customers?token=' . $token, $data, []);
-//        dd($response);
 
         // Check response status
         $response->assertStatus(200);
@@ -426,6 +437,7 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals('CA', $customer->state);
         $this->assertEquals(2, $customer->organization_id);
         $this->assertEquals('01234', $customer->zip);
+        $this->assertEquals(4, $customer->customer_owner_user_id);
     }
 
     /**
@@ -442,14 +454,15 @@ class CustomersControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            'name'            => '',
-            'organization_id' => '',
-            'type'            => '',
-            'city'            => '',
-            'line_1'          => [],
-            'line_2'          => [],
-            'state'           => [],
-            'zip'             => [],
+            'name'                   => '',
+            'organization_id'        => '',
+            'type'                   => '',
+            'city'                   => '',
+            'line_1'                 => [],
+            'line_2'                 => [],
+            'state'                  => [],
+            'zip'                    => [],
+            'customer_owner_user_id' => []
         ];
 
         // Store a new user, user profile
@@ -474,7 +487,7 @@ class CustomersControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(8, count($error['errors']));
+        $this->assertEquals(9, count($error['errors']));
     }
 
     /**
@@ -491,14 +504,15 @@ class CustomersControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            'name'            => 'Customer New',
-            'organization_id' => 2,
-            'type'            => 'Business',
-            'city'            => 'New York',
-            'line_1'          => 'Line 1',
-            'line_2'          => 'Line 2',
-            'state'           => 'CA',
-            'zip'             => '01234',
+            'name'                   => 'Customer New',
+            'organization_id'        => 2,
+            'type'                   => 'Business',
+            'city'                   => 'New York',
+            'line_1'                 => 'Line 1',
+            'line_2'                 => 'Line 2',
+            'state'                  => 'CA',
+            'zip'                    => '01234',
+            'customer_owner_user_id' => 4
         ];
 
         // Store a new customer
@@ -546,6 +560,7 @@ class CustomersControllerTest extends WnyTestCase
             'line_2'          => 'Line 2',
             'state'           => 'CA',
             'zip'             => '01234',
+            'customer_owner_user_id' => 4
         ];
 
         // Store a new organization
@@ -601,10 +616,13 @@ class CustomersControllerTest extends WnyTestCase
                         "line_2",
                         "state",
                         "zip",
-                        "organization",
+                        "customer_owner_user_id",
                         "deleted_at",
                         "created_at",
-                        "updated_at"
+                        "updated_at",
+                        "organization",
+                        "customer_owner_user",
+                        "users"
                     ],
                 'message'
             ]
@@ -621,9 +639,12 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals('Individual(s)', $data['type']);
         $this->assertEquals('New York', $data['city']);
         $this->assertEquals(2, $data['organization_id']);
+        $this->assertEquals(4, $data['customer_owner_user_id']);
         $this->assertEquals(null, $data['deleted_at']);
         $this->assertEquals(2, $data['organization']['id']);
         $this->assertEquals('Western New York Exteriors, LLC.', $data['organization']['name']);
+        $this->assertEquals('WNY SuperAdmin', $data['customer_owner_user']['name']);
+        $this->assertEquals(2, count($data['users']));
     }
 
     /**
@@ -733,14 +754,15 @@ class CustomersControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            'name'            => 'Customer A-WNY-edited',
-            'organization_id' => 2,
-            'type'            => 'Business',
-            'city'            => 'New York',
-            'line_1'          => 'Line 1',
-            'line_2'          => 'Line 2',
-            'state'           => 'CA',
-            'zip'             => '01234',
+            'name'                   => 'Customer A-WNY-edited',
+            'organization_id'        => 2,
+            'type'                   => 'Business',
+            'city'                   => 'New York',
+            'line_1'                 => 'Line 1',
+            'line_2'                 => 'Line 2',
+            'state'                  => 'CA',
+            'zip'                    => '01234',
+            'customer_owner_user_id' => 4
         ];
 
         $response = $this->put('api/customers/1?token=' . $token, $data, []);
@@ -758,6 +780,7 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals(1, $data->id);
         $this->assertEquals('Business', $data->type);
         $this->assertEquals('New York', $data->city);
+        $this->assertEquals(4, $data->customer_owner_user_id);
     }
 
     /**
@@ -774,14 +797,15 @@ class CustomersControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            'name'            => 'Customer A-WNY-edited',
-            'organization_id' => 2,
-            'type'            => 'Business',
-            'city'            => 'New York',
-            'line_1'          => 'Line 1',
-            'line_2'          => 'Line 2',
-            'state'           => 'CA',
-            'zip'             => '01234',
+            'name'                   => 'Customer A-WNY-edited',
+            'organization_id'        => 2,
+            'type'                   => 'Business',
+            'city'                   => 'New York',
+            'line_1'                 => 'Line 1',
+            'line_2'                 => 'Line 2',
+            'state'                  => 'CA',
+            'zip'                    => '01234',
+            'customer_owner_user_id' => 4
         ];
 
         $response = $this->put('api/customers/1?token=' . $token, $data, []);
@@ -799,6 +823,7 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals(1, $data->id);
         $this->assertEquals('Business', $data->type);
         $this->assertEquals('New York', $data->city);
+        $this->assertEquals(4, $data->customer_owner_user_id);
     }
 
     /**
@@ -815,14 +840,15 @@ class CustomersControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            'name'            => [],
-            'organization_id' => [],
-            'type'            => [],
-            'city'            => [],
-            'line_1'          => [],
-            'line_2'          => [],
-            'state'           => [],
-            'zip'             => [],
+            'name'                   => [],
+            'organization_id'        => [],
+            'type'                   => [],
+            'city'                   => [],
+            'line_1'                 => [],
+            'line_2'                 => [],
+            'state'                  => [],
+            'zip'                    => [],
+            'customer_owner_user_id' => []
         ];
 
         $response = $this->put('api/customers/1?token=' . $token, $data);
@@ -845,7 +871,7 @@ class CustomersControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(8, count($error['errors']));
+        $this->assertEquals(9, count($error['errors']));
     }
 
     /**
@@ -863,14 +889,15 @@ class CustomersControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            'name'            => 'Customer A-WNY-edited',
-            'organization_id' => 2,
-            'type'            => 'Business',
-            'city'            => 'New York',
-            'line_1'          => 'Line 1',
-            'line_2'          => 'Line 2',
-            'state'           => 'CA',
-            'zip'             => '01234',
+            'name'                   => 'Customer A-WNY-edited',
+            'organization_id'        => 2,
+            'type'                   => 'Business',
+            'city'                   => 'New York',
+            'line_1'                 => 'Line 1',
+            'line_2'                 => 'Line 2',
+            'state'                  => 'CA',
+            'zip'                    => '01234',
+            'customer_owner_user_id' => []
         ];
 
         $response = $this->put('api/customers/55555?token=' . $token, $data);
@@ -899,14 +926,15 @@ class CustomersControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            'name'            => 'Customer A-WNY-edited',
-            'organization_id' => 2,
-            'type'            => 'Business',
-            'city'            => 'New York',
-            'line_1'          => 'Line 1',
-            'line_2'          => 'Line 2',
-            'state'           => 'CA',
-            'zip'             => '01234',
+            'name'                   => 'Customer A-WNY-edited',
+            'organization_id'        => 2,
+            'type'                   => 'Business',
+            'city'                   => 'New York',
+            'line_1'                 => 'Line 1',
+            'line_2'                 => 'Line 2',
+            'state'                  => 'CA',
+            'zip'                    => '01234',
+            'customer_owner_user_id' => []
         ];
 
         $response = $this->put('api/customers/1?token=' . $token, $data);
@@ -935,14 +963,15 @@ class CustomersControllerTest extends WnyTestCase
 
         // Update data
         $data = [
-            'name'            => 'Customer A-WNY-edited',
-            'organization_id' => 2,
-            'type'            => 'Business',
-            'city'            => 'New York',
-            'line_1'          => 'Line 1',
-            'line_2'          => 'Line 2',
-            'state'           => 'CA',
-            'zip'             => '01234',
+            'name'                   => 'Customer A-WNY-edited',
+            'organization_id'        => 2,
+            'type'                   => 'Business',
+            'city'                   => 'New York',
+            'line_1'                 => 'Line 1',
+            'line_2'                 => 'Line 2',
+            'state'                  => 'CA',
+            'zip'                    => '01234',
+            'customer_owner_user_id' => []
         ];
 
         $response = $this->put('api/customers/1?token=' . $token, $data);
@@ -961,10 +990,6 @@ class CustomersControllerTest extends WnyTestCase
     /**
      * Check Soft Delete:
      *   We check that the customer account must change the field deleted_at from null to not null.
-     *     Check login developer
-     *     Check response status
-     *     Check response structure
-     *     Check DB: deleted_at of the soft-deleted row
      */
     public function testSoftDelete()
     {
@@ -984,6 +1009,16 @@ class CustomersControllerTest extends WnyTestCase
 
         $customer = DB::table('customers')->where('id', 1)->first();
         $this->assertNotEquals(null, $customer->deleted_at);
+
+        $customerComments = DB::table('customer_comments')
+            ->where('customer_id', 1)
+            ->whereNotNull('deleted_at')->get();
+        $this->assertEquals(4, $customerComments->count());
+
+        $userCustomers = DB::table('user_customers')
+            ->where('customer_id', 1)
+            ->whereNotNull('deleted_at')->get();
+        $this->assertEquals(2, $userCustomers->count());
     }
 
     /**
@@ -1061,12 +1096,6 @@ class CustomersControllerTest extends WnyTestCase
     /**
      * Check Restore:
      *   We check that the Customer Account must change the field deleted_at from not null to null.
-     *     Check login developer
-     *     Soft delete customer
-     *     Repair customer
-     *     Check response status
-     *     Check response structure
-     *     Check DB: deleted_at
      */
     public function testRestore()
     {
@@ -1090,16 +1119,16 @@ class CustomersControllerTest extends WnyTestCase
 
         $customer = Customer::where('id', 1)->first();
         $this->assertEquals(null, $customer->deleted_at);
+
+        $userCustomers = UserCustomer::whereCustomerId(1)->get();
+        $this->assertEquals(2, $userCustomers->count());
+
+        $customerComments = CustomerComment::whereCustomerId(1)->get();
+        $this->assertEquals(4, $customerComments->count());
     }
 
     /**
-     * Check Restore If The Access Is Absent In Role:
-     *   We wait for a message about error.
-     *     Check login
-     *     Soft delete customer
-     *     Repair customer
-     *     Check response status
-     *     Check response structure
+     * Check Restore If The Access Is Absent In Role
      */
     public function testRestoreIfTheAccessIsAbsentInRole()
     {
@@ -1126,10 +1155,6 @@ class CustomersControllerTest extends WnyTestCase
     /**
      * Check Restore If The ID Is Wrong:
      *   User with not full access (superadmin from the Central Department, user #1) restores the profile of a not existing user #2222.
-     *   We wait for a message about error.
-     *     Check login
-     *     Check response status
-     *     Check response structure
      */
     public function testRestoreIfTheIdIsWrong()
     {
@@ -1149,13 +1174,7 @@ class CustomersControllerTest extends WnyTestCase
     }
 
     /**
-     * Check Delete Permanently:
-     *     Check login developer
-     *     Soft delete customer
-     *     Delete Permanently customer
-     *     Check response status
-     *     Check response structure
-     *     Check DB: customer must be absent
+     * Check Delete Permanently
      */
     public function testDeletePermanently()
     {
@@ -1178,17 +1197,16 @@ class CustomersControllerTest extends WnyTestCase
 
         $customer = DB::table('customers')->where('id', 1)->first();
         $this->assertEquals(null, $customer);
+
+        $userCustomers = DB::table('user_customers')->where('customer_id', 1)->get();
+        $this->assertEquals(null, $userCustomers->count());
+
+        $customerComments = DB::table('customer_comments')->where('customer_id', 1)->get();
+        $this->assertEquals(null, $customerComments->count());
     }
 
     /**
-     * Check Delete Permanently If The Access Of Role Is Absent:
-     *   We wait for a message about error.
-     *     Check login developer
-     *     Soft delete customer
-     *     Check login organization superadmin
-     *     Delete Permanently customer
-     *     Check response status
-     *     Check response structure
+     * Check Delete Permanently If The Access Of Role Is Absent
      */
     public function testDeletePermanentlyIfTheAccessOfRoleIsAbsent()
     {
@@ -1213,11 +1231,7 @@ class CustomersControllerTest extends WnyTestCase
     }
 
     /**
-     * Check Delete Permanently If The ID Is Wrong:
-     *   We wait for a message about error.
-     *     Check login developer
-     *     Check response status
-     *     Check response structure
+     * Check Delete Permanently If The ID Is Wrong
      */
     public function testDeletePermanentlyIfTheIdIsWrong()
     {

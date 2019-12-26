@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+
 /**
  * App\Models\User
  *
@@ -16,36 +17,34 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string $email
  * @property string $password
  * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Activity[] $activities
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Book[] $books
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerComment[] $comment
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerFile[] $customer_file
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Customer[] $customers
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ * @property-read \App\Models\User_profile $user_profile
+ * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User query()
+ * @method static bool|null restore()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
- * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Activity[] $activities
- * @property-read \App\Models\User_profile $user_profile
- * @method static bool|null forceDelete()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User onlyTrashed()
- * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User withoutTrashed()
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereDeletedAt($value)
- * @property-read \App\Models\Customer $customer
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerIndividual[] $customerIndividualCreated
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerIndividual[] $customerIndividualUpdated
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerComment[] $comment
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerFile[] $customer_file
+ * @mixin \Eloquent
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -135,13 +134,13 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
-     * user <-> customer: one-to-one
+     * user <-> customer: many-to-many
      *
-     * Get the customer record associated with the user.
+     * The customers that belong to the user.
      */
-    public function customer()
+    public function customers()
     {
-        return $this->hasOne('App\Models\Customer', 'user_id');
+        return $this->belongsToMany('App\Models\Customer', 'user_customers');
     }
 
     /**

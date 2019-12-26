@@ -24,6 +24,8 @@ class CreateCustomersTable extends Migration
             $table->string('line_2')->nullable();
             $table->string('state')->nullable();
             $table->string('zip')->nullable();
+            $table->integer('customer_owner_user_id')->unsigned();
+            $table->foreign('customer_owner_user_id')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });

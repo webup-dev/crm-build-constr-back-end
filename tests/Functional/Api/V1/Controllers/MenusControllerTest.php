@@ -111,12 +111,12 @@ class MenusControllerTest extends WnyTestCase
         $response->assertStatus(200);
         $response = $this->delete('api/organizations/16?token=' . $token);
         $response->assertStatus(200);
-        $response = $this->delete('api/user-customers/1?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/user-customers/2?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/user-customers/5?token=' . $token);
-        $response->assertStatus(200);
+//        $response = $this->delete('api/user-customers/1?token=' . $token);
+//        $response->assertStatus(200);
+//        $response = $this->delete('api/user-customers/2?token=' . $token);
+//        $response->assertStatus(200);
+//        $response = $this->delete('api/user-customers/5?token=' . $token);
+//        $response->assertStatus(200);
 
         // Request
         $response = $this->get('api/soft-deleted-items?token=' . $token);
@@ -158,7 +158,7 @@ class MenusControllerTest extends WnyTestCase
         $this->assertEquals('Organizations', $data[2]['name']);
         $this->assertEquals("organizations/soft-deleted", $data[2]['url']);
 
-        $this->assertEquals(3, $data[3]['count']);
+        $this->assertEquals(4, $data[3]['count']);
         $this->assertEquals('User-Customers', $data[3]['name']);
         $this->assertEquals("user-customers/soft-deleted", $data[3]['url']);
 
@@ -197,12 +197,6 @@ class MenusControllerTest extends WnyTestCase
         $response = $this->delete('api/organizations/17?token=' . $token);
         $response->assertStatus(200);
         $response = $this->delete('api/organizations/16?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/user-customers/1?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/user-customers/2?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/user-customers/5?token=' . $token);
         $response->assertStatus(200);
 
         $token = $this->loginOrganizationWNYSuperadmin();
@@ -247,7 +241,7 @@ class MenusControllerTest extends WnyTestCase
         $this->assertEquals('Organizations', $data[2]['name']);
         $this->assertEquals("organizations/soft-deleted", $data[2]['url']);
 
-        $this->assertEquals(2, $data[3]['count']);
+        $this->assertEquals(3, $data[3]['count']);
         $this->assertEquals('User-Customers', $data[3]['name']);
         $this->assertEquals("user-customers/soft-deleted", $data[3]['url']);
 
@@ -283,12 +277,6 @@ class MenusControllerTest extends WnyTestCase
         $response = $this->delete('api/organizations/17?token=' . $token);
         $response->assertStatus(200);
         $response = $this->delete('api/organizations/16?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/user-customers/1?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/user-customers/2?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/user-customers/5?token=' . $token);
         $response->assertStatus(200);
 
         $token = $this->loginOrganizationWNYGeneralManager();
