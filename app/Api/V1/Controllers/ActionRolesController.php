@@ -247,7 +247,7 @@ class ActionRolesController extends Controller
      * }
      *
      * @response 422 {
-     *  ""message": "One or more roles do not exist",
+     *  "message": "One or more roles do not exist",
      *  "status_code": 422
      * }
      *
