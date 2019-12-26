@@ -257,10 +257,10 @@ class OrganizationsController extends Controller
      *    "order": 1,
      *    "name": "WNY",
      *    "parent_id": 1,
-     *    "deleted_a": null,
+     *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
-     *  },
+     *  }
      * }
      *
      * @response 453 {
@@ -277,7 +277,7 @@ class OrganizationsController extends Controller
      *  "success": false,
      *  "code": 456,
      *  "message": "Item is absent",
-     *  "data": null,
+     *  "data": null
      * }
      *
      * @param int $id
