@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 - Module User-Customers.
+### Changed
+- Module Customers: customer_owner_user_id is added.
+- Module Customers: added relations with DB tables user_customers, customer_comments.
 
 ## [0.18.0] - 2019-12-13
 ### Changed

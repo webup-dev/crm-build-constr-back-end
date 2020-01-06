@@ -98,7 +98,7 @@ class CustomersControllerTest extends WnyTestCase
     public function testSeeder()
     {
         $customers = DB::table('customers')->get();
-        $this->assertEquals(5, $customers->count());
+        $this->assertEquals(6, $customers->count());
 
         $user = DB::table('users')->where('id', 1)->first();
         $this->assertEquals('Volodymyr Vadiasov', $user->name);
@@ -144,7 +144,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $success      = $responseJSON['success'];  // array
 
-        $this->assertEquals(5, count($data));
+        $this->assertEquals(6, count($data));
         $this->assertEquals(1, $data[0]['id']);
         $this->assertEquals('Customer A-WNY', $data[0]['name']);
         $this->assertEquals('Individual(s)', $data[0]['type']);
@@ -201,7 +201,7 @@ class CustomersControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $success      = $responseJSON['success'];  // array
 
-        $this->assertEquals(4, count($data));
+        $this->assertEquals(5, count($data));
         $this->assertEquals(1, $data[0]['id']);
         $this->assertEquals('Customer A-WNY', $data[0]['name']);
         $this->assertEquals('Individual(s)', $data[0]['type']);

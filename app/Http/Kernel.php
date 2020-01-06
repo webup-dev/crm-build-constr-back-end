@@ -75,5 +75,7 @@ class Kernel extends HttpKernel
         'customer_comments_author'                      => \App\Http\Middleware\CustomerComments_Author::class,
         'customer_files_author'                         => \App\Http\Middleware\CustomerFiles_Author::class,
         'user_customer'                                 => \App\Http\Middleware\UserCustomers::class,
+        'user_details.customers_and_organization_users' => \App\Http\Middleware\Store_Show_Update__user_details::class,
+        'user_details.organization_admin'               => \App\Http\Middleware\Index_softdestroy__user_details::class,
     ];
 }

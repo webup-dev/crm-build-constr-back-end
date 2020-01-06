@@ -193,5 +193,13 @@ class TestUsersSeeder extends Seeder
             'password'   => bcrypt('12345678'),
             'created_at' => now()
         ]);
+
+        // 23
+        DB::table('users')->insert([
+            'name'       => 'Customer F-WNY',
+            'email'      => 'wny-customer-f-individual@admin.com',
+            'password'   => bcrypt('12345678'),
+            'created_at' => now()
+        ]);
     }
 }

@@ -12,4 +12,4 @@
 | 459  | false   | There is a soft-deleted child               | null   |
 | 460  | false   | There is a parent                           | null   |
 | 461  | false   | There is a soft-deleted parent              | null   |
-|462   | false   | Id of this Entity is used as foreign key    | null   |
+| 462  | false   | Id of this Entity is used as foreign key    | null   |

@@ -74,5 +74,17 @@ class CustomerSeeder extends Seeder
             'deleted_at'             => null,
             'created_at'             => now()
         ]);
+
+        // 6
+        DB::table('customers')->insert([
+            'name'                   => 'Customer F-WNY',
+            'type'                   => 'Individual(s)',
+            'city'                   => 'New York',
+            'line_1'                 => 'Line 1',
+            'organization_id'        => 2,
+            'customer_owner_user_id' => 4,
+            'deleted_at'             => null,
+            'created_at'             => now()
+        ]);
     }
 }

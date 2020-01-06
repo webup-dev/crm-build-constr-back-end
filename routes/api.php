@@ -178,6 +178,17 @@ $api->version('v1', function (Router $api) {
         $api->delete('user-customers/{id}/permanently', 'App\Api\V1\Controllers\UserCustomersController@destroyPermanently');
     });
 
+    $api->group(['middleware' => ['api.auth']], function (Router $api) {
+        $api->get('user-details', 'App\Api\V1\Controllers\UserDetailsController@index');
+        $api->get('user-details/soft-deleted', 'App\Api\V1\Controllers\UserDetailsController@indexSoftDeleted');
+        $api->get('user-details/{id}', 'App\Api\V1\Controllers\UserDetailsController@show');
+        $api->post('user-details', 'App\Api\V1\Controllers\UserDetailsController@store');
+        $api->put('user-details/{id}', 'App\Api\V1\Controllers\UserDetailsController@update');
+        $api->delete('user-details/{id}', 'App\Api\V1\Controllers\UserDetailsController@softDestroy');
+        $api->put('user-details/{id}/restore', 'App\Api\V1\Controllers\UserDetailsController@restore');
+        $api->delete('user-details/{id}/permanently', 'App\Api\V1\Controllers\UserDetailsController@destroyPermanently');
+    });
+
 
 //    $api->get('book', 'App\Api\V1\Controllers\BookController@index');
 

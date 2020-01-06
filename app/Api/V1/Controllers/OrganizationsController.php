@@ -154,7 +154,7 @@ class OrganizationsController extends Controller
      *    "order": 1,
      *    "name": "Winter",
      *    "parent_id": 1,
-     *    "deleted_a": "2019-06-24 07:12:03",
+     *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
      *   },
@@ -164,7 +164,7 @@ class OrganizationsController extends Controller
      *    "order": 2,
      *    "name": "Autumn",
      *    "parent_id": 1,
-     *    "deleted_a": "2019-06-24 07:12:03",
+     *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
      *   }]

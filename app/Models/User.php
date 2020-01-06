@@ -45,6 +45,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User withoutTrashed()
  * @mixin \Eloquent
+ * @property-read \App\Models\UserDetail $userDetail
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -161,5 +162,13 @@ class User extends Authenticatable implements JWTSubject
     public function customer_file()
     {
         return $this->hasMany('App\Models\CustomerFile', 'owner_user_id');
+    }
+
+    /**
+     * user <-> user_detail: one-to-one
+     */
+    public function userDetail()
+    {
+        return $this->hasOne('App\Models\UserDetail', 'user_id');
     }
 }

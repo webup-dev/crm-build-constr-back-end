@@ -30,8 +30,8 @@ id
 user_id
 customer_id
 
-### User_contacts
-#### users <-> users_contacts: one-to-one
+### User_details
+#### users <-> user_details: one-to-one
 id
 user_id
 Prefix (Mr., Mrs., Ms., Dr.)
@@ -54,6 +54,11 @@ City
 State
 Zip
 Status
+
+### User_owners
+#### users <-> user_owners: one-to-many
+id
+user_id
 Contact_owner_id default organizational super admin
 
 ### Customer_notes

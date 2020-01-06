@@ -91,7 +91,7 @@ class UserCustomersControllerTest extends WnyTestCase
     public function testSeeder()
     {
         $userCustomers = DB::table('user_customers')->get();
-        $this->assertEquals(5, $userCustomers->count());
+        $this->assertEquals(6, $userCustomers->count());
 
         $user = DB::table('users')->where('id', 1)->first();
         $this->assertEquals('Volodymyr Vadiasov', $user->name);
@@ -144,7 +144,7 @@ class UserCustomersControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
         $this->assertEquals("User-Customers are retrieved successfully.", $message);
-        $this->assertEquals(5, count($data));
+        $this->assertEquals(6, count($data));
         $this->assertEquals(16, $data[0]['user_id']);
         $this->assertEquals(1, $data[0]['customer_id']);
         $this->assertEquals('Customer A-WNY', $data[0]['user']['name']);
@@ -199,7 +199,7 @@ class UserCustomersControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
         $this->assertEquals("User-Customers are retrieved successfully.", $message);
-        $this->assertEquals(4, count($data));
+        $this->assertEquals(5, count($data));
         $this->assertEquals(16, $data[0]['user_id']);
         $this->assertEquals(1, $data[0]['customer_id']);
         $this->assertEquals('Customer A-WNY', $data[0]['user']['name']);

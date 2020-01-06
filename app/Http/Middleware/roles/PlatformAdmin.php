@@ -27,7 +27,6 @@ class PlatformAdmin
         if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $next($request);
         }
-
         $response = [
             'success' => false,
             'message' => 'Permission is absent by the role.'

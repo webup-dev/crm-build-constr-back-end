@@ -74,3 +74,16 @@ if (!function_exists('isOwn')) {
         return $res;
     }
 }
+
+if (!function_exists('collectIds')) {
+    // collect all ids from an array of the objects with parent_id
+    function collectIds(array $elements, $parentId)
+    {
+        $tree         = buildTree($elements, $parentId);
+        $availableIds = collectValues($tree, 'id', []);
+        // add parent ID
+        $availableIds[] = $parentId;
+
+        return $availableIds;
+    }
+}
