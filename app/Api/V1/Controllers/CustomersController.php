@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\User_profile;
 use App\Models\User_role;
 use App\Models\UserCustomer;
+use App\Models\UserDetail;
 use Config;
 use App\Http\Controllers\Controller;
 use Auth;
@@ -314,7 +315,8 @@ class CustomersController extends Controller
      *     "updated_at": "2019-12-08 13:25:36",
      *     "organization": "organization object",
      *     "customer_owner_user": "user object",
-     *     "users": "array of users object"
+     *     "users": "array of user objects",
+     *     "userDetails": "array of userDetails objects"
      *  },
      *  "message": "Item is retrieved successfully."
      * }
@@ -353,6 +355,11 @@ class CustomersController extends Controller
         $users               = $customer->users;
         $organization        = $customer->organization;
         $customer_owner_user = $customer->customer_owner_user;
+
+        // get all user-details
+        $usersIds = $users->pluck('id')->all();
+        $userDetails = UserDetail::whereIn('user_id', $usersIds)->get();
+        $customer->userDetails = $userDetails;
 
         $data = $customer->toArray();
 

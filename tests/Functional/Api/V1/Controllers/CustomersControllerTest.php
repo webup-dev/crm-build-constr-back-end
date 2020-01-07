@@ -622,7 +622,8 @@ class CustomersControllerTest extends WnyTestCase
                         "updated_at",
                         "organization",
                         "customer_owner_user",
-                        "users"
+                        "users",
+                        "userDetails"
                     ],
                 'message'
             ]
@@ -645,6 +646,8 @@ class CustomersControllerTest extends WnyTestCase
         $this->assertEquals('Western New York Exteriors, LLC.', $data['organization']['name']);
         $this->assertEquals('WNY SuperAdmin', $data['customer_owner_user']['name']);
         $this->assertEquals(2, count($data['users']));
+        $this->assertEquals(2, count($data['userDetails']));
+        $this->assertEquals("tyra.bechtelar@example.com", $data['userDetails'][1]['email_personal']);
     }
 
     /**

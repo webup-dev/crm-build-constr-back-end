@@ -1,0 +1,11 @@
+Issue Type,Summary,Story Point Estimate
+Story,Create new Branch,0.5
+Story,Planning,3
+Story,Component CustomerUsers. Create component's structure (directory, files),0.5
+Story,Component CustomerUsers. Create demo-component 'Button' to check working structure,0.5
+Story,Component CustomerUsers. Create component with static demo values in the layout,2
+Story,Component CustomerUsers. Move static demo values in the props,1
+Story,Component CustomerUsers. Create endpoints in the api,0.5
+Story,Component CustomerUsers. Import constants of endpoints in the vue-file,0.5
+Story,Component CustomerUsers. Check and process api-data to substitute demo values,3
+Story,Component CustomerUsers. Insert component in the working page,1
