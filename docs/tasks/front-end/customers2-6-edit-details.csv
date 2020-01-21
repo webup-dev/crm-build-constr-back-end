@@ -1,0 +1,19 @@
+Issue Type,Summary,Story Point Estimate
+Story,Create new Branch,0.5
+Story,Planning,3
+Story,Create route,0.5
+Story,Create component's structure (directory,files),0.5
+Story,Insert button to start component in the Contact Component,0.5
+Story,Create demo-component 'Button' to check working structure,0.5
+Story,Create component with static demo values in the layout,5
+Story,Move static demo values in the props,2
+Story,Create endpoints in the api,0.5
+Story,Import constants of endpoints in the vue-file,0.5
+Story,Check and process api-data to substitute demo values,5
+Story,Validate POST data,3
+Story,Save POST data,2
+Story,Create link to the Customer Page after storing,0.5
+Story,Create Buttons 'Cancel' and 'Back',0.5
+Story,Deployment,0.5
+
+

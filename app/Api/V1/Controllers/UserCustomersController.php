@@ -322,6 +322,35 @@ class UserCustomersController extends Controller
         return response()->json($response, 200);
     }
 
+    private function createUser($email)
+    {
+        $rules = array(
+            'email' => 'required|email'
+        );
+
+        $messages = array(
+            'email.required' => 'Email is required.',
+            'email.email'    => 'Must be Email.'
+        );
+
+        $validator = Validator::make(['email' => $email], $rules, $messages);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
+            $errors   = $messages->all();
+            return $errors;
+        }
+        $user           = new User();
+        $user->email    = $email;
+        $array          = explode('@', $email);
+        $trans          = array("." => "-");
+        $str            = strtr($array[0], $trans);
+        $user->name     = 'Customer ' . $str;
+        $user->password = bcrypt('12345678');
+        $user->save();
+
+        return $user->id;
+    }
+
     /**
      * Create User-Customer
      *
@@ -357,6 +386,13 @@ class UserCustomersController extends Controller
      *  "success": false,
      *  "code": 456,
      *  "message": "Incorrect entity ID.",
+     *  "data": null
+     * }
+     *
+     * @response 457 {
+     *  "success": false,
+     *  "code": 457,
+     *  "message": "A try to double the item.",
      *  "data": null
      * }
      *
@@ -410,53 +446,37 @@ class UserCustomersController extends Controller
             $userId = $userFromData->id;
         }
 
-        $userCustomer = new UserCustomer([
-            'customer_id' => $data['customer_id'],
-            'user_id'     => $userId
-        ]);
+        // check is this user bond to Customer?
+        $userCustomer = UserCustomer::where('user_id', $userId)
+            ->where('customer_id', $data['customer_id'])
+            ->first();
 
-        if ($userCustomer->save()) {
-            $response = [
-                'success' => true,
-                'code'    => 200,
-                'message' => 'User-Customer is created successfully.',
-                'data'    => null
-            ];
-            return response()->json($response, 200);
-        } else {
-            return $this->response->error("Could not create User-Customer", 500);
-        }
-    }
+        if (!$userCustomer) {
+            $userCustomer = new UserCustomer([
+                'customer_id' => $data['customer_id'],
+                'user_id'     => $userId
+            ]);
 
-    private function createUser($email)
-    {
-        $rules = array(
-            'email' => 'required|email'
-        );
-
-        $messages = array(
-            'email.required' => 'Email is required.',
-            'email.email'    => 'Must be Email.'
-        );
-
-        $validator = Validator::make(['email' => $email], $rules, $messages);
-        if ($validator->fails()) {
-            $messages = $validator->messages();
-            $errors   = $messages->all();
-            return $errors;
-            $string = '';
-            foreach ($errors as $error) {
-                $string .= ' ' . $error;
+            if ($userCustomer->save()) {
+                $response = [
+                    'success' => true,
+                    'code'    => 200,
+                    'message' => 'User-Customer is created successfully.',
+                    'data'    => null
+                ];
+                return response()->json($response, 200);
+            } else {
+                return $this->response->error("Could not create User-Customer", 500);
             }
-            return $this->response->error($string, 500);
         }
-        $user = new User();
-        $user->email = $email;
-        $user->name  = 'Customer 123456';
-        $user->password  = bcrypt('12345678');
-        $user->save();
 
-        return $user->id;
+        $response = [
+            "success" => false,
+            "code"    => 457,
+            "message" => "A try to double the item.",
+            "data"    => null
+        ];
+        return response()->json($response, 457);
     }
 
     /**
