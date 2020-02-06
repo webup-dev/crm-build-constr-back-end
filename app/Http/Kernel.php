@@ -77,5 +77,9 @@ class Kernel extends HttpKernel
         'user_customer'                                 => \App\Http\Middleware\UserCustomers::class,
         'user_details.customers_and_organization_users' => \App\Http\Middleware\Store_Show_Update__user_details::class,
         'user_details.organization_admin'               => \App\Http\Middleware\Index_softdestroy__user_details::class,
+        'show_edit_file'                                => \App\Http\Middleware\File_show_edit::class,
+        'create_file'                                   => \App\Http\Middleware\File_create::class,
+        'file_owner'                                    => \App\Http\Middleware\File_owner::class,
+        'index_file'                                    => \App\Http\Middleware\File_index::class,
     ];
 }

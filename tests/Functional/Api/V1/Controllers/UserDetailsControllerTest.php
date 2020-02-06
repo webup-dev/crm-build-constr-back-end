@@ -515,7 +515,7 @@ class UserDetailsControllerTest extends WnyTestCase
 
         $this->assertEquals(false, $success);
         $this->assertEquals(456, $code);
-        $this->assertEquals("Incorrect the Entity ID in the URL.", $message);
+        $this->assertEquals("UserDetails.show. Incorrect ID in URL.", $message);
         $this->assertEquals(null, $data);
     }
 

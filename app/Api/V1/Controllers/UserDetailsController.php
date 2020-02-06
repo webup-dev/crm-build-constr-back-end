@@ -25,6 +25,7 @@ use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use App\Traits\Responses;
 
 /**
  * @group User Details
@@ -32,6 +33,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class UserDetailsController extends Controller
 {
     use Helpers;
+    use Responses;
 
     public function __construct()
     {
@@ -368,14 +370,8 @@ class UserDetailsController extends Controller
             ->first();
 
         if (!$userDetails) {
-            $response = [
-                'success' => false,
-                'code'    => 456,
-                'message' => "Incorrect the Entity ID in the URL.",
-                'data'    => null
-            ];
 
-            return response()->json($response, 456);
+            return response()->json($this->resp(456, 'UserDetails.show'), 456);
         }
 
         $data = $userDetails->toArray();

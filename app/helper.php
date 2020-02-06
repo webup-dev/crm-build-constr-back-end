@@ -87,3 +87,43 @@ if (!function_exists('collectIds')) {
         return $availableIds;
     }
 }
+
+if (!function_exists('isCustomer')) {
+    // Has current user a customer role?
+    function isCustomer(array $roleNamesArr)
+    {
+        return one_from_arr_in_other_arr($roleNamesArr, ['customer-individual', 'customer-organization']);
+    }
+}
+
+if (!function_exists('isOrganizational')) {
+    // Has current user a customer role?
+    function isOrganizational(array $roleNamesArr)
+    {
+        $roles = [
+            'organization-superadmin',
+            'organization-admin',
+            'organization-general-manager',
+            'organization-sales-manager',
+            'organization-production-manager',
+            'organization-administrative-leader',
+            'organization-estimator',
+            'organization-project-manager',
+            'organization-administrative-assistant'
+        ];
+        return one_from_arr_in_other_arr($roleNamesArr, $roles);
+    }
+}
+
+if (!function_exists('isPlatform')) {
+    // Has current user a customer role?
+    function isPlatform(array $roleNamesArr)
+    {
+        $roles = [
+            'developer',
+            'platform-superadmin',
+            'platform-admin'
+        ];
+        return one_from_arr_in_other_arr($roleNamesArr, $roles);
+    }
+}

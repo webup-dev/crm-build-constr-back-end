@@ -19,6 +19,7 @@ Story,Create API functions. show,3
 Story,Edit API functions. destroy,2
 Story,Edit API functions. restore,2
 Story,Edit API functions. permanentDelete,2
+Story,Clear code,1
 Story,Create Postman tests,1
 Story,Make Postman tests,1
 Story,Testing of functions,8

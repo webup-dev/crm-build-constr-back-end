@@ -70,6 +70,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\UserDetail withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\UserDetail withoutTrashed()
  * @mixin \Eloquent
+ * @property string|null $work_title
+ * @property string|null $work_role
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserDetail whereWorkRole($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserDetail whereWorkTitle($value)
  */
 class UserDetail extends Model
 {
