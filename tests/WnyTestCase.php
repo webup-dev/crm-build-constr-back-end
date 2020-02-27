@@ -61,6 +61,17 @@ abstract class WnyTestCase extends TestCase
         return $this->loginUser($data);
     }
 
+    public function loginPlatformSuperAdmin()
+    {
+        $data = [
+            'name'     => 'Steven Caamano',
+            'email'    => 'platform-superadmin@admin.com',
+            'password' => '12345678'
+        ];
+
+        return $this->loginUser($data);
+    }
+
     public function loginOrganizationWNYSuperadmin()
     {
         $data = [

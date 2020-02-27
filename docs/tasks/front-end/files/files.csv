@@ -1,14 +1,16 @@
 Issue Type,Summary,Story Point Estimate
 Story,Create new Branch,0.5
 Story,Planning,3
-Story,Create static demo data in the parent page on the place of Component FilesIndex,1
-Story,Create component skeleton (IDE function 'create Vue Component'),0.5
+Story,Create static demo data in the parent page on the place of Component CustomerInfo,1
+Story,Create skeleton (IDE function 'create Vue Component'),0.5
 Story,Insert test string a la 'Hello',0.5
 Story,Comment demo data in the parent page,0.5
 Story,Insert component in the parent page, route,0.5
 Story,Insert Demo Code Component (ButtonCount),0.5
 Story,Substitute static demo values instead of demo button,0.5
-Story,Create API endpoints,0.5
-Story,Import constants of endpoints in the vue-file,0.5
 Story,Create dynamic values instead of static,0.5
 
+Story,Create static demo values as base of Component CustomerInfo,1
+Story,Component CustomInfo. Create File CustomInfo.vue,0.5
+Story,Component CustomInfo. Move Component on the right place,0.5
+Story,Create API endpoints,0.5

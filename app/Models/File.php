@@ -35,10 +35,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\File withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\File withoutTrashed()
  * @mixin \Eloquent
+ * @property-read \App\Models\User $user
  */
 class File extends Model
 {
     use SoftDeletes;
 
     protected $fillable = ['owner_object_type', 'owner_object_id', 'description', 'filename', 'owner_user_id', 'deleted_at'];
+
+    /**
+     * users <-> files: one-to-many
+     *
+     * Get the user that is the owner of the file.
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'owner_user_id', 'id');
+    }
 }

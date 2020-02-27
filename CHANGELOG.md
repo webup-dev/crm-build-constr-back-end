@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.20.0] - 2019-02-06
+### Added
+- Module Files.
 ## [0.19.0] - 2019-01-21
 ### Added
 - Module User-Customers.

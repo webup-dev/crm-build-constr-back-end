@@ -1,0 +1,11 @@
+Issue Type,Summary,Story Point Estimate
+Story,Create new Branch,0.5
+Story,Planning,1
+Story,Add soft-deleted files in the Template,0.5
+Story,Add soft-deleted files in Script,0.5
+Story,Check soft-deleted files in the Dashboard,0.5
+Story,Add route to the index-table of soft-deleted files,0.5
+Story,Copy existing soft-deleted index-table to index page of soft-deleted files,0.5
+Story,Config index page of soft-deleted files,1
+Story,Insert link to the index of soft-deleted files in the Dashboard,0.5
+Story,Check index page of soft-deleted files,0.5

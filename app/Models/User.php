@@ -46,6 +46,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User withoutTrashed()
  * @mixin \Eloquent
  * @property-read \App\Models\UserDetail $userDetail
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\File[] $file
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -170,5 +171,15 @@ class User extends Authenticatable implements JWTSubject
     public function userDetail()
     {
         return $this->hasOne('App\Models\UserDetail', 'user_id');
+    }
+
+    /**
+     * user <-> file: one-to-many
+     *
+     * Get the files record associated with the user.
+     */
+    public function file()
+    {
+        return $this->hasMany('App\Models\File', 'owner_user_id');
     }
 }

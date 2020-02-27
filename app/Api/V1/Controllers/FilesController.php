@@ -24,6 +24,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Traits\Responses;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @group Files
@@ -104,7 +105,7 @@ class FilesController extends Controller
      * @response 454 {
      *   "success": false,
      *   "code": 454,
-     *   "message":  "Middleware.Files. Permission is absent by the role.",
+     *   "message":  "Middleware.Files. Permission to department is absent.",
      *   "data": null
      * }
      *
@@ -150,7 +151,8 @@ class FilesController extends Controller
 
     private function indexPlatform($customerId)
     {
-        $files = File::whereOwnerObjectType('customer')
+        $files = File::with('user')
+            ->whereOwnerObjectType('customer')
             ->whereOwnerObjectId($customerId)
             ->get();
 
@@ -295,11 +297,11 @@ class FilesController extends Controller
             $file->author = User::whereId($file->owner_user_id)->first();
 
             if ($file->owner_object_type === 'customer') {
-                $file->owner_object=Customer::whereId($file->owner_object_id)->first();
+                $file->owner_object = Customer::whereId($file->owner_object_id)->first();
             }
 
             if ($file->owner_object_type === 'user') {
-                $file->owner_object=$file->author;
+                $file->owner_object = $file->author;
             }
         }
 
@@ -533,7 +535,7 @@ class FilesController extends Controller
                 ->get()
                 ->pluck('customer_id')
                 ->all();
-            if (!in_array($file->owner_object_id,$customerIds)) {
+            if (!in_array($file->owner_object_id, $customerIds)) {
                 return 454;
             }
         }
@@ -641,9 +643,9 @@ class FilesController extends Controller
          */
         $file = File::whereId($id)->first();
 
-        $user             = Auth::guard()->user();
-        $roles            = $user->roles;
-        $roleNamesArr     = $roles->pluck('name')->all();
+        $user         = Auth::guard()->user();
+        $roles        = $user->roles;
+        $roleNamesArr = $roles->pluck('name')->all();
 
         $file->fill($request->all());
 
@@ -787,6 +789,17 @@ class FilesController extends Controller
 
         $file->forceDelete();
 
+        // second delete from disk
+        $this->remove($file);
+
         return response()->json($this->resp(200, 'Files.destroyPermanently'), 200);
+    }
+
+    private function remove($file)
+    {
+        // second delete from disk
+        Storage::delete('public/' . $file->filename);
+
+        return true;
     }
 }

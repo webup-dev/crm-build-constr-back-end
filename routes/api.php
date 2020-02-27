@@ -157,15 +157,15 @@ $api->version('v1', function (Router $api) {
         $api->delete('customers/{id}/comments/{comment_id}/permanently', 'App\Api\V1\Controllers\CustomerCommentsController@destroyPermanently');
     });
 
-    $api->group(['middleware' => ['api.auth']], function (Router $api) {
-        $api->get('customers/{id}/files', 'App\Api\V1\Controllers\CustomerFilesController@index');
-        $api->get('customers/{id}/files/soft-deleted', 'App\Api\V1\Controllers\CustomerFilesController@indexWithSoftDeleted');
-        $api->post('customers/{id}/files', 'App\Api\V1\Controllers\CustomerFilesController@store');
-        $api->put('customers/{id}/files/{file_id}', 'App\Api\V1\Controllers\CustomerFilesController@update');
-        $api->delete('customers/{id}/files/{file_id}', 'App\Api\V1\Controllers\CustomerFilesController@softDestroy');
-        $api->put('customers/{id}/files/{file_id}/restore', 'App\Api\V1\Controllers\CustomerFilesController@restore');
-        $api->delete('customers/{id}/files/{file_id}/permanently', 'App\Api\V1\Controllers\CustomerFilesController@destroyPermanently');
-    });
+    //    $api->group(['middleware' => ['api.auth']], function (Router $api) {
+    //        $api->get('customers/{id}/files', 'App\Api\V1\Controllers\CustomerFilesController@index');
+    //        $api->get('customers/{id}/files/soft-deleted', 'App\Api\V1\Controllers\CustomerFilesController@indexWithSoftDeleted');
+    //        $api->post('customers/{id}/files', 'App\Api\V1\Controllers\CustomerFilesController@store');
+    //        $api->put('customers/{id}/files/{file_id}', 'App\Api\V1\Controllers\CustomerFilesController@update');
+    //        $api->delete('customers/{id}/files/{file_id}', 'App\Api\V1\Controllers\CustomerFilesController@softDestroy');
+    //        $api->put('customers/{id}/files/{file_id}/restore', 'App\Api\V1\Controllers\CustomerFilesController@restore');
+    //        $api->delete('customers/{id}/files/{file_id}/permanently', 'App\Api\V1\Controllers\CustomerFilesController@destroyPermanently');
+    //    });
 
     $api->group(['middleware' => ['api.auth']], function (Router $api) {
         $api->get('user-customers', 'App\Api\V1\Controllers\UserCustomersController@index');

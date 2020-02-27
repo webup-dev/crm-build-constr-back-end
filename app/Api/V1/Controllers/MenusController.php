@@ -4,6 +4,7 @@ namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\File;
 use App\Models\Organization;
 use App\Models\User_profile;
 use App\Models\UserCustomer;
@@ -72,6 +73,7 @@ class MenusController extends Controller
         $res[] = $this->getCustomers($collectValues);
         $res[] = $this->getOrganizations($collectValues);
         $res[] = $this->getUserCustomers($collectValues, $userProfileDepartmentId);
+        $res[] = $this->getFiles();
 
         $response = [
             "success" => true,
@@ -154,5 +156,19 @@ class MenusController extends Controller
         ];
 
         return $arr;
+    }
+
+    private function getFiles()
+    {
+        $filesCount = File::onlyTrashed()
+            ->select('id')
+            ->get()
+            ->count();
+
+        return [
+            "name"  => 'Files',
+            "url"   => 'files/soft-deleted',
+            "count" => $filesCount
+        ];
     }
 }

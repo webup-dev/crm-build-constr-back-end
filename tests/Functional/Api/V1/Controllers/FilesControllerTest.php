@@ -45,9 +45,14 @@
  * Check Update If The Access to The Department Is Absent For Organization Admin
  * Check Update If The Access to The Department Is Absent For Customer
  *
- * Check Soft Delete
+ * Check Soft Delete For Developer
+ * Check Soft Delete For Platform Superadmin
+ * Check Soft Delete For Organization admin
+ * Check Soft Delete For Owner-Customer
  * Check Soft Delete If The Id Is Wrong
- * Check Soft Delete If You Are Not The Author
+ * Check Soft Delete If You Are Customer And Not The Author
+ * Check Soft Delete If You Are Organizational User But Not Admin
+ * Check Soft Delete If You Are Organizational Admin From Not Owner-Organization
  *
  * Check Soft-deleted Index For Developer
  * Check Empty Soft-deleted Index
@@ -1632,9 +1637,90 @@ class FilesControllerTest extends WnyTestCase
     }
 
     /**
-     * Check Soft Delete
+     * Check Soft Delete For Developer
      */
-    public function testSoftDelete()
+    public function testSoftDeleteForDeveloper()
+    {
+        $token = $this->loginDeveloper();
+
+        // Request
+        $response = $this->delete('api/files/1?token=' . $token, []);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+        $this->assertEquals("Files.softDestroy. Result is successful.", $message);
+        $this->assertEquals(null, $data);
+
+        $file = DB::table('files')->where('id', 1)->first();
+        $this->assertNotEquals(null, $file->deleted_at);
+    }
+
+    /**
+     * Check Soft Delete For Platform Superadmin
+     */
+    public function testSoftDeleteForPlatformSuperadmin()
+    {
+        $token = $this->loginPlatformSuperAdmin();
+
+        // Request
+        $response = $this->delete('api/files/1?token=' . $token, []);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+        $this->assertEquals("Files.softDestroy. Result is successful.", $message);
+        $this->assertEquals(null, $data);
+
+        $file = DB::table('files')->where('id', 1)->first();
+        $this->assertNotEquals(null, $file->deleted_at);
+    }
+
+    /**
+     * Check Soft Delete For Organization admin
+     */
+    public function testSoftDeleteForOrganizationAdmin()
+    {
+        $token = $this->loginOrganizationWNYSuperadmin();
+
+        // Request
+        $response = $this->delete('api/files/1?token=' . $token, []);
+
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+        $this->assertEquals("Files.softDestroy. Result is successful.", $message);
+        $this->assertEquals(null, $data);
+
+        $file = DB::table('files')->where('id', 1)->first();
+        $this->assertNotEquals(null, $file->deleted_at);
+    }
+
+    /**
+     * Check Soft Delete For Owner-Customer
+     */
+    public function testSoftDeleteForOwnerCustomer()
     {
         $token = $this->loginCustomerWny();
 
@@ -1683,11 +1769,11 @@ class FilesControllerTest extends WnyTestCase
     }
 
     /**
-     * Check Soft Delete If You Are Not The Author
+     * Check Soft Delete If You Are Customer And Not The Author
      */
-    public function testSoftDeleteIfYouAreNotTheAuthor()
+    public function testSoftDeleteIfYouAreCustomerAndNotTheAuthor()
     {
-        $token = $this->loginDeveloper();
+        $token = $this->loginCustomerSpring();
 
         // Request
         $response = $this->delete('api/files/1?token=' . $token);
@@ -1703,6 +1789,54 @@ class FilesControllerTest extends WnyTestCase
         $this->assertEquals(false, $success);
         $this->assertEquals(457, $code);
         $this->assertEquals("middleware.Files. You are not the author.", $message);
+        $this->assertEquals(null, $data);
+    }
+
+    /**
+     * Check Soft Delete If You Are Organizational User But Not Admin
+     */
+    public function testSoftDeleteIfYouAreOrganizationalUserButNotAdmin()
+    {
+        $token = $this->loginOrganizationWNYGeneralManager();
+
+        // Request
+        $response = $this->delete('api/files/1?token=' . $token);
+
+        $response->assertStatus(457);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals(457, $code);
+        $this->assertEquals("middleware.Files. You are not the author.", $message);
+        $this->assertEquals(null, $data);
+    }
+
+    /**
+     * Check Soft Delete If You Are Organizational Admin From Not Owner-Organization
+     */
+    public function testSoftDeleteIfYouAreOrganizationalAdminFromNotOwnerOrganization()
+    {
+        $token = $this->loginOrganizationSpringSuperadmin();
+
+        // Request
+        $response = $this->delete('api/files/1?token=' . $token);
+
+        $response->assertStatus(454);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals(454, $code);
+        $this->assertEquals("middleware.Files. Permission to the department is absent.", $message);
         $this->assertEquals(null, $data);
     }
 

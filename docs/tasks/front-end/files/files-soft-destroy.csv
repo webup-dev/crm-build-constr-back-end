@@ -1,0 +1,9 @@
+Issue Type,Summary,Story Point Estimate
+Story,Create new Branch,0.5
+Story,Planning,2
+Story,Create button 'Destroy' in the parent,0.5
+Story,Create API endpoint,0.5
+Story,Import API endpoint,0.5
+Story,Create method to destroy in the parent,1
+Story,Refresh table after destroying,0.5
+Story,Refresh table after destroying if number of rows is zero ,0.5
