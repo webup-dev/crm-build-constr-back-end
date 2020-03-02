@@ -283,7 +283,7 @@ class FilesController extends Controller
             ->get();
 
         if (!$files->count()) {
-            return response()->json($this->resp(209, 'Files.indexSoftDeleted'), 209);
+            return response()->json($this->resp(204, 'Files.indexSoftDeleted'), 204);
         }
 
         $files = $this->addObjectsToIndexSoftDeleted($files);
