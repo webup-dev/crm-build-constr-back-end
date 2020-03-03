@@ -1,0 +1,14 @@
+Issue Type,Summary,Story Point Estimate
+Story,Create new Branch,0.5
+Story,Planning,1
+Story,Create Specifications,3
+Story,Create List of error codes,0.5
+Story,Create routes,0.5
+Story,Use middleware,0.5
+Story,Create module documentation,1
+Story,Create API functions: getFile,5
+Story,Create request validation for getFile,1
+Story,Create Postman tests,1
+Story,Make Postman tests,1
+Story,Deployment,3
+

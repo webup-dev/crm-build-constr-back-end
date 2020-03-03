@@ -828,7 +828,7 @@ class FilesControllerTest extends WnyTestCase
         $response = $this->get('api/files/soft-deleted?token=' . $token);
 
         // Check response status
-        $response->assertStatus(209);
+        $response->assertStatus(204);
 
         // Check response structure
         $response->assertJsonStructure(
@@ -846,7 +846,7 @@ class FilesControllerTest extends WnyTestCase
         $data         = $responseJSON['data'];  // array
 
         $this->assertEquals(true, $success);
-        $this->assertEquals(209, $code);
+        $this->assertEquals(204, $code);
         $this->assertEquals("Files.indexSoftDeleted. Content is empty.", $message);
         $this->assertEquals(null, $data);
     }

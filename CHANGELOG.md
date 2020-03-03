@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.20.1] - 2019-03-01
+### Changed
+- FilesController. indexSoftDeleted. Error Code 209 is substitute to 204.
+
 ## [0.20.0] - 2019-02-06
 ### Added
 - Module Files.

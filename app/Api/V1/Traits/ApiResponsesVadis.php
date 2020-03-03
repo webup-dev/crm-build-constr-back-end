@@ -4,9 +4,26 @@ namespace App\Api\V1\Traits;
 
 use Illuminate\Http\Response;
 
+/**
+ * Trait ApiResponsesVadis
+ *
+ * @category Trait
+ * @package  App\Api\V1\Traits
+ * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license  none
+ */
+
 trait ApiResponsesVadis
 {
-
+    /**
+     * Method apiResponses
+     *
+     * @param $code    int response code
+     * @param null $message text message
+     * @param null $data    passed data
+     *
+     * @return array
+     */
     public function apiResponses($code, $message = null, $data = null)
     {
         $arrays = [
@@ -24,13 +41,11 @@ trait ApiResponsesVadis
             462 => [false, 'Id of this Entity is used as foreign key', null],
         ];
 
-        $response = [
+        return [
             "success" => $arrays[$code][0],
             "code"    => $code,
             "message" => $message === null ? $arrays[$code][1] : $message,
             "data"    => $data === null ? $arrays[$code][2] : $data
         ];
-
-        return $response;
     }
 }
