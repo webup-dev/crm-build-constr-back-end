@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 $api = app(Router::class);
 
 $api->version('v1', function (Router $api) {
-    $api->group(['prefix' => 'auth'], function(Router $api) {
+    $api->group(['prefix' => 'auth'], function (Router $api) {
         $api->post('signup', 'App\Api\V1\Controllers\SignUpController@signUp');
         $api->post('login', 'App\Api\V1\Controllers\LoginController@login');
 
@@ -21,8 +21,8 @@ $api->version('v1', function (Router $api) {
 
 //    $api->post('auth/logout', 'App\Api\V1\Controllers\LogoutController@logout');
 
-    $api->group(['middleware' => 'jwt.auth'], function(Router $api) {
-        $api->get('protected', function() {
+    $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
+        $api->get('protected', function () {
             return response()->json([
                 'message' => 'Access to protected resources granted! You are seeing this text as you provided the token correctly.'
             ]);
@@ -30,7 +30,7 @@ $api->version('v1', function (Router $api) {
 
         $api->get('refresh', [
             'middleware' => 'jwt.refresh',
-            function() {
+            function () {
                 return response()->json([
                     'message' => 'By accessing this endpoint, you can refresh your access token at each request. Check out this response headers!'
                 ]);
@@ -38,7 +38,7 @@ $api->version('v1', function (Router $api) {
         ]);
     });
 
-    $api->group(['middleware' => ['api.auth','activity']], function (Router $api) {
+    $api->group(['middleware' => ['api.auth', 'activity']], function (Router $api) {
         $api->get('book', 'App\Api\V1\Controllers\BookController@index');
         $api->get('book/{id}', 'App\Api\V1\Controllers\BookController@show');
         $api->post('book', 'App\Api\V1\Controllers\BookController@store');
@@ -48,7 +48,7 @@ $api->version('v1', function (Router $api) {
         $api->delete('users/{id}', 'App\Api\V1\Controllers\UserController@destroy');
     });
 
-    $api->group(['middleware' => ['api.auth','platform.superadmin','activity']], function (Router $api) {
+    $api->group(['middleware' => ['api.auth', 'platform.superadmin', 'activity']], function (Router $api) {
         $api->get('roles', 'App\Api\V1\Controllers\RolesController@index');
         $api->get('roles/{id}', 'App\Api\V1\Controllers\RolesController@show');
         $api->post('role', 'App\Api\V1\Controllers\RolesController@store');
@@ -56,7 +56,7 @@ $api->version('v1', function (Router $api) {
         $api->delete('roles/{id}', 'App\Api\V1\Controllers\RolesController@destroy');
     });
 
-    $api->group(['middleware' => ['api.auth','platform.superadmin','activity']], function (Router $api) {
+    $api->group(['middleware' => ['api.auth', 'platform.superadmin', 'activity']], function (Router $api) {
         $api->get('controllers', 'App\Api\V1\Controllers\VcontrollersController@index');
         $api->get('controllers/{id}', 'App\Api\V1\Controllers\VcontrollersController@show');
         $api->post('controllers', 'App\Api\V1\Controllers\VcontrollersController@store');
@@ -64,7 +64,7 @@ $api->version('v1', function (Router $api) {
         $api->delete('controllers/{id}', 'App\Api\V1\Controllers\VcontrollersController@destroy');
     });
 
-    $api->group(['middleware' => ['api.auth','activity']], function (Router $api) {
+    $api->group(['middleware' => ['api.auth', 'activity']], function (Router $api) {
         $api->get('methods/{id}', 'App\Api\V1\Controllers\MethodsController@index');
         $api->get('methods/{id}/show', 'App\Api\V1\Controllers\MethodsController@show');
         $api->post('methods/{id}', 'App\Api\V1\Controllers\MethodsController@store');
@@ -96,7 +96,7 @@ $api->version('v1', function (Router $api) {
         $api->get('profiles/{id}', 'App\Api\V1\Controllers\ProfilesController@getUser');
     });
 
-    $api->group(['middleware' => ['api.auth','activity']], function (Router $api) {
+    $api->group(['middleware' => ['api.auth', 'activity']], function (Router $api) {
         $api->get('method-role/{id}', 'App\Api\V1\Controllers\MethodRolesController@show');
         $api->get('method-roles/{id}', 'App\Api\V1\Controllers\MethodRolesController@getRoles');
         $api->post('method-roles/{id}', 'App\Api\V1\Controllers\MethodRolesController@store');
@@ -176,34 +176,79 @@ $api->version('v1', function (Router $api) {
         $api->delete('user-customers/{id}', 'App\Api\V1\Controllers\UserCustomersController@softDestroy');
         $api->put('user-customers/{id}/restore', 'App\Api\V1\Controllers\UserCustomersController@restore');
         $api->delete('user-customers/{id}/permanently', 'App\Api\V1\Controllers\UserCustomersController@destroyPermanently');
-    });
+    }
+    );
 
-    $api->group(['middleware' => ['api.auth']], function (Router $api) {
-        $api->get('user-details', 'App\Api\V1\Controllers\UserDetailsController@index');
-        $api->get('user-details/soft-deleted', 'App\Api\V1\Controllers\UserDetailsController@indexSoftDeleted');
-        $api->get('user-details/{id}', 'App\Api\V1\Controllers\UserDetailsController@show');
-        $api->post('user-details', 'App\Api\V1\Controllers\UserDetailsController@store');
-        $api->put('user-details/{id}', 'App\Api\V1\Controllers\UserDetailsController@update');
-        $api->delete('user-details/{id}', 'App\Api\V1\Controllers\UserDetailsController@softDestroy');
-        $api->put('user-details/{id}/restore', 'App\Api\V1\Controllers\UserDetailsController@restore');
-        $api->delete('user-details/{id}/permanently', 'App\Api\V1\Controllers\UserDetailsController@destroyPermanently');
-    });
+    $api->group(
+        ['middleware' => ['api.auth']],
+        function (Router $api) {
+            $api->get(
+                'user-details',
+                'App\Api\V1\Controllers\UserDetailsController@index'
+            );
+            $api->get(
+                'user-details/soft-deleted',
+                'App\Api\V1\Controllers\UserDetailsController@indexSoftDeleted'
+            );
+            $api->get('user-details/{id}', 'App\Api\V1\Controllers\UserDetailsController@show');
+            $api->post('user-details', 'App\Api\V1\Controllers\UserDetailsController@store');
+            $api->put('user-details/{id}', 'App\Api\V1\Controllers\UserDetailsController@update');
+            $api->delete('user-details/{id}', 'App\Api\V1\Controllers\UserDetailsController@softDestroy');
+            $api->put('user-details/{id}/restore', 'App\Api\V1\Controllers\UserDetailsController@restore');
+            $api->delete('user-details/{id}/permanently', 'App\Api\V1\Controllers\UserDetailsController@destroyPermanently');
+        }
+    );
 
-    $api->group(['middleware' => ['api.auth']], function (Router $api) {
-        $api->get('customers/{id}/files', 'App\Api\V1\Controllers\FilesController@index');
-        $api->get('files/soft-deleted', 'App\Api\V1\Controllers\FilesController@indexSoftDeleted');
-        $api->get('files/{id}', 'App\Api\V1\Controllers\FilesController@show');
-        $api->post('files', 'App\Api\V1\Controllers\FilesController@store');
-        $api->put('files/{id}', 'App\Api\V1\Controllers\FilesController@update');
-        $api->delete('files/{id}', 'App\Api\V1\Controllers\FilesController@softDestroy');
-        $api->put('files/{id}/restore', 'App\Api\V1\Controllers\FilesController@restore');
-        $api->delete('files/{id}/permanently', 'App\Api\V1\Controllers\FilesController@destroyPermanently');
-    });
+    $api->group(
+        ['middleware' => ['api.auth']],
+        function (Router $api) {
+            $api->get(
+                'customers/{id}/files',
+                'App\Api\V1\Controllers\FilesController@index'
+            );
+            $api->get(
+                'files/soft-deleted',
+                'App\Api\V1\Controllers\FilesController@indexSoftDeleted'
+            );
+            $api->get(
+                'files/{id}',
+                'App\Api\V1\Controllers\FilesController@show'
+            );
+            $api->get(
+                'file/{id}',
+                'App\Api\V1\Controllers\FilesController@getFile'
+            );
+            $api->post(
+                'files',
+                'App\Api\V1\Controllers\FilesController@store'
+            );
+            $api->put(
+                'files/{id}',
+                'App\Api\V1\Controllers\FilesController@update'
+            );
+            $api->delete(
+                'files/{id}',
+                'App\Api\V1\Controllers\FilesController@softDestroy'
+            );
+            $api->put(
+                'files/{id}/restore',
+                'App\Api\V1\Controllers\FilesController@restore'
+            );
+            $api->delete(
+                'files/{id}/permanently',
+                'App\Api\V1\Controllers\FilesController@destroyPermanently'
+            );
+        }
+    );
 
 
-//    $api->get('book', 'App\Api\V1\Controllers\BookController@index');
+    $api->get('book', 'App\Api\V1\Controllers\BookController@index');
+//    $api->get(
+//        'file/{id}',
+//        'App\Api\V1\Controllers\FilesController@getFile'
+//    );
 
-    $api->get('hello', function() {
+    $api->get('hello', function () {
         return response()->json([
             'message' => 'This is a simple example of item returned by your APIs. Everyone can see it.'
         ]);
