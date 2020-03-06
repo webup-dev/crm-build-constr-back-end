@@ -829,26 +829,6 @@ class FilesControllerTest extends WnyTestCase
 
         // Check response status
         $response->assertStatus(204);
-
-        // Check response structure
-        $response->assertJsonStructure(
-            [
-                'success',
-                'code',
-                'data',
-                'message'
-            ]
-        );
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];  // array
-        $code         = $responseJSON['code'];  // array
-        $message      = $responseJSON['message'];  // array
-        $data         = $responseJSON['data'];  // array
-
-        $this->assertEquals(true, $success);
-        $this->assertEquals(204, $code);
-        $this->assertEquals("Files.indexSoftDeleted. Content is empty.", $message);
-        $this->assertEquals(null, $data);
     }
 
     /**

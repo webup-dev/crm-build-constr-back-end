@@ -27,10 +27,10 @@ class File_show_edit
      * C3C: customer for type "customer"
      * C3U: customer for type "user"
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param \Illuminate\Http\Request $request Object Request
+     * @param \Closure                 $next    Closure
+     *
      * @return mixed
-     * @throws \Tymon\JWTAuth\Exceptions\JWTException
      */
     public function handle($request, Closure $next)
     {
@@ -38,6 +38,7 @@ class File_show_edit
         $roleNamesArr = $user->roles->pluck('name')->all();
         $id           = $request->route('id');
         $file         = File::whereId($id)->first();
+
 
         if (!$file) {
             return response()->json($this->resp(456, 'middleware.Files'), 456);
