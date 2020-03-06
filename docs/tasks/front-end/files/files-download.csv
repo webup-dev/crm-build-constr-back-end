@@ -1,19 +1,16 @@
 Issue Type,Summary,Story Point Estimate
 Story,Create new Branch,0.5
 Story,Planning,3
-Story,Create static layout in the parent,2
-Story,Create styles and JS for the visibility in the parent,2
-Story,Create skeleton (IDE function 'create Vue Component'),0.5
-Story,Insert test string a la 'Hello',0.5
-Story,Test component,0.5
-Story,Insert component in the parent page, route,0.5
-Story,Insert Demo Code Component (ButtonCount),0.5
-Story,Create Layout of the Component,3
-Story,Substitute static demo values instead of demo button,2
-Story,Create API endpoint,0.5
-Story,Import API endpoint,0.5
-Story,Create dynamic values instead of static,2
-Story,Create flash-messages,1
-
-
-
+Story,Create static button 'Delete' in the table 'Files',0.5
+Story,Insert function 'delete()' in the button 'Delete',0.5
+Story,Create function 'delete()' in the Script section,0.5
+Story,Code function 'delete()',3
+Story,Test function 'delete()',0.5
+Story,Create dynamic state for the function 'delete()' in the button 'Delete',0.5
+Story,Test function 'delete()',0.5
+Story,Deployment,0.5
+Story,Test local domain,0.5
+Story,Test online,0.5
+Story,Update Changelog,0.5
+Story,Update Report,0.5
+Story,Update Helper,0.5

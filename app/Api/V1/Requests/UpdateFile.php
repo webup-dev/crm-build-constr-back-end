@@ -29,7 +29,7 @@ class UpdateFile extends FormRequest
             "description"       => 'string',
             "filename"          => 'string',
             "owner_user_id"     => 'integer',
-            "photo"             => 'file|mimes:jpeg,jpg,png,pdf,doc,docx,txt,esx,json,xml,xls,skp,dwg,dxf|max:2048'
+            "photo"             => 'file|mimes:jpeg,jpg,png,tiff,pdf,doc,docx,txt,esx,zip,json,xml,xls,skp,dwg,dxf|max:9048'
         ];
     }
 }

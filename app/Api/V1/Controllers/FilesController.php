@@ -440,7 +440,7 @@ class FilesController extends Controller
             return response()->json($this->resp(456, 'Files.getFile'), 456);
         }
 
-        $size = Storage::disk('public')->size($file->filename);
+        $size    = Storage::disk('public')->size($file->filename);
         $headers = [
             header('Content-Description: File Transfer'),
             header('Content-Type: application/octet-stream'),
@@ -560,7 +560,12 @@ class FilesController extends Controller
 
         if ($request->hasFile('photo')) {
             // first save file on the disk
-            $fileName = $file->owner_object_type . '-' . $file->owner_object_id . '-' . date('Y-m-d_h-i-s') . ('-') . rand(0, 999) . '.' . $request->photo->extension();
+            $originalFile      = $request->file('photo');
+            $originalname      = $originalFile->getClientOriginalName();
+            $arrayPhoto        = explode('.', $originalname);
+            $originalExtension = $arrayPhoto[1];
+//            $fileName          = $file->owner_object_type . '-' . $file->owner_object_id . '-' . date('Y-m-d_h-i-s') . ('-') . rand(0, 999) . '.' . $request->photo->extension();
+            $fileName          = $file->owner_object_type . '-' . $file->owner_object_id . '-' . date('Y-m-d_h-i-s') . ('-') . rand(0, 999) . '.' . $originalExtension;
             $request->photo->storeAs('public', $fileName);
 
             $file->filename = $fileName;
