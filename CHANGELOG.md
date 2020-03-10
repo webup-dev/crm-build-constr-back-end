@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.21.2] - 2019-03-10
+### Added
+- Menus for platform-admin, organization-general-manager are created.
+
+### Changed
+- code in CustomersController is cleaned,
+- code in middleware Organizations_OrganizationAdmin is cleaned,
+- code in middleware UserProfiles_OrganizationAdmin is cleaned,
+- code in web routes is cleaned,
+- MTI license is implemented as license prototype,
+- Changelog is updated.
+  
 ## [0.21.1] - 2019-03-09
 ### Changed
 - Module "File Download". File extension is changed to 
