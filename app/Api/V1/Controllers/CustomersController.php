@@ -4,37 +4,43 @@ namespace App\Api\V1\Controllers;
 
 use App\Http\Requests\StoreCustomer;
 use App\Http\Requests\UpdateCustomer;
-use App\Models\Activity;
 use App\Models\Customer;
 use App\Models\CustomerComment;
 use App\Models\Organization;
 use App\Models\User;
-use App\Models\User_profile;
 use App\Models\User_role;
 use App\Models\UserCustomer;
 use App\Models\UserDetail;
-use Config;
 use App\Http\Controllers\Controller;
 use Auth;
-use Tymon\JWTAuth\JWTAuth;
-use Illuminate\Support\Facades\Validator;
 use Dingo\Api\Routing\Helpers;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
- * @group Customers
+ * Controller to operate with customers
+ *
+ * @category Controller
+ * @package  Customers
+ * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link     Controller
+ * @group    Customers
  */
 class CustomersController extends Controller
 {
     use Helpers;
 
+    /**
+     * CustomersController constructor.
+     */
     public function __construct()
     {
-        $this->middleware('customers_organization.users')->only(['index', 'store', 'show', 'update']);
-        $this->middleware('customers_organization.superadmin')->only(['softDestroy']);
-        $this->middleware('platform.admin')->only(['indexSoftDeleted', 'restore', 'destroyPermanently']);
+        $this->middleware('customers_organization.users')
+            ->only(['index', 'store', 'show', 'update']);
+        $this->middleware('customers_organization.superadmin')
+            ->only(['softDestroy']);
+        $this->middleware('platform.admin')
+            ->only(['indexSoftDeleted', 'restore', 'destroyPermanently']);
         $this->middleware('activity');
     }
 
@@ -218,6 +224,8 @@ class CustomersController extends Controller
     /**
      * Create customer
      *
+     * @param StoreCustomer $request Request
+     *
      * @bodyParam name string required Customer Name
      * @bodyParam type string required Customer Type
      * @bodyParam organization_id integer Organization Id
@@ -245,12 +253,10 @@ class CustomersController extends Controller
      *  "message": "Permission is absent."
      * }
      *
-     * @param StoreCustomer $request
      * @return Response
      * @throws \Exception
      */
-    public
-    function store(StoreCustomer $request)
+    public function store(StoreCustomer $request)
     {
         $data = $request->all();
 
@@ -260,7 +266,10 @@ class CustomersController extends Controller
 
         $organizations = Organization::all()->toArray();
 
-        if (!isOwn($organizations, $userProfile->department_id, $data['organization_id'])) {
+        if (!isOwn(
+            $organizations, $userProfile->department_id, $data['organization_id']
+        )
+        ) {
             $response = [
                 'success' => false,
                 'message' => 'Permission is absent by the role.'
@@ -269,17 +278,19 @@ class CustomersController extends Controller
             return response()->json($response, 453);
         }
 
-        $customer = new Customer([
-            'name'                   => $data['name'],
-            'organization_id'        => $data['organization_id'],
-            'type'                   => $data['type'],
-            'city'                   => $data['city'],
-            'line_1'                 => $data['line_1'],
-            'line_2'                 => $data['line_2'],
-            'state'                  => $data['state'],
-            'zip'                    => $data['zip'],
-            'customer_owner_user_id' => $data['customer_owner_user_id']
-        ]);
+        $customer = new Customer(
+            [
+                'name'                   => $data['name'],
+                'organization_id'        => $data['organization_id'],
+                'type'                   => $data['type'],
+                'city'                   => $data['city'],
+                'line_1'                 => $data['line_1'],
+                'line_2'                 => $data['line_2'],
+                'state'                  => $data['state'],
+                'zip'                    => $data['zip'],
+                'customer_owner_user_id' => $data['customer_owner_user_id']
+            ]
+        );
 
         if ($customer->save()) {
             $response = [
@@ -294,6 +305,8 @@ class CustomersController extends Controller
 
     /**
      * Get the specified Structure Item.
+     *
+     * @param int $id ID
      *
      * @queryParam id required Item ID
      *
@@ -336,7 +349,6 @@ class CustomersController extends Controller
      *  "message": "Permission to department is absent."
      * }
      *
-     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -357,8 +369,8 @@ class CustomersController extends Controller
         $customer_owner_user = $customer->customer_owner_user;
 
         // get all user-details
-        $usersIds = $users->pluck('id')->all();
-        $userDetails = UserDetail::whereIn('user_id', $usersIds)->get();
+        $usersIds              = $users->pluck('id')->all();
+        $userDetails           = UserDetail::whereIn('user_id', $usersIds)->get();
         $customer->userDetails = $userDetails;
 
         $data = $customer->toArray();
@@ -374,12 +386,14 @@ class CustomersController extends Controller
 
     /**
      * Edit data of the specified customer
-     *
      * Access:
      *   direct access:
      *     platform-admin and higher
      *   conditional access:
      *     organization-user - to users of his organization
+     *
+     * @param UpdateCustomer $request Request
+     * @param $id      integer
      *
      * @bodyParam name string required Customer Name
      * @bodyParam type string required Customer Type
@@ -419,12 +433,9 @@ class CustomersController extends Controller
      *  "message": "Permission to department is absent."
      * }
      *
-     * @param UpdateCustomer $request
-     * @param $id
      * @return void
      */
-    public
-    function update(UpdateCustomer $request, $id)
+    public function update(UpdateCustomer $request, $id)
     {
         $customer = Customer::whereId($id)->first();
 
@@ -445,7 +456,11 @@ class CustomersController extends Controller
         $user          = Auth::guard()->user();
         $userProfile   = $user->user_profile;
 
-        if (!isOwn($organizations, $userProfile->department_id, $customer['organization_id'])) {
+        if (!isOwn(
+            $organizations, $userProfile->department_id,
+            $customer['organization_id']
+        )
+        ) {
             $response = [
                 'success' => false,
                 'message' => 'Permission is absent by the role.'
@@ -471,12 +486,13 @@ class CustomersController extends Controller
 
     /**
      * Soft Delete customer
-     *
      * Access:
      *   direct access:
      *     platform-admin and higher
      *   conditional access:
      *     organization-superadmin - to users of his organization
+     *
+     * @param $id integer
      *
      * @queryParam id int required Customer ID
      *
@@ -495,12 +511,10 @@ class CustomersController extends Controller
      *  "message": "You do not have permission."
      * }
      *
-     * @param $id
      * @return void
      * @throws \Exception
      */
-    public
-    function softDestroy($id)
+    public function softDestroy($id)
     {
         $customer = Customer::whereId($id)->first();
         if (!$customer) {
@@ -517,7 +531,10 @@ class CustomersController extends Controller
         $user          = Auth::guard()->user();
         $userProfile   = $user->user_profile;
 
-        if (!isOwn($organizations, $userProfile->department_id, $customer->organization_id)) {
+        if (!isOwn(
+            $organizations, $userProfile->department_id, $customer->organization_id
+        )
+        ) {
             $response = [
                 'success' => false,
                 'message' => 'Permission is absent by the role.'
@@ -526,7 +543,8 @@ class CustomersController extends Controller
             return response()->json($response, 453);
         }
 
-        // there are 3 DB tables that are bond to Customer: customer_comments, (customer_files,) user_customers
+        // there are 3 DB tables that are bond to Customer: customer_comments,
+        // (customer_files,) user_customers
         // they are needed to be soft-deleted first
         $customerComments = CustomerComment::whereCustomerId($id)
             ->get()
@@ -552,10 +570,11 @@ class CustomersController extends Controller
 
     /**
      * Restore customer
-     *
      * Access:
      *   direct access:
      *     platform-admin and higher
+     *
+     * @param $id integer
      *
      * @queryParam id int required Customer ID
      *
@@ -584,7 +603,6 @@ class CustomersController extends Controller
      *  "message": "There is a parent soft-deleted comment"
      * }
      *
-     * @param $id
      * @return void
      */
     public function restore($id)
@@ -605,7 +623,10 @@ class CustomersController extends Controller
         $user          = Auth::guard()->user();
         $userProfile   = $user->user_profile;
 
-        if (!isOwn($organizations, $userProfile->department_id, $customer->organization_id)) {
+        if (!isOwn(
+            $organizations, $userProfile->department_id, $customer->organization_id
+        )
+        ) {
             $response = [
                 'success' => false,
                 'message' => 'Permission is absent by the role.'
@@ -643,10 +664,11 @@ class CustomersController extends Controller
 
     /**
      * Destroy customer permanently
-     *
      * Access:
      *   direct access:
      *     platform-admin and higher
+     *
+     * @param $id integer
      *
      * @queryParam id int required Customer ID
      *
@@ -665,11 +687,9 @@ class CustomersController extends Controller
      *  "message": "You do not have permission."
      * }
      *
-     * @param $id
      * @return void
      */
-    public
-    function destroyPermanently($id)
+    public function destroyPermanently($id)
     {
         $customer = Customer::withTrashed()->whereId($id)->first();
 
@@ -698,7 +718,8 @@ class CustomersController extends Controller
         }
 
         $user      = User::withTrashed()->whereId($customer->user_id)->first();
-        $userRoles = User_role::withTrashed()->whereUserId($customer->user_id)->get();
+        $userRoles = User_role::withTrashed()
+            ->whereUserId($customer->user_id)->get();
         $customer->forceDelete();
         foreach ($userRoles as $userRole) {
             $userRole->forceDelete();
@@ -713,41 +734,5 @@ class CustomersController extends Controller
         ];
 
         return response()->json($response, 200);
-
-    }
-
-    /**
-     * It gets department ID as parameter.
-     * Calculates roles from authenticated user.
-     * If the user is organization-superadmin or organization-admin then check the user department is equal to requested..
-     *
-     * @param $id
-     * @return bool|\Illuminate\Http\JsonResponse
-     */
-    private
-    function checkUserFromOrganization($id)
-    {
-        // check 'organization-superadmin', 'organization-admin'
-        $user         = Auth::guard()->user();
-        $roles        = $user->roles;
-        $roleNamesArr = $roles->pluck('name')->all();
-
-        if (one_from_arr_in_other_arr(['organization-superadmin', 'organization-admin', 'organization-general-manager'], $roleNamesArr)) {
-//            print_r("here");
-            $user                  = User::find($user->id);
-            $userProfileRequester  = $user->user_profile;
-            $departmentIdRequester = $userProfileRequester->department_id;
-//            print_r("requester: " . $departmentIdRequester);
-//            print_r("requester department: " . $departmentIdRequester);
-//            print_r("customer department:" . $id);
-
-
-            if (!($id == $departmentIdRequester)) {
-//                print_r("restriction!");
-                return false;
-            }
-            return true;
-        }
-        return true;
     }
 }

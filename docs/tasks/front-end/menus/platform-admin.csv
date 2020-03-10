@@ -1,0 +1,10 @@
+Issue Type,Summary,Story Point Estimate
+Story,Create Platform menu,0.5
+Task,Create new Branch,0.5
+Task,Planning,1
+Task,Copy-paste file menu,0.5
+Task,Edit file menu,1
+Task,Edit DefaultContainer.vue,0.5
+Task,Edit Store.js,0.5
+Task,Edit main.js,0.5
+Task,Check login and menu,0.5

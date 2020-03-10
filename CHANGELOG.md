@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.21.1] - 2019-03-09
+### Changed
+- Module "File Download". File extension is changed to 
+  from src filename.
+### Added
+    - Examples of uploading files: doc/files.   
+
 ## [0.21.0] - 2019-03-02
 ### Added
 - Module "File Download".

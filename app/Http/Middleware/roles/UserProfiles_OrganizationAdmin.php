@@ -5,62 +5,74 @@ namespace App\Http\Middleware;
 use App\Models\Organization;
 use App\Models\User_profile;
 use Closure;
-use Tymon\JWTAuth\JWTAuth;
 use Auth;
 
+/**
+ * Middleware to operate permissions to user profiles
+ *
+ * @category Middleware
+ * @package  User_Profiles
+ * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link     Middleware
+ */
 class UserProfiles_OrganizationAdmin
 {
     /**
-     * Middleware for routes with UserProfile ID in URL.
+     * Middleware for routes with organization ID in URL.
      * Handle an incoming request.
+     *     'developer', 'platform-superadmin', 'platform-admin' has permissions
+     *     always
+     *     'organization-superadmin', 'organization-admin' has permissions
+     *     to own organizations only
+     *     other roles don't have permissions
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param \Illuminate\Http\Request $request Request
+     * @param \Closure                 $next    Next
+     *
      * @return mixed
-     * @throws \Tymon\JWTAuth\Exceptions\JWTException
      */
     public function handle($request, Closure $next)
     {
-//        dd($request);
         $user = Auth::guard()->user();
 
         $roles = $user->roles;
 
         $roleNamesArr = $roles->pluck('name')->all();
-//        dd($roleNamesArr);
 
-        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
+        if (one_from_arr_in_other_arr(
+            ['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr
+        )
+        ) {
             return $next($request);
         }
 
-        if (one_from_arr_in_other_arr(['organization-superadmin', 'organization-admin'], $roleNamesArr)) {
-//            dd("here middlware");
-            // Editor may edit UserProfile of a user that belongs to his organization or child organization
+        if (one_from_arr_in_other_arr(
+            ['organization-superadmin', 'organization-admin'], $roleNamesArr
+        )
+        ) {
+            // Editor may edit UserProfile of a user that belongs
+            // to his organization or child organization
             // UserProfile id:
             $id = $request->route('id');
-//            dd($id);
 
             if ($id == '') {
                 return $next($request);
             }
 
             // get department id of editing profile
-            $editingDepartmentId = User_profile::whereId($id)->first()->department_id;
-//            dd($editingDepartmentId);
+            $editingDepartmentId = User_profile::whereId($id)
+                ->first()->department_id;
 
             // department id of editor
             $editorDepartmentId = $user->user_profile->department_id;
-//            dd($editingDepartmentId);
 
             // check editingDepartmentId is editorDepartmentId or its child
             $organizations = Organization::all()->toArray();
-//            dd($organizations);
 
             if (isOwn($organizations, $editorDepartmentId, $editingDepartmentId)) {
-//                dd("permitted");
                 return $next($request);
             }
-//            dd("not permitted");
 
             $response = [
                 'success' => false,

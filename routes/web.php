@@ -11,15 +11,35 @@
 |
 */
 
-Route::get('reset_password/{token}', ['as' => 'password.reset', function($token)
-{
-    // implement your reset password route here!
-}]);
+Route::get(
+    'reset_password/{token}',
+    ['as' => 'password.reset', function ($token) {
+        // implement your reset password route here!
+    }
+    ]
+);
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get(
+    '/', function () {
+        return view('welcome');
+    }
+);
 
-Route::get("/api-documentation", function() { return Redirect::to("docs/index.html"); });
+Route::get(
+    "/api-documentation",
+    function () {
+        return Redirect::to("docs/index.html");
+    }
+);
 
-Route::get('actions', 'ActionsController@index');
+Route::get(
+    'actions',
+    'ActionsController@index'
+);
+
+Route::get(
+    "/license",
+    function () {
+        return Redirect::to("license/index.html");
+    }
+);

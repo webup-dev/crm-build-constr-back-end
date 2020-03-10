@@ -1,0 +1,19 @@
+Issue Type,Summary,Story Point Estimate
+Story,Create organization-general-manager menu,0.5
+Task,Create new Branch,0.5
+Task,Planning,1
+Task,Copy-paste file menu in src/views/wny/menu,0.5
+Task,Edit file menu,0.5
+Task,Create route in src/router/index.js,0.5
+Task,Create Dashboard page in src/views/wny/dashboard,0.5
+Task,Edit Dashboard page,1
+Task,Edit DefaultContainer.vue,0.5
+Task,Edit Store.js,0.5
+Task,Edit mixin,0.5
+Task,Check login and menu,0.5
+Task,Check permissions to the menu points (what must be (back-end), what really is),0.5
+Task,Commit,0.5
+Task,Deployment,0.5
+Task,CHANGELOG,0.5
+Task,Change Version,0.5
+Task,Report,0.5
