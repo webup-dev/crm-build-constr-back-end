@@ -275,7 +275,7 @@ class LeadSourcesController extends Controller
      *
      * @response 200 {
      *  "success": true,
-     *  "message": "Role is deleted successfully"
+     *  "message": "Role is deleted successfully",
      *  "data": null
      * }
      *

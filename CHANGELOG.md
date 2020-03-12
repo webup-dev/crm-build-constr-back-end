@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.22.0] - 2019-03-12
+### Added
+- Menus for platform-admin, organization-general-manager are created,
+- Module LeadSources is created
+        Methods: index, store, update, softDestroy, show,
+        indexSoftDeleted, restore, permanentDelete.
+
 ## [0.21.2] - 2019-03-10
 ### Added
 - Menus for platform-admin, organization-general-manager are created.
