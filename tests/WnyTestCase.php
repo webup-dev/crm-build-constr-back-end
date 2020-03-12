@@ -27,6 +27,7 @@ abstract class WnyTestCase extends TestCase
         Schema::dropIfExists('organizations');
         Schema::dropIfExists('activities');
         Schema::dropIfExists('users');
+        Schema::dropIfExists('lead_sources');
     }
 
     private function loginUser($data)
