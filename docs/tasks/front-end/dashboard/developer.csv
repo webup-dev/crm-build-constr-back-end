@@ -1,0 +1,18 @@
+Issue Type,Summary,Task Point Estimate
+Story,Change Dashboards,5
+Task,Create new Branch,0.5
+Task,Change Back-end->MenuController->getSoftDeleted,1
+Task,Change tests for MenuController,0.5
+Task,Tests for MenuController,0.5
+Task,Change wny/src/views/wny/dashboard/Developer.vue,0.5
+Task,Test dashboard/Developer.vue,0.5
+Story,Create the page LeadSourcesSoftDeleted,5
+Task,Create page LeadSourcesSoftDeleted by copy-paste other ...SoftDeleted,0.5
+Task,Create route,0.5
+Task,Create a link in the Dashboard to the page LeadSourcesSoftDeleted,0.5
+Task,Test the link,0.5
+Task,Edit the page LeadSourcesSoftDeleted,2
+Task,Commit,3
+Task,Deployment,3
+Task,Version,3
+Task,Report,1

@@ -1,22 +1,5 @@
 <?php
 
-/**
- * SetUp. Tests use:
- *   5 users (developer, organizational-admin, estimator)
- *   2 customers
- *   1 organization
- *
- * TestsExample
- *
- * TestSeeder
- *
- * Check GetSoftDeleted
- * Check GetSoftDeleted If The Access Is Not Full
- * Check GetSoftDeleted If The Access Is Absent By The Role
- *
- * Special Test. Bug CCFEC-385
- */
-
 namespace App;
 
 use App\Models\Customer;
@@ -31,6 +14,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use App\WnyTestCase;
 
+/**
+ * Test of MenusController
+ *
+ * @category Test
+ * @package  Test
+ * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link     Test
+ */
 class MenusControllerTest extends WnyTestCase
 {
     use DatabaseMigrations;
@@ -65,6 +57,8 @@ class MenusControllerTest extends WnyTestCase
      *   Check response status
      *   Check response structure
      *   Check response data
+     *
+     * @return void
      */
     public function testSeeder()
     {
@@ -91,6 +85,8 @@ class MenusControllerTest extends WnyTestCase
      *   Check response status
      *   Check response structure
      *   Check response data
+     *
+     * @return void
      */
     public function testGetSoftDeleted()
     {
@@ -111,12 +107,10 @@ class MenusControllerTest extends WnyTestCase
         $response->assertStatus(200);
         $response = $this->delete('api/organizations/16?token=' . $token);
         $response->assertStatus(200);
-//        $response = $this->delete('api/user-customers/1?token=' . $token);
-//        $response->assertStatus(200);
-//        $response = $this->delete('api/user-customers/2?token=' . $token);
-//        $response->assertStatus(200);
-//        $response = $this->delete('api/user-customers/5?token=' . $token);
-//        $response->assertStatus(200);
+        $response = $this->delete('api/lead-sources/1?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/lead-sources/2?token=' . $token);
+        $response->assertStatus(200);
 
         // Request
         $response = $this->get('api/soft-deleted-items?token=' . $token);
@@ -146,7 +140,7 @@ class MenusControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $data         = $responseJSON['data'];  // array
 
-        $this->assertEquals(5, count($data));
+        $this->assertEquals(6, count($data));
         $this->assertEquals('User Profiles', $data[0]['name']);
         $this->assertEquals("user-profiles/soft-deleted", $data[0]['url']);
 
@@ -161,6 +155,10 @@ class MenusControllerTest extends WnyTestCase
         $this->assertEquals(4, $data[3]['count']);
         $this->assertEquals('User-Customers', $data[3]['name']);
         $this->assertEquals("user-customers/soft-deleted", $data[3]['url']);
+
+        $this->assertEquals(2, $data[5]['count']);
+        $this->assertEquals('Lead Sources', $data[5]['name']);
+        $this->assertEquals("lead-sources/soft-deleted", $data[5]['url']);
 
         $this->assertEquals("Soft-deleted retrieved successfully.", $message);
         $this->assertEquals(true, $success);
@@ -178,6 +176,8 @@ class MenusControllerTest extends WnyTestCase
      *   Check response status
      *   Check response structure
      *   Check response data
+     *
+     * @return void
      */
     public function testGetSoftDeletedIfTheAccessIsNotFull()
     {
@@ -197,6 +197,10 @@ class MenusControllerTest extends WnyTestCase
         $response = $this->delete('api/organizations/17?token=' . $token);
         $response->assertStatus(200);
         $response = $this->delete('api/organizations/16?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/lead-sources/1?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/lead-sources/2?token=' . $token);
         $response->assertStatus(200);
 
         $token = $this->loginOrganizationWNYSuperadmin();
@@ -229,7 +233,7 @@ class MenusControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $data         = $responseJSON['data'];  // array
 
-        $this->assertEquals(5, count($data));
+        $this->assertEquals(6, count($data));
         $this->assertEquals('User Profiles', $data[0]['name']);
         $this->assertEquals("user-profiles/soft-deleted", $data[0]['url']);
 
@@ -244,6 +248,10 @@ class MenusControllerTest extends WnyTestCase
         $this->assertEquals(3, $data[3]['count']);
         $this->assertEquals('User-Customers', $data[3]['name']);
         $this->assertEquals("user-customers/soft-deleted", $data[3]['url']);
+
+        $this->assertEquals(2, $data[5]['count']);
+        $this->assertEquals('Lead Sources', $data[5]['name']);
+        $this->assertEquals("lead-sources/soft-deleted", $data[5]['url']);
 
         $this->assertEquals("Soft-deleted retrieved successfully.", $message);
         $this->assertEquals(true, $success);
@@ -260,6 +268,8 @@ class MenusControllerTest extends WnyTestCase
      *   Check response status
      *   Check response structure
      *   Check response data
+     *
+     * @return void
      */
     public function testGetSoftDeletedIfTheAccessIsAbsentByTheRole()
     {
@@ -305,6 +315,8 @@ class MenusControllerTest extends WnyTestCase
     /**
      * Special Test. Bug CCFEC-385
      * OrganizationWNYAdmin tries to get Data for dashboard
+     *
+     * @return void
      */
     public function testGetSoftDeletedSpecialTestBug385()
     {
@@ -338,7 +350,7 @@ class MenusControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $data         = $responseJSON['data'];  // array
 
-        $this->assertEquals(5, count($data));
+        $this->assertEquals(6, count($data));
 
         $this->assertEquals(0, $data[0]['count']);
         $this->assertEquals('User Profiles', $data[0]['name']);

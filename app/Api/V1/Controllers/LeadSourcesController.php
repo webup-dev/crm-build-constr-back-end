@@ -87,7 +87,7 @@ class LeadSourcesController extends Controller
     /**
      * Store a newly created LeadSource in DB
      *
-     * @param \Illuminate\Http\Request $request Request
+     * @param StoreLeadSource $request Request
      *
      * @response 200 {
      *  "success": true,
