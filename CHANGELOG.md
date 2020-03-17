@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.22.1] - 2019-03-17
+### Fixed
+- Bug CCFEC-863. Deploy is made.
+
 ## [0.22.0] - 2019-03-12
 ### Added
 - Menus for platform-admin, organization-general-manager are created,
