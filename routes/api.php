@@ -2,6 +2,7 @@
 
 use Dingo\Api\Routing\Router;
 use Illuminate\Http\Request;
+use App\Api\V1\Controllers;
 
 /**
  * Router for API
@@ -157,7 +158,10 @@ $api->version(
         $api->group(
             ['middleware' => ['api.auth', 'activity']],
             function (Router $api) {
-                $api->get('methods/{id}', 'App\Api\V1\Controllers\MethodsController@index');
+                $api->get(
+                    'methods/{id}',
+                    'App\Api\V1\Controllers\MethodsController@index'
+                );
                 $api->get('methods/{id}/show', 'App\Api\V1\Controllers\MethodsController@show');
                 $api->post('methods/{id}', 'App\Api\V1\Controllers\MethodsController@store');
                 $api->put('methods/{id}', 'App\Api\V1\Controllers\MethodsController@update');
@@ -334,10 +338,6 @@ $api->version(
                 $api->get(
                     'files/{id}',
                     'App\Api\V1\Controllers\FilesController@show'
-                );
-                $api->get(
-                    'file/{id}',
-                    'App\Api\V1\Controllers\FilesController@getFile'
                 );
                 $api->post(
                     'files',

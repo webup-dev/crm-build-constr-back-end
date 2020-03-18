@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\File;
 use App\Models\LeadSource;
+use App\Models\LsCategory;
 use App\Models\Organization;
 use App\Models\User_profile;
 use App\Models\UserCustomer;
@@ -85,7 +86,7 @@ class MenusController extends Controller
         $res[] = $this->_getOrganizations($collectValues);
         $res[] = $this->_getUserCustomers($collectValues, $userProfileDepartmentId);
         $res[] = $this->_getFiles();
-        $res[] = $this->_getLeadSources();
+        $res[] = $this->_getLsCategories();
 
         $response = [
             "success" => true,
@@ -222,17 +223,17 @@ class MenusController extends Controller
      *
      * @return array
      */
-    private function _getLeadSources()
+    private function _getLsCategories()
     {
-        $leadSourcesCount = LeadSource::onlyTrashed()
+        $lsCategoriesCount = LsCategory::onlyTrashed()
             ->select('id')
             ->get()
             ->count();
 
         return [
-            "name"  => 'Lead Sources',
-            "url"   => 'lead-sources/soft-deleted',
-            "count" => $leadSourcesCount
+            "name"  => 'Lead Source Categories',
+            "url"   => 'lead-source-categories/soft-deleted',
+            "count" => $lsCategoriesCount
         ];
     }
 }

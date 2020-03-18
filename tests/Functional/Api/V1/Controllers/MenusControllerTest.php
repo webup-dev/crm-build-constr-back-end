@@ -107,9 +107,9 @@ class MenusControllerTest extends WnyTestCase
         $response->assertStatus(200);
         $response = $this->delete('api/organizations/16?token=' . $token);
         $response->assertStatus(200);
-        $response = $this->delete('api/lead-sources/1?token=' . $token);
+        $response = $this->delete('api/lead-source-categories/1?token=' . $token);
         $response->assertStatus(200);
-        $response = $this->delete('api/lead-sources/2?token=' . $token);
+        $response = $this->delete('api/lead-source-categories/2?token=' . $token);
         $response->assertStatus(200);
 
         // Request
@@ -157,8 +157,8 @@ class MenusControllerTest extends WnyTestCase
         $this->assertEquals("user-customers/soft-deleted", $data[3]['url']);
 
         $this->assertEquals(2, $data[5]['count']);
-        $this->assertEquals('Lead Sources', $data[5]['name']);
-        $this->assertEquals("lead-sources/soft-deleted", $data[5]['url']);
+        $this->assertEquals('Lead Source Categories', $data[5]['name']);
+        $this->assertEquals("lead-source-categories/soft-deleted", $data[5]['url']);
 
         $this->assertEquals("Soft-deleted retrieved successfully.", $message);
         $this->assertEquals(true, $success);
@@ -198,9 +198,9 @@ class MenusControllerTest extends WnyTestCase
         $response->assertStatus(200);
         $response = $this->delete('api/organizations/16?token=' . $token);
         $response->assertStatus(200);
-        $response = $this->delete('api/lead-sources/1?token=' . $token);
+        $response = $this->delete('api/lead-source-categories/1?token=' . $token);
         $response->assertStatus(200);
-        $response = $this->delete('api/lead-sources/2?token=' . $token);
+        $response = $this->delete('api/lead-source-categories/2?token=' . $token);
         $response->assertStatus(200);
 
         $token = $this->loginOrganizationWNYSuperadmin();
@@ -250,8 +250,8 @@ class MenusControllerTest extends WnyTestCase
         $this->assertEquals("user-customers/soft-deleted", $data[3]['url']);
 
         $this->assertEquals(2, $data[5]['count']);
-        $this->assertEquals('Lead Sources', $data[5]['name']);
-        $this->assertEquals("lead-sources/soft-deleted", $data[5]['url']);
+        $this->assertEquals('Lead Source Categories', $data[5]['name']);
+        $this->assertEquals("lead-source-categories/soft-deleted", $data[5]['url']);
 
         $this->assertEquals("Soft-deleted retrieved successfully.", $message);
         $this->assertEquals(true, $success);

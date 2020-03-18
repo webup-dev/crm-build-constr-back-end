@@ -1970,15 +1970,4 @@ class FilesControllerTest extends WnyTestCase
         $this->assertEquals(false, $success);
         $this->assertEquals("Permission is absent by the role.", $message);
     }
-
-
-    public function testGetFile()
-    {
-        $token = $this->loginDeveloper();
-
-        // Request
-        $response = $this->get('api/file/1?token=' . $token);
-
-        $response->assertStatus(200);
-    }
 }
