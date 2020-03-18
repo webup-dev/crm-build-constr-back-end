@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.22.2] - 2019-03-18
+### Changed
+- Module LeadSources is renamed to LsCategories
+    - DB table name is changed to ls_categories,
+    - Migration is changed,
+    - LeadSourcesController is renamed to LsCategoriesController,
+    - LsCategoriesController is updated,
+    - Validation files is renamed and updated,
+    - Model is renamed and updated,
+    - Seeders are renamed and updated (main and test),
+    - Documentation is updated,
+    - Tests are renamed and updated.
+
 ## [0.22.1] - 2019-03-17
 ### Fixed
 - Bug CCFEC-863. Deploy is made.
