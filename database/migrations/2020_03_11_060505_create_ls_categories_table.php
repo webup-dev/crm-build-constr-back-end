@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * Migration to create lead_sources table
+ * Migration to create ls_categories table
  *
  * @category Migration
  * @package  LeadSources
@@ -13,7 +13,7 @@ use Illuminate\Database\Migrations\Migration;
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     Migration
  */
-class CreateLeadSourcesTable extends Migration
+class CreateLsCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -23,7 +23,7 @@ class CreateLeadSourcesTable extends Migration
     public function up()
     {
         Schema::create(
-            'lead_sources', function (Blueprint $table) {
+            'ls_categories', function (Blueprint $table) {
                 $table->increments('id')->unsigned();
                 $table->string('name');
                 $table->text('description')->nullable();
@@ -40,6 +40,6 @@ class CreateLeadSourcesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('lead_sources');
+        Schema::dropIfExists('ls_categories');
     }
 }

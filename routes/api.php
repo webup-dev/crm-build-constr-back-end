@@ -370,36 +370,36 @@ $api->version(
             ],
             function (Router $api) {
                 $api->get(
-                    'lead-sources',
-                    'App\Api\V1\Controllers\LeadSourcesController@index'
+                    'lead-source-categories',
+                    'App\Api\V1\Controllers\LsCategoriesController@index'
                 );
                 $api->get(
-                    'lead-sources/soft-deleted',
-                    'App\Api\V1\Controllers\LeadSourcesController@indexSoftDeleted'
+                    'lead-source-categories/soft-deleted',
+                    'App\Api\V1\Controllers\LsCategoriesController@indexSoftDeleted'
                 );
                 $api->get(
-                    'lead-sources/{id}',
-                    'App\Api\V1\Controllers\LeadSourcesController@show'
+                    'lead-source-categories/{id}',
+                    'App\Api\V1\Controllers\LsCategoriesController@show'
                 );
                 $api->post(
-                    'lead-sources',
-                    'App\Api\V1\Controllers\LeadSourcesController@store'
+                    'lead-source-categories',
+                    'App\Api\V1\Controllers\LsCategoriesController@store'
                 );
                 $api->put(
-                    'lead-sources/{id}',
-                    'App\Api\V1\Controllers\LeadSourcesController@update'
+                    'lead-source-categories/{id}',
+                    'App\Api\V1\Controllers\LsCategoriesController@update'
                 );
                 $api->delete(
-                    'lead-sources/{id}',
-                    'App\Api\V1\Controllers\LeadSourcesController@softDestroy'
+                    'lead-source-categories/{id}',
+                    'App\Api\V1\Controllers\LsCategoriesController@softDestroy'
                 );
                 $api->put(
-                    'lead-sources/{id}/restore',
-                    'App\Api\V1\Controllers\LeadSourcesController@restore'
+                    'lead-source-categories/{id}/restore',
+                    'App\Api\V1\Controllers\LsCategoriesController@restore'
                 );
                 $api->delete(
-                    'lead-sources/{id}/permanently',
-                    'App\Api\V1\Controllers\LeadSourcesController@destroyPermanently'
+                    'lead-source-categories/{id}/permanently',
+                    'App\Api\V1\Controllers\LsCategoriesController@destroyPermanently'
                 );
             }
         );

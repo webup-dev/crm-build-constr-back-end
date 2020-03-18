@@ -5,7 +5,7 @@ namespace App\Api\V1\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Request validation of updating of a lead_source
+ * Request validation of storing of new lead_source
  *
  * @category RequestValidation
  * @package  LeadSources
@@ -13,7 +13,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     RequestValidation
  */
-class UpdateLeadSource extends FormRequest
+class StoreLsCategory extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -33,7 +33,7 @@ class UpdateLeadSource extends FormRequest
     public function rules()
     {
         return [
-            "name"        => 'string',
+            "name"        => 'required|string',
             "description" => 'string'
         ];
     }

@@ -2,11 +2,12 @@
 
 namespace App\Api\V1\Controllers;
 
-use App\Api\V1\Requests\StoreLeadSource;
-use App\Api\V1\Requests\UpdateLeadSource;
+use App\Api\V1\Requests\StoreLsCategory;
+use App\Api\V1\Requests\UpdateLsCategory;
 use App\Http\Controllers\Controller;
-use App\Models\LeadSource;
+use App\Models\LsCategory;
 use App\Models\Role;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ use App\Traits\Responses;
  * @link     Controller
  * @group    LeadSources
  */
-class LeadSourcesController extends Controller
+class LsCategoriesController extends Controller
 {
     use Helpers;
     use Responses;
@@ -35,7 +36,7 @@ class LeadSourcesController extends Controller
      * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": "Lead Sources.index. Result is successful.",
+     *  "message": LsCategories.index. Result is successful.",
      *  "data": [{
      *    "id": 1,
      *    "name": "Blogging",
@@ -63,11 +64,11 @@ class LeadSourcesController extends Controller
      *   "data": null
      * }
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index()
     {
-        $leadSources = LeadSource::all();
+        $leadSources = LsCategory::all();
         if ($leadSources->count() === 0) {
             return response()->json('', 204);
         }
@@ -77,7 +78,7 @@ class LeadSourcesController extends Controller
         return response()->json(
             $this->resp(
                 200,
-                'Lead Sources.index',
+                'LsCategories.index',
                 $data
             ),
             200
@@ -85,14 +86,14 @@ class LeadSourcesController extends Controller
     }
 
     /**
-     * Store a newly created LeadSource in DB
+     * Store a newly created LsCategory in DB
      *
-     * @param StoreLeadSource $request Request
+     * @param StoreLsCategory $request Request
      *
      * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": "LeadSource.store. Result is successful."
+     *  "message": "LsCategory.store. Result is successful."
      * }
      *
      * @response 422 {
@@ -114,11 +115,11 @@ class LeadSourcesController extends Controller
      *    }
      * }
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function store(StoreLeadSource $request)
+    public function store(StoreLsCategory $request)
     {
-        $leadSource = new LeadSource();
+        $leadSource = new LsCategory();
 
         $leadSource->name        = $request->get('name');
         $leadSource->description = $request->get('description');
@@ -127,7 +128,7 @@ class LeadSourcesController extends Controller
             return response()->json(
                 $this->resp(
                     200,
-                    'LeadSource.store'
+                    'LsCategory.store'
                 ),
                 200
             );
@@ -153,7 +154,7 @@ class LeadSourcesController extends Controller
      *       "created_at": "2019-12-08 13:25:36",
      *       "updated_at": "2019-12-08 13:25:36"
      *     },
-     *  "message": "Lead Sources.show. Result is successful."
+     *  "message": LsCategories.show. Result is successful."
      * }
      *
      * @response 453 {
@@ -168,17 +169,17 @@ class LeadSourcesController extends Controller
      *  "data": null
      * }
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show($id)
     {
-        $leadSource = LeadSource::whereId($id)->first();
+        $leadSource = LsCategory::whereId($id)->first();
 
         if (!$leadSource) {
             return response()->json(
                 $this->resp(
                     456,
-                    'LeadSources.show'
+                    'LsCategories.show'
                 ),
                 456
             );
@@ -189,7 +190,7 @@ class LeadSourcesController extends Controller
         return response()->json(
             $this->resp(
                 200,
-                'LeadSources.show',
+                'LsCategories.show',
                 $data
             ),
             200
@@ -200,19 +201,19 @@ class LeadSourcesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateLeadSource $request Request
+     * @param UpdateLsCategory $request Request
      * @param int              $id      ID
      *
      * @response 200 {
      *  "success": true,
      *  "data": {
      *       "id": 1,
-     *       "name": "LeadSource Updated",
+     *       "name": "LsCategory Updated",
      *       "description": "Description Updated",
      *       "created_at": "2019-12-08 13:25:36",
      *       "updated_at": "2019-12-09 13:25:36"
      *     },
-     *  "message": "LeadSource.update. Result is successful."
+     *  "message": "LsCategory.update. Result is successful."
      * }
      *
      * @response 422 {
@@ -233,17 +234,17 @@ class LeadSourcesController extends Controller
      *    }
      * }
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function update(UpdateLeadSource $request, $id)
+    public function update(UpdateLsCategory $request, $id)
     {
-        $leadSource = LeadSource::whereId($id)->first();
+        $leadSource = LsCategory::whereId($id)->first();
 
         if (!$leadSource) {
             return response()->json(
                 $this->resp(
                     456,
-                    'LeadSources.update'
+                    'LsCategories.update'
                 ),
                 456
             );
@@ -255,7 +256,7 @@ class LeadSourcesController extends Controller
             return response()->json(
                 $this->resp(
                     200,
-                    'LeadSources.update',
+                    'LsCategories.update',
                     $leadSource
                 ),
                 200
@@ -298,18 +299,18 @@ class LeadSourcesController extends Controller
      *    }
      * }
      *
-     * @return \Illuminate\Http\JsonResponse|void
+     * @return JsonResponse|void
      * @throws \Exception
      */
     public function softDestroy($id)
     {
-        $leadSource = LeadSource::whereId($id)->first();
+        $leadSource = LsCategory::whereId($id)->first();
 
         if (!$leadSource) {
             return response()->json(
                 $this->resp(
                     456,
-                    'LeadSources.softDestroy'
+                    'LsCategories.softDestroy'
                 ),
                 456
             );
@@ -319,7 +320,7 @@ class LeadSourcesController extends Controller
             return response()->json(
                 $this->resp(
                     200,
-                    'LeadSources.softDestroy'
+                    'LsCategories.softDestroy'
                 ),
                 200
             );
@@ -370,17 +371,17 @@ class LeadSourcesController extends Controller
      * "data": null
      * }
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function indexSoftDeleted()
     {
-        $leadSources = LeadSource::onlyTrashed()->get();
+        $leadSources = LsCategory::onlyTrashed()->get();
 
         if (!$leadSources->count()) {
             return response()->json(
                 $this->resp(
                     204,
-                    'LeadSources.indexSoftDeleted'
+                    'LsCategories.indexSoftDeleted'
                 ),
                 204
             );
@@ -389,23 +390,23 @@ class LeadSourcesController extends Controller
         return response()->json(
             $this->resp(
                 200,
-                'LeadSources.indexSoftDeleted',
+                'LsCategories.indexSoftDeleted',
                 $leadSources
             ), 200
         );
     }
 
     /**
-     * Restore LeadSource
+     * Restore LsCategory
      *
-     * @param $id ID
+     * @param $id int ID
      *
      * @queryParam id int required User-Details ID
      *
      * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": "LeadSources.restore. Result is successful.",
+     *  "message": "LsCategorys.restore. Result is successful.",
      *  "data": null
      * }
      *
@@ -417,21 +418,21 @@ class LeadSourcesController extends Controller
      * @response 456 {
      *  "success": false,
      *  "code": 456,
-     *  "message": "LeadSources.restore. Incorrect ID in the URL.",
+     *  "message": "LsCategorys.restore. Incorrect ID in the URL.",
      *  "data": null
      * }
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function restore($id)
     {
-        $leadSources = LeadSource::onlyTrashed()->whereId($id)->first();
+        $leadSources = LsCategory::onlyTrashed()->whereId($id)->first();
 
         if (!$leadSources) {
             return response()->json(
                 $this->resp(
                     456,
-                    'LeadSources.restore'
+                    'LsCategories.restore'
                 ),
                 456
             );
@@ -441,7 +442,7 @@ class LeadSourcesController extends Controller
         $leadSources->restore();
 
         return response()->json(
-            $this->resp(200, 'LeadSources.restore'),
+            $this->resp(200, 'LsCategories.restore'),
             200
         );
     }
@@ -470,14 +471,14 @@ class LeadSourcesController extends Controller
      *  "data": null
      * }
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function destroyPermanently($id)
     {
-        $leadSources = LeadSource::withTrashed()->whereId($id)->first();
+        $leadSources = LsCategory::withTrashed()->whereId($id)->first();
         if (!$leadSources) {
             return response()->json(
-                $this->resp(456, 'LeadSources.destroyPermanently'),
+                $this->resp(456, 'LsCategories.destroyPermanently'),
                 456
             );
         }
@@ -485,7 +486,7 @@ class LeadSourcesController extends Controller
         $leadSources->forceDelete();
 
         return response()->json(
-            $this->resp(200, 'LeadSources.destroyPermanently'),
+            $this->resp(200, 'LsCategories.destroyPermanently'),
             200
         );
     }
