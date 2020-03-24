@@ -2,62 +2,68 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\LeadSource;
 use Closure;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\JWTAuth;
 use Auth;
 
 /**
- * Middleware to give access for Organization Admin and higher
+ * Middleware OrganizationUser
  *
  * @category Middleware
- * @package  WNY2
+ * @package  App\Http\Middleware
  * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     Middleware
  */
-class OrganizationAdmin
+class LeadSourcesOrganizationUser
 {
     /**
      * Handle an incoming request.
      *
      * @param Request  $request Request
-     * @param \Closure $next    Closure Next
+     * @param \Closure $next    Next
      *
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        $user         = Auth::guard()->user();
-        $roles        = $user->roles;
+        $user = Auth::guard()->user();
+
+        $roles = $user->roles;
+
         $roleNamesArr = $roles->pluck('name')->all();
 
         if (oneFromArrInOtherArr(
             [
-                'developer', 'platform-superadmin', 'platform-admin'
-            ],
-            $roleNamesArr
+                'developer',
+                'platform-superadmin',
+                'platform-admin'
+            ], $roleNamesArr
         )
         ) {
             return $next($request);
-        }
-
-        if (oneFromArrInOtherArr(
+        } elseif (oneFromArrInOtherArr(
             [
-                'organization-superadmin', 'organization-admin'
+                'organization-superadmin',
+                'organization-admin',
+                'organization-general-manager',
+                'organization-sales-manager',
+                'organization-production-manager',
+                'organization-administrative-leader',
+                'organization-estimator',
+                'organization-project-manager',
+                'organization-administrative-assistant'
             ],
             $roleNamesArr
         )
         ) {
-            $id           = $request->route('id');
-            $departmentId = $user->user_profile->department_id;
+            $id                     = $request->route('id');
+            $lsCategoryDepartmentId = LeadSource::whereId($id)
+                ->first()->organization_id;
+            $userDepartmentId       = $user->user_profile->department_id;
 
-            if ($id == '') {
-                $request->request->add(['parent_id' => $departmentId]);
-                return $next($request);
-            }
-
-            if ($id === $departmentId) {
+            if ($lsCategoryDepartmentId === $userDepartmentId) {
                 return $next($request);
             }
 

@@ -192,7 +192,7 @@ class FilesController extends Controller
 
     private function checkRoleLevel($roleNamesArr)
     {
-        if (one_from_arr_in_other_arr([
+        if (oneFromArrInOtherArr([
             'developer',
             'platform-superadmin',
             'platform-admin'
@@ -200,7 +200,7 @@ class FilesController extends Controller
             return 'platform';
         }
 
-        if (one_from_arr_in_other_arr([
+        if (oneFromArrInOtherArr([
             'organization-superadmin',
             'organization-admin',
             'organization-general-manager',
@@ -214,7 +214,7 @@ class FilesController extends Controller
             return 'organization';
         }
 
-        if (one_from_arr_in_other_arr([
+        if (oneFromArrInOtherArr([
             'customer-individual',
             'customer-organization'
         ], $roleNamesArr)) {

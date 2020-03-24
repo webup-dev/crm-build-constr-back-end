@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [0.23.0] - 2019-03-18
+### Added 
+- module Lead Sources is created
+    - Tests for all methods, seeders, request validations are created,
+    - Methods are created: index, store, update, softDestroy, show,
+      indexSoftDeleted, restore, permanentDelete. 
+
 ## [0.22.2] - 2019-03-18
 ### Changed
 - Module LeadSources is renamed to LsCategories

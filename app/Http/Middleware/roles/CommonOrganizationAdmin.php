@@ -4,23 +4,24 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Auth;
+use Illuminate\Http\Request;
 
 /**
- * Middleware to restrict permission except of platform.admin level and higher
+ * Middleware to restrict permission except of Organizational admin level and higher
  *
- * @category Migration
- * @package  LeadSources
+ * @category Middleware
+ * @package  App
  * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
- * @link     Migration
+ * @link     Middleware
  */
-class PlatformAdmin
+class CommonOrganizationAdmin
 {
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request Request
-     * @param \Closure                 $next    Next
+     * @param Request  $request Request
+     * @param \Closure $next    Next
      *
      * @return mixed
      */
@@ -31,7 +32,13 @@ class PlatformAdmin
         $roleNamesArr = $roles->pluck('name')->all();
 
         if (oneFromArrInOtherArr(
-            ['developer', 'platform-superadmin', 'platform-admin'],
+            [
+                'developer',
+                'platform-superadmin',
+                'platform-admin',
+                'organization-superadmin',
+                'organization-admin'
+            ],
             $roleNamesArr
         )
         ) {

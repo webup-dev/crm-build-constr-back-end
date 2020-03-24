@@ -27,7 +27,7 @@ class SoftDeletedMenu_OrganizationAdmin
 
         $roleNamesArr = $roles->pluck('name')->all();
 
-        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin', 'organization-superadmin', 'organization-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['developer', 'platform-superadmin', 'platform-admin', 'organization-superadmin', 'organization-admin'], $roleNamesArr)) {
             return $next($request);
         }
 

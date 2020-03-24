@@ -3,28 +3,35 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Tymon\JWTAuth\JWTAuth;
+use Illuminate\Http\Request;
 use Auth;
 
+/**
+ * Middleware OrganizationUser
+ *
+ * @category Middleware
+ * @package  App\Http\Middleware
+ * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link     Middleware
+ */
 class OrganizationUser
 {
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param Request  $request Request
+     * @param \Closure $next    Next
+     *
      * @return mixed
-     * @throws \Tymon\JWTAuth\Exceptions\JWTException
      */
     public function handle($request, Closure $next)
     {
         $user = Auth::guard()->user();
-
         $roles = $user->roles;
+        $roleNamesArr = $roles->pluck('name')->all();
 
-        $roleNamesArr= $roles->pluck('name')->all();
-
-        if (one_from_arr_in_other_arr(
+        if (oneFromArrInOtherArr(
             [
                 'developer',
                 'platform-superadmin',
@@ -38,7 +45,9 @@ class OrganizationUser
                 'organization-estimator',
                 'organization-project-manager',
                 'organization-administrative-assistant'
-            ], $roleNamesArr)) {
+            ], $roleNamesArr
+        )
+        ) {
             return $next($request);
         }
 

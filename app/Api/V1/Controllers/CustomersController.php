@@ -110,7 +110,7 @@ class CustomersController extends Controller
             'organization-project-manager',
             'organization-administrative-assistant'
         ];
-        if (one_from_arr_in_other_arr($accessArray, $roleNamesArr)) {
+        if (oneFromArrInOtherArr($accessArray, $roleNamesArr)) {
             // only its organizations
             $user         = User::find($user->id);
             $userProfile  = $user->user_profile;

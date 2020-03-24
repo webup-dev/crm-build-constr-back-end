@@ -27,19 +27,19 @@ class Customers_OrganizationUsers
         $roleNamesArr = $roles->pluck('name')->all();
         $id = $request->route('id');
 
-        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $next($request);
         }
 
-        if (one_from_arr_in_other_arr(['organization-superadmin',
-                                       'organization-admin',
-                                       'organization-general-manager',
-                                       'organization-sales-manager',
-                                       'organization-production-manager',
-                                       'organization-administrative-leader',
-                                       'organization-estimator',
-                                       'organization-project-manager',
-                                       'organization-administrative-assistant'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['organization-superadmin',
+                                  'organization-admin',
+                                  'organization-general-manager',
+                                  'organization-sales-manager',
+                                  'organization-production-manager',
+                                  'organization-administrative-leader',
+                                  'organization-estimator',
+                                  'organization-project-manager',
+                                  'organization-administrative-assistant'], $roleNamesArr)) {
             if ($id == '') {
                 return $next($request);
             }

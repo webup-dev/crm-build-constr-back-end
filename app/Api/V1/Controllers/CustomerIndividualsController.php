@@ -99,7 +99,7 @@ class CustomerIndividualsController extends Controller
             'organization-project-manager',
             'organization-administrative-assistant'
         ];
-        if (one_from_arr_in_other_arr($accessArray, $roleNamesArr)) {
+        if (oneFromArrInOtherArr($accessArray, $roleNamesArr)) {
             $user         = User::find($user->id);
             $userProfile  = $user->user_profile;
             $departmentId = $userProfile->department_id;
@@ -690,7 +690,7 @@ class CustomerIndividualsController extends Controller
         $roles        = $user->roles;
         $roleNamesArr = $roles->pluck('name')->all();
 
-        if (one_from_arr_in_other_arr(['organization-superadmin', 'organization-admin', 'organization-general-manager'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['organization-superadmin', 'organization-admin', 'organization-general-manager'], $roleNamesArr)) {
 //            print_r("here");
             $user                  = User::find($user->id);
             $userProfileRequester  = $user->user_profile;

@@ -3,18 +3,28 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTAuth;
 use Auth;
 
+/**
+ * Middleware to give access for Organization Superadmin and higher
+ *
+ * @category Middleware
+ * @package  WNY2
+ * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link     Middleware
+ */
 class OrganizationSuperadmin
 {
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param Request  $request Request
+     * @param \Closure $next    Closure Next
+     *
      * @return mixed
-     * @throws \Tymon\JWTAuth\Exceptions\JWTException
      */
     public function handle($request, Closure $next)
     {
@@ -24,7 +34,17 @@ class OrganizationSuperadmin
 
         $roleNamesArr= $roles->pluck('name')->all();
 
-        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin', 'organization-superadmin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(
+            [
+                'developer',
+                'platform-superadmin',
+                'platform-admin',
+                'organization-superadmin',
+                'organization-admin'
+            ],
+            $roleNamesArr
+        )
+        ) {
             return $next($request);
         }
 
@@ -33,6 +53,6 @@ class OrganizationSuperadmin
             'message' => 'Permission is absent by the role.'
         ];
 
-        return response()->json($response, 401);
+        return response()->json($response, 453);
     }
 }

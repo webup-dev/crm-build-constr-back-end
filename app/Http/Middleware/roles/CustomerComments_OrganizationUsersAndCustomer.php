@@ -30,19 +30,19 @@ class CustomerComments_OrganizationUsersAndCustomer
         $roleNamesArr = $roles->pluck('name')->all();
         $id = $request->route('id');
 
-        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $next($request);
         }
 
-        if (one_from_arr_in_other_arr(['organization-superadmin',
-                                       'organization-admin',
-                                       'organization-general-manager',
-                                       'organization-sales-manager',
-                                       'organization-production-manager',
-                                       'organization-administrative-leader',
-                                       'organization-estimator',
-                                       'organization-project-manager',
-                                       'organization-administrative-assistant'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['organization-superadmin',
+                                  'organization-admin',
+                                  'organization-general-manager',
+                                  'organization-sales-manager',
+                                  'organization-production-manager',
+                                  'organization-administrative-leader',
+                                  'organization-estimator',
+                                  'organization-project-manager',
+                                  'organization-administrative-assistant'], $roleNamesArr)) {
             // Editor may read/create/edit/softDelete Comment of a customer that belongs to his organization or child organization
             // UserProfile id:
 
@@ -86,7 +86,7 @@ class CustomerComments_OrganizationUsersAndCustomer
 
             return response()->json($response, 454);
         }
-        if (one_from_arr_in_other_arr(['customer-individual', 'customer-organization'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['customer-individual', 'customer-organization'], $roleNamesArr)) {
 
 
         }

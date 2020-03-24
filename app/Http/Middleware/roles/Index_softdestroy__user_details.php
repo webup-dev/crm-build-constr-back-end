@@ -50,12 +50,12 @@ class Index_softdestroy__user_details
         $organizations = Organization::all()->toArray();
 
         // P1 (see phpDoc)
-        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $next($request);
         }
 
         // P2 (see phpDoc)
-        if (one_from_arr_in_other_arr([
+        if (oneFromArrInOtherArr([
             'organization-superadmin',
             'organization-admin'
         ], $roleNamesArr)) {

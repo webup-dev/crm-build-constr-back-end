@@ -3,40 +3,55 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
- * App\Models\Organization
+ * Model App\Models\Organization
  *
- * @property int $id
- * @property string|null $order
- * @property string $name
- * @property int|null $parent_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Organization[] $childOrganizations
- * @property-read \App\Models\Organization $parentOrganization
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereParentId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereUpdatedAt($value)
- * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User_profile[] $user_profile
- * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @category Model
+ * @package  LeadSourceCategoriess
+ * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link     Model
+ *
+ * @property int                            $id
+ * @property string|null                    $order
+ * @property string                         $name
+ * @property int|null                       $parent_id
+ * @property Carbon|null                    $created_at
+ * @property Carbon|null                    $updated_at
+ * @property Carbon|null                    $deleted_at
+ * @property int                            $level
+ *
+ * @property-read Collection|Organization[] $childOrganizations
+ * @property-read Organization              $parentOrganization
+ * @property-read Collection|User_profile[] $user_profile
+ * @property-read Collection|Customer[]     $customer
+ * @property-read Collection|LeadSource[]   $leadSources
+ *
+ * @method static Builder|Organization newModelQuery()
+ * @method static Builder|Organization newQuery()
+ * @method static Builder|Organization query()
+ * @method static Builder|Organization whereCreatedAt($value)
+ * @method static Builder|Organization whereId($value)
+ * @method static Builder|Organization whereName($value)
+ * @method static Builder|Organization whereOrder($value)
+ * @method static Builder|Organization whereParentId($value)
+ * @method static Builder|Organization whereUpdatedAt($value)
  * @method static bool|null forceDelete()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Organization onlyTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Organization onlyTrashed()
  * @method static bool|null restore()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Organization withTrashed()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Organization withoutTrashed()
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Customer[] $customer
- * @property int $level
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereLevel($value)
+ * @method static Builder|Organization whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|Organization withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Organization withoutTrashed()
+ * @method static Builder|Organization whereLevel($value)
+ *
+ * @mixin \Eloquent
  */
 class Organization extends Model
 {
@@ -47,6 +62,8 @@ class Organization extends Model
     /**
      * Organization - Organization: one-to-many
      * Get the Organization that owns the Organization.
+     *
+     * @return BelongsTo
      */
     public function parentOrganization()
     {
@@ -57,6 +74,8 @@ class Organization extends Model
      * Organization - Organization: one-to-many
      *
      * Get the Organizations for the Organization.
+     *
+     * @return HasMany
      */
     public function childOrganizations()
     {
@@ -64,22 +83,50 @@ class Organization extends Model
     }
 
     /**
-     * organizations <-> user_profiles: one-to-many
+     * Organizations <-> user_profiles: one-to-many
      *
      * Get the user_profile that belongs the organization.
+     *
+     * @return HasMany
      */
     public function user_profile()
     {
-        return $this->hasMany('App\Models\User_profile', 'department_id', 'id');
+        return $this->hasMany(
+            'App\Models\User_profile',
+            'department_id',
+            'id'
+        );
     }
 
     /**
-     * organizations <-> customers: one-to-many
+     * Organizations <-> customers: one-to-many
      *
      * Get the customer that belongs to the organization.
+     *
+     * @return HasMany
      */
     public function customer()
     {
-        return $this->hasMany('App\Models\Customer', 'organization_id', 'id');
+        return $this->hasMany(
+            'App\Models\Customer',
+            'organization_id',
+            'id'
+        );
+    }
+
+    /**
+     * Organizations - lead_sources: one-to-many
+     *
+     * Get the lead_sources for the Organization.
+     *
+     * @return HasMany
+     */
+    public function leadSources()
+    {
+        return $this->hasMany(
+            'App\Models\LeadSource',
+            'organization_id',
+            'id'
+        );
     }
 }

@@ -48,7 +48,7 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected $routeMiddleware = [
+    protected $routeMiddleware = array(
         'auth'                                          => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic'                                    => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings'                                      => \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -62,6 +62,9 @@ class Kernel extends HttpKernel
         'platform.superadmin'                           => \App\Http\Middleware\PlatformSuperadmin::class,
         'platform.admin'                                => \App\Http\Middleware\PlatformAdmin::class,
         'organization.superadmin'                       => \App\Http\Middleware\OrganizationSuperadmin::class,
+        'common.organization.admin'                     => \App\Http\Middleware\CommonOrganizationAdmin::class,
+        'lead-sources.organization.admin'               => \App\Http\Middleware\LeadSourcesOrganizationAdmin::class,
+        'lead-sources.organization.user'                => \App\Http\Middleware\LeadSourcesOrganizationUser::class,
         'organizations_organization.admin'              => \App\Http\Middleware\Organizations_OrganizationAdmin::class,
         'user_profiles_organization.admin'              => \App\Http\Middleware\UserProfiles_OrganizationAdmin::class,
         'user_profiles_organization.admin.own'          => \App\Http\Middleware\UserProfiles_OrganizationAdminOwn::class,
@@ -81,5 +84,5 @@ class Kernel extends HttpKernel
         'create_file'                                   => \App\Http\Middleware\File_create::class,
         'file_owner'                                    => \App\Http\Middleware\File_owner::class,
         'index_file'                                    => \App\Http\Middleware\File_index::class,
-    ];
+    );
 }

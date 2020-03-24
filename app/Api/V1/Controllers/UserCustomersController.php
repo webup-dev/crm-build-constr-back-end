@@ -124,11 +124,11 @@ class UserCustomersController extends Controller
         $roles        = $user->roles;
         $roleNamesArr = $roles->pluck('name')->all();
 
-        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $data;
         }
 
-        if (one_from_arr_in_other_arr([
+        if (oneFromArrInOtherArr([
             'organization-superadmin',
             'organization-admin',
             'organization-general-manager',

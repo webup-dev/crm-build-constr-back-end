@@ -41,7 +41,7 @@ class File_index
         $roleNamesArr  = $currentUser->roles->pluck('name')->all();
         $urlCustomerId = $request->route('id');
 
-        if (one_from_arr_in_other_arr([
+        if (oneFromArrInOtherArr([
             'developer',
             'platform-superadmin',
             'platform-admin'
@@ -49,7 +49,7 @@ class File_index
             return $next($request);
         }
 
-        if (one_from_arr_in_other_arr([
+        if (oneFromArrInOtherArr([
             'organization-superadmin',
             'organization-admin',
             'organization-general-manager',
@@ -81,7 +81,7 @@ class File_index
             return response()->json($this->resp(454, 'Middleware.Files'), 454);
         }
 
-        if (one_from_arr_in_other_arr([
+        if (oneFromArrInOtherArr([
             'customer-individual',
             'customer-organization'
         ], $roleNamesArr)) {

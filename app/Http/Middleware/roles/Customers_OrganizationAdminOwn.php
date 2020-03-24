@@ -32,12 +32,12 @@ class Customers_OrganizationAdminOwn
 //        dd($roleNamesArr);
         $id = $request->route('id');
 
-        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
 //            dd("here");
             return $next($request);
         }
 
-        if (one_from_arr_in_other_arr(['organization-superadmin', 'organization-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['organization-superadmin', 'organization-admin'], $roleNamesArr)) {
 //            dd("here");
             // Editor may edit UserProfile of a user that belongs to his organization or child organization
             // UserProfile id:

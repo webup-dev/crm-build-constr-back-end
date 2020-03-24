@@ -13,7 +13,7 @@ use Illuminate\Database\Migrations\Migration;
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     Migration
  */
-class CreateLeadSTable extends Migration
+class CreateLeadSourcesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -23,11 +23,21 @@ class CreateLeadSTable extends Migration
     public function up()
     {
         Schema::create(
-            'lead_s',
+            'lead_sources',
             function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');
-                $table->text('description')->nullable();
+                $table->integer('category_id')->unsigned()->index();
+                $table->foreign('category_id')
+                    ->references('id')
+                    ->on('ls_categories')
+                    ->onDelete('cascade');
+                $table->integer('organization_id')->unsigned()->index();
+                $table->foreign('organization_id')
+                    ->references('id')
+                    ->on('organizations')
+                    ->onDelete('cascade');
+                $table->enum('status', ['active', 'inactive']);
                 $table->softDeletes();
                 $table->timestamps();
             }
@@ -41,6 +51,6 @@ class CreateLeadSTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('lead_s');
+        Schema::dropIfExists('lead_sources');
     }
 }

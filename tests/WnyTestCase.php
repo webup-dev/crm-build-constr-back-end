@@ -2,11 +2,24 @@
 
 namespace App;
 
-use App\TestCase;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Class WnyTestCase
+ *
+ * @category TestCase
+ * @package  App
+ * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link     Tests
+ */
 abstract class WnyTestCase extends TestCase
 {
+    /**
+     * Tear down after tests
+     *
+     * @return void
+     */
     public function tearDown()
     : void
     {
@@ -24,33 +37,52 @@ abstract class WnyTestCase extends TestCase
         Schema::dropIfExists('user_details');
         Schema::dropIfExists('customers');
         Schema::dropIfExists('files');
+        Schema::dropIfExists('lead_sources');
         Schema::dropIfExists('organizations');
         Schema::dropIfExists('activities');
         Schema::dropIfExists('users');
-        Schema::dropIfExists('lead_sources');
+        Schema::dropIfExists('lsCategories');
     }
 
-    private function loginUser($data)
+    /**
+     * LoginUser
+     *
+     * @param array $data Array of email, password
+     *
+     * @return mixed
+     */
+    public function loginUser($data)
     {
         // Check login
-        $response = $this->post('api/auth/login', [
-            'email'    => $data['email'],
-            'password' => $data['password']
-        ]);
+        $response = $this->post(
+            'api/auth/login', [
+                'email'    => $data['email'],
+                'password' => $data['password']
+            ]
+        );
 
         $response->assertStatus(200);
 
         $responseJSON = json_decode($response->getContent(), true);
         $token        = $responseJSON['token'];
 
-        $this->get('api/auth/me?token=' . $token, [])->assertJson([
-            'name'  => $data['name'],
-            'email' => $data['email']
-        ])->isOk();
+        $this->get(
+            'api/auth/me?token=' . $token, []
+        )->assertJson(
+            [
+                'name'  => $data['name'],
+                'email' => $data['email']
+            ]
+        )->isOk();
 
         return $token;
     }
 
+    /**
+     * Login Developer
+     *
+     * @return mixed
+     */
     public function loginDeveloper()
     {
         $data = [
@@ -62,6 +94,11 @@ abstract class WnyTestCase extends TestCase
         return $this->loginUser($data);
     }
 
+    /**
+     * Login PlatformSuperAdmin
+     *
+     * @return mixed
+     */
     public function loginPlatformSuperAdmin()
     {
         $data = [
@@ -73,6 +110,11 @@ abstract class WnyTestCase extends TestCase
         return $this->loginUser($data);
     }
 
+    /**
+     * Login OrganizationWNYSuperadmin
+     *
+     * @return mixed
+     */
     public function loginOrganizationWNYSuperadmin()
     {
         $data = [
@@ -84,6 +126,11 @@ abstract class WnyTestCase extends TestCase
         return $this->loginUser($data);
     }
 
+    /**
+     * Login OrganizationWNYGeneralManager
+     *
+     * @return mixed
+     */
     public function loginOrganizationWNYGeneralManager()
     {
         $data = [
@@ -95,6 +142,11 @@ abstract class WnyTestCase extends TestCase
         return $this->loginUser($data);
     }
 
+    /**
+     * Login OrganizationWNYAdmin
+     *
+     * @return mixed
+     */
     public function loginOrganizationWNYAdmin()
     {
         $data = [
@@ -106,6 +158,11 @@ abstract class WnyTestCase extends TestCase
         return $this->loginUser($data);
     }
 
+    /**
+     * Login OrganizationSpringSuperadmin
+     *
+     * @return mixed
+     */
     public function loginOrganizationSpringSuperadmin()
     {
         $data = [
@@ -117,6 +174,11 @@ abstract class WnyTestCase extends TestCase
         return $this->loginUser($data);
     }
 
+    /**
+     * Login CustomerSpring
+     *
+     * @return mixed
+     */
     public function loginCustomerSpring()
     {
         $data = [
@@ -128,6 +190,11 @@ abstract class WnyTestCase extends TestCase
         return $this->loginUser($data);
     }
 
+    /**
+     * Login CustomerWny
+     *
+     * @return mixed
+     */
     public function loginCustomerWny()
     {
         $data = [
@@ -139,6 +206,11 @@ abstract class WnyTestCase extends TestCase
         return $this->loginUser($data);
     }
 
+    /**
+     * Login CustomerFWny
+     *
+     * @return mixed
+     */
     public function loginCustomerFWny()
     {
         $data = [

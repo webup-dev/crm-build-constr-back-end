@@ -28,11 +28,11 @@ class UserCustomers
         $roleNamesArr = $roles->pluck('name')->all();
         $id           = $request->route('id');
 
-        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $next($request);
         }
 
-        if (one_from_arr_in_other_arr([
+        if (oneFromArrInOtherArr([
             'organization-superadmin',
             'organization-admin',
             'organization-general-manager',

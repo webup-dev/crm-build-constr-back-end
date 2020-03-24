@@ -37,7 +37,7 @@ class File_create
         $currentUser             = Auth::guard()->user();
         $roleNamesArr            = $currentUser->roles->pluck('name')->all();
 
-        if (one_from_arr_in_other_arr([
+        if (oneFromArrInOtherArr([
             'developer',
             'organization-superadmin',
             'organization-admin',

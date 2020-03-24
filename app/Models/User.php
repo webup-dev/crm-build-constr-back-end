@@ -3,49 +3,54 @@
 namespace App\Models;
 
 use Hash;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Carbon;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Collection;
+use \Illuminate\Notifications\DatabaseNotificationCollection;
 
 
 /**
  * App\Models\User
  *
- * @property int $id
- * @property string $name
- * @property string $email
- * @property string $password
+ * @property int         $id
+ * @property string      $name
+ * @property string      $email
+ * @property string      $password
  * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Activity[] $activities
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Book[] $books
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerComment[] $comment
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomerFile[] $customer_file
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Customer[] $customers
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
- * @property-read \App\Models\User_profile $user_profile
+ * @property Carbon|null $deleted_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection|\App\Models\Activity[]                                                                         $activities
+ * @property-read Collection|\App\Models\Book[]                                                                             $books
+ * @property-read Collection|\App\Models\CustomerComment[]                                                                  $comment
+ * @property-read Collection|\App\Models\CustomerFile[]                                                                     $customer_file
+ * @property-read Collection|\App\Models\Customer[]                                                                         $customers
+ * @property-read DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read Collection|\App\Models\Role[]                                                                             $roles
+ * @property-read \App\Models\User_profile
+ * @property-read \App\Models\UserDetail                                                                                    $userDetail
+ * @property-read Collection|\App\Models\File[] $user_profile
  * @method static bool|null forceDelete()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
+ * @method static Builder|\App\Models\User newModelQuery()
+ * @method static Builder|\App\Models\User newQuery()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User query()
+ * @method static Builder|\App\Models\User query()
  * @method static bool|null restore()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
+ * @method static Builder|\App\Models\User whereCreatedAt($value)
+ * @method static Builder|\App\Models\User whereDeletedAt($value)
+ * @method static Builder|\App\Models\User whereEmail($value)
+ * @method static Builder|\App\Models\User whereId($value)
+ * @method static Builder|\App\Models\User whereName($value)
+ * @method static Builder|\App\Models\User wherePassword($value)
+ * @method static Builder|\App\Models\User whereRememberToken($value)
+ * @method static Builder|\App\Models\User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User withoutTrashed()
  * @mixin \Eloquent
- * @property-read \App\Models\UserDetail $userDetail
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\File[] $file
  */
 class User extends Authenticatable implements JWTSubject

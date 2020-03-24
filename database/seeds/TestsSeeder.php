@@ -11,17 +11,18 @@ class TestsSeeder extends Seeder
      */
     public function run()
     {
-         $this->call(TestOrganizationsSeeder::class);
-         $this->call(TestRolesSeeder::class);
-         $this->call(TestUsersSeeder::class);
-         $this->call(TestUserProfilesSeeder::class);
-         $this->call(TestUserRolesSeeder::class);
-         $this->call(TestCustomersSeeder::class);
-         $this->call(TestUserCustomersSeeder::class);
-         $this->call(TestCustomerCommentsSeeder::class);
-         $this->call(TestCustomerFilesSeeder::class);
-         $this->call(TestUserDetailsSeeder::class);
-         $this->call(TestFileSeeder::class);
-         $this->call(TestLsCategoriesSeeder::class);
+        $this->call(TestOrganizationsSeeder::class);
+        $this->call(TestRolesSeeder::class);
+        $this->call(TestUsersSeeder::class);
+        $this->call(TestUserProfilesSeeder::class);
+        $this->call(TestUserRolesSeeder::class);
+        $this->call(TestCustomersSeeder::class);
+        $this->call(TestUserCustomersSeeder::class);
+        $this->call(TestCustomerCommentsSeeder::class);
+        $this->call(TestCustomerFilesSeeder::class);
+        $this->call(TestUserDetailsSeeder::class);
+        $this->call(TestFileSeeder::class);
+        $this->call(TestLsCategoriesSeeder::class);
+        $this->call(TestLeadSourcesSeeder::class);
     }
 }

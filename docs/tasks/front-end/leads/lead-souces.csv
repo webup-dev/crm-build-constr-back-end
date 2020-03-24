@@ -44,6 +44,7 @@ Task,Create new Branch,0.5
 Task,Create button 'Delete' in the table,0.5
 Task,Create method 'Delete',0.5
 Task,Commit,3
+Task,CHANGELOG,1
 Task,Deployment/Checking/Testing,3
 Task,Version,3
 Task,Report,1

@@ -27,11 +27,11 @@ class Customers_OrganizationSuperadmin
 
         $roleNamesArr = $roles->pluck('name')->all();
 
-        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $next($request);
         }
 
-        if (one_from_arr_in_other_arr(['organization-superadmin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['organization-superadmin'], $roleNamesArr)) {
             // Editor may edit a Customer that belongs to his organization or child organization
             // Customer id:
             $id = $request->route('id');

@@ -40,14 +40,14 @@ class Organizations_OrganizationAdmin
 
         $roleNamesArr = $roles->pluck('name')->all();
 
-        if (one_from_arr_in_other_arr(
+        if (oneFromArrInOtherArr(
             ['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr
         )
         ) {
             return $next($request);
         }
 
-        if (one_from_arr_in_other_arr(
+        if (oneFromArrInOtherArr(
             ['organization-superadmin', 'organization-admin'], $roleNamesArr
         )
         ) {

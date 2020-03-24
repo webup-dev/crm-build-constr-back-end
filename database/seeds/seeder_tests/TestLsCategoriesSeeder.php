@@ -142,7 +142,7 @@ class TestLsCategoriesSeeder extends Seeder
         // 18
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Traditional / Offline Networking'
+                'name' => 'Internet'
             ]
         );
 

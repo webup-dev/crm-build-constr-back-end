@@ -31,7 +31,7 @@ class File_owner
         $roleNamesArr = $roles->pluck('name')->all();
 
         // check platform's permissions
-        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $next($request);
         }
 
@@ -48,7 +48,7 @@ class File_owner
         }
 
         // check organization admin's permission
-        if (one_from_arr_in_other_arr(['organization-superadmin', 'organization-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['organization-superadmin', 'organization-admin'], $roleNamesArr)) {
             // Check is it customer's file:
             if ($file->owner_object_type !== 'customer') {
                 return response()->json($this->resp(454, 'middleware.Files'), 454);

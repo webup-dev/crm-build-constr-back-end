@@ -41,7 +41,7 @@ class Store_Show_Update__user_details
 
         if (!$editorUserDepartment) {
 
-            if (one_from_arr_in_other_arr([
+            if (oneFromArrInOtherArr([
                 'customer-individual',
                 'customer-organization'
             ], $roleNamesArr)) {
@@ -72,10 +72,10 @@ class Store_Show_Update__user_details
         $editorUserDepartmentId = $editorUserDepartment->department_id;
 
         // P1 (see phpDoc)
-        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $next($request);
         }
-        if (one_from_arr_in_other_arr([
+        if (oneFromArrInOtherArr([
             'organization-superadmin',
             'organization-admin',
             'organization-general-manager',

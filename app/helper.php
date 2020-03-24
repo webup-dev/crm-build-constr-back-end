@@ -2,18 +2,26 @@
 
 use App\Models\User;
 
-if (!function_exists('get_role')) {
-    function get_role(User $user)
-    {
-        $roles    = $user->roles;
-        $roleName = 'superadmin';
+//if (!function_exists('get_role')) {
+//    function get_role(User $user)
+//    {
+//        $roles    = $user->roles;
+//        $roleName = 'superadmin';
+//
+//        return $roleName;
+//    }
+//}
 
-        return $roleName;
-    }
-}
-
-if (!function_exists('one_from_arr_in_other_arr')) {
-    function one_from_arr_in_other_arr($needleArr, $otherArr)
+if (!function_exists('oneFromArrInOtherArr')) {
+    /**
+     * Is there at least one element from an array in another array
+     *
+     * @param array $needleArr needle array
+     * @param array $otherArr  other array
+     *
+     * @return bool
+     */
+    function oneFromArrInOtherArr($needleArr, $otherArr)
     {
         foreach ($needleArr as $item) {
             if (in_array($item, $otherArr)) {
@@ -26,10 +34,49 @@ if (!function_exists('one_from_arr_in_other_arr')) {
 }
 
 if (!function_exists('buildTree')) {
-    // build tree of parentId with included parentId
+    /**
+     * Function buildTree builds tree as array of parent-children
+     *
+     * 0 => array:9 [
+     *  "id" => 10
+     *  "level" => 2
+     *  "order" => 1
+     *  "name" => "Administration"
+     *  "parent_id" => 9
+     *  "deleted_at" => null
+     *  "created_at" => "2020-03-20 15:58:52"
+     *  "updated_at" => "2020-03-20 15:58:52"
+     *  "children" => array:1 [
+     *    0 => array:8 [
+     *    "id" => 16
+     *    "level" => 3
+     *    "order" => 1
+     *    "name" => "Administrative assistant"
+     *    "parent_id" => 10
+     *    "deleted_at" => null
+     *    "created_at" => "2020-03-20 15:58:52"
+     *    "updated_at" => "2020-03-20 15:58:52"
+     *    ]
+     *  ]
+     * ],
+     * 1 => array:8 [
+     *   "id" => 11
+     *   "level" => 2
+     *   "order" => 2
+     *   "name" => "Accounting"
+     *   "parent_id" => 9
+     *   "deleted_at" => null
+     *   "created_at" => "2020-03-20 15:58:52"
+     *   "updated_at" => "2020-03-20 15:58:52"
+     * ]
+
+     * @param array $elements array of organizations under $parentId without it
+     * @param int   $parentId organization ID
+     *
+     * @return array
+     */
     function buildTree(array $elements, $parentId = 0)
     {
-//        dd("here");
         $branch = array();
 
         foreach ($elements as $element) {
@@ -47,7 +94,25 @@ if (!function_exists('buildTree')) {
 }
 
 if (!function_exists('collectValues')) {
-    // collect all values of the key from tree
+    /**
+     * Function collectValues collects all values the field $key
+     *     from the investigated tree
+     * array:7 [
+     *   0 => 10
+     *   1 => 16
+     *   2 => 11
+     *   3 => 12
+     *   4 => 13
+     *   5 => 14
+     *   6 => 15
+     * ]
+
+     * @param array  $sourceArr investigated tree
+     * @param string $key       collected field
+     * @param array  $result    initial array of collected values
+     *
+     * @return array
+     */
     function collectValues(array $sourceArr, $key = 'id', $result = [])
     {
         foreach ($sourceArr as $item) {
@@ -62,21 +127,31 @@ if (!function_exists('collectValues')) {
 }
 
 if (!function_exists('isOwn')) {
-    // collect all values of the key from tree
+    /**
+     * Function collects ID from the collection that has tree structure
+     *
+     * @param array $elements   collection
+     * @param int   $parentId   parent ID
+     * @param int   $checkingId checking Id
+     *
+     * @return bool
+     */
     function isOwn(array $elements, $parentId, $checkingId)
     {
-        $tree         = buildTree($elements, $parentId);
-        $availableIds = collectValues($tree, 'id', []);
-        // add parent ID
-        $availableIds[] = $parentId;
-        $res            = in_array($checkingId, $availableIds);
-
-        return $res;
+        $availableIds = collectIds($elements, $parentId);
+        return in_array($checkingId, $availableIds);
     }
 }
 
 if (!function_exists('collectIds')) {
-    // collect all ids from an array of the objects with parent_id
+    /**
+     * Function collects ID from the collection that has tree structure
+     *
+     * @param array $elements collection
+     * @param int   $parentId parent ID
+     *
+     * @return array array of Id included parent Id
+     */
     function collectIds(array $elements, $parentId)
     {
         $tree         = buildTree($elements, $parentId);
@@ -89,15 +164,29 @@ if (!function_exists('collectIds')) {
 }
 
 if (!function_exists('isCustomer')) {
-    // Has current user a customer role?
+    /**
+     * Is user a customer?
+     *
+     * @param array $roleNamesArr Array of role names
+     *
+     * @return bool
+     */
     function isCustomer(array $roleNamesArr)
     {
-        return one_from_arr_in_other_arr($roleNamesArr, ['customer-individual', 'customer-organization']);
+        return oneFromArrInOtherArr(
+            $roleNamesArr, ['customer-individual', 'customer-organization']
+        );
     }
 }
 
 if (!function_exists('isOrganizational')) {
-    // Has current user a customer role?
+    /**
+     * Is user an organizational user?
+     *
+     * @param array $roleNamesArr Array of role names
+     *
+     * @return bool
+     */
     function isOrganizational(array $roleNamesArr)
     {
         $roles = [
@@ -111,12 +200,18 @@ if (!function_exists('isOrganizational')) {
             'organization-project-manager',
             'organization-administrative-assistant'
         ];
-        return one_from_arr_in_other_arr($roleNamesArr, $roles);
+        return oneFromArrInOtherArr($roleNamesArr, $roles);
     }
 }
 
 if (!function_exists('isPlatform')) {
-    // Has current user a customer role?
+    /**
+     * Is user a platform level user?
+     *
+     * @param array $roleNamesArr Array of role names
+     *
+     * @return bool
+     */
     function isPlatform(array $roleNamesArr)
     {
         $roles = [
@@ -124,6 +219,6 @@ if (!function_exists('isPlatform')) {
             'platform-superadmin',
             'platform-admin'
         ];
-        return one_from_arr_in_other_arr($roleNamesArr, $roles);
+        return oneFromArrInOtherArr($roleNamesArr, $roles);
     }
 }

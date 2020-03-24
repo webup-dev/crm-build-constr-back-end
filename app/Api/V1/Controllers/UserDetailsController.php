@@ -137,7 +137,7 @@ class UserDetailsController extends Controller
         $user         = Auth::guard()->user();
         $roles        = $user->roles;
         $roleNamesArr = $roles->pluck('name')->all();
-        if (one_from_arr_in_other_arr(['organization-superadmin', 'organization-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['organization-superadmin', 'organization-admin'], $roleNamesArr)) {
             $user          = User::find($user->id);
             $userProfile   = $user->user_profile;
             $departmentId  = $userProfile->department_id;

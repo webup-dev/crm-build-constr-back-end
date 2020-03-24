@@ -51,11 +51,11 @@ class File_show_edit
             $editorUserDepartmentId = $editorUserDepartment->department_id;
         }
 
-        if (one_from_arr_in_other_arr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr(['developer', 'platform-superadmin', 'platform-admin'], $roleNamesArr)) {
             return $next($request);
         }
 
-        if (one_from_arr_in_other_arr([
+        if (oneFromArrInOtherArr([
             'organization-superadmin',
             'organization-admin',
             'organization-general-manager',
@@ -85,7 +85,7 @@ class File_show_edit
 
         // current user doesn't have User Department
         if (!$editorUserDepartment) {
-            if (one_from_arr_in_other_arr([
+            if (oneFromArrInOtherArr([
                 'customer-individual',
                 'customer-organization'
             ], $roleNamesArr)) {

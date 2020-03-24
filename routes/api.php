@@ -404,6 +404,48 @@ $api->version(
             }
         );
 
+        $api->group(
+            [
+                'middleware' => [
+                    'api.auth', 'activity'
+                ]
+            ],
+            function (Router $api) {
+                $api->get(
+                    'lead-sources',
+                    'App\Api\V1\Controllers\LeadSourcesController@index'
+                );
+                $api->get(
+                    'lead-sources/soft-deleted',
+                    'App\Api\V1\Controllers\LeadSourcesController@indexSoftDeleted'
+                );
+                $api->get(
+                    'lead-sources/{id}',
+                    'App\Api\V1\Controllers\LeadSourcesController@show'
+                );
+                $api->post(
+                    'lead-sources',
+                    'App\Api\V1\Controllers\LeadSourcesController@store'
+                );
+                $api->put(
+                    'lead-sources/{id}',
+                    'App\Api\V1\Controllers\LeadSourcesController@update'
+                );
+                $api->delete(
+                    'lead-sources/{id}',
+                    'App\Api\V1\Controllers\LeadSourcesController@softDestroy'
+                );
+                $api->put(
+                    'lead-sources/{id}/restore',
+                    'App\Api\V1\Controllers\LeadSourcesController@restore'
+                );
+                $api->delete(
+                    'lead-sources/{id}/permanently',
+                    'App\Api\V1\Controllers\LeadSourcesController@destroyPermanently'
+                );
+            }
+        );
+
 
         $api->get('book', 'App\Api\V1\Controllers\BookController@index');
 
