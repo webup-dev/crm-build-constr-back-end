@@ -88,7 +88,9 @@ class LeadSourcesControllerTest extends WnyTestCase
                             "status",
                             "deleted_at",
                             "created_at",
-                            "updated_at"
+                            "updated_at",
+                            "ls_category",
+                            "organization"
                         ]
                     ],
                 'message'
@@ -108,6 +110,11 @@ class LeadSourcesControllerTest extends WnyTestCase
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals('active', $data[0]['status']);
         $this->assertEquals(null, $data[0]['deleted_at']);
+        $this->assertEquals('Internet', $data[0]['ls_category']['name']);
+        $this->assertEquals(
+            'Western New York Exteriors, LLC.',
+            $data[0]['organization']['name']
+        );
         $this->assertEquals("LeadSources.index. Result is successful.", $message);
     }
 
@@ -141,7 +148,9 @@ class LeadSourcesControllerTest extends WnyTestCase
                             "status",
                             "deleted_at",
                             "created_at",
-                            "updated_at"
+                            "updated_at",
+                            "ls_category",
+                            "organization"
                         ]
                     ],
                 'message'
@@ -161,6 +170,11 @@ class LeadSourcesControllerTest extends WnyTestCase
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals('active', $data[0]['status']);
         $this->assertEquals(null, $data[0]['deleted_at']);
+        $this->assertEquals('Internet', $data[0]['ls_category']['name']);
+        $this->assertEquals(
+            'Western New York Exteriors, LLC.',
+            $data[0]['organization']['name']
+        );
         $this->assertEquals("LeadSources.index. Result is successful.", $message);
     }
 

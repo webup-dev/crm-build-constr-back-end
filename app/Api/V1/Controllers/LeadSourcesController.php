@@ -102,7 +102,7 @@ class LeadSourcesController extends Controller
     {
         $res = $this->_getDepartmentId();
         if ($res === true) {
-            $leadSources = LeadSource::all();
+            $leadSources = LeadSource::with(['lsCategory', 'organization'])->get();
             if ($leadSources->count() === 0) {
                 return response()->json('', 204);
             }
@@ -111,7 +111,8 @@ class LeadSourcesController extends Controller
         } else {
             $organizations = Organization::all()->toArray();
             $collectedIds  = collectIds($organizations, $res);
-            $leadSources   = LeadSource::whereIn('organization_id', $collectedIds)
+            $leadSources   = LeadSource::with(['lsCategory', 'organization'])
+                ->whereIn('organization_id', $collectedIds)
                 ->get();
             if ($leadSources->count() === 0) {
                 return response()->json('', 204);
