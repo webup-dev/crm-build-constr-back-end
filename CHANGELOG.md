@@ -2,10 +2,15 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-
+## [0.23.1] - 2020-03-25
+### Changed
+- Module Lead Sources. Method index
+    - Eloquent relationships are added,
+    - Tests are updated.
+    
 ## [0.23.0] - 2019-03-18
 ### Added 
-- module Lead Sources is created
+- Module Lead Sources is created
     - Tests for all methods, seeders, request validations are created,
     - Methods are created: index, store, update, softDestroy, show,
       indexSoftDeleted, restore, permanentDelete. 
