@@ -43,9 +43,14 @@ class UserDetailsController extends Controller
          * show, store, update: organization level + customer for own users
          * index, softDelete: organization admin
          */
-        $this->middleware('user_details.customers_and_organization_users')->only(['store', 'show', 'update']);
-        $this->middleware('user_details.organization_admin')->only(['index', 'softDestroy']);
-        $this->middleware('platform.admin')->only(['indexSoftDeleted', 'restore', 'destroyPermanently']);
+        $this->middleware('user_details.customers_and_organization_users')
+            ->only(['store', 'show', 'update']);
+        $this->middleware('user_details.organization_admin')->only([
+            'index', 'softDestroy'
+        ]);
+        $this->middleware('platform.admin')->only([
+            'indexSoftDeleted', 'restore', 'destroyPermanently'
+        ]);
         $this->middleware('activity');
     }
 
@@ -137,7 +142,9 @@ class UserDetailsController extends Controller
         $user         = Auth::guard()->user();
         $roles        = $user->roles;
         $roleNamesArr = $roles->pluck('name')->all();
-        if (oneFromArrInOtherArr(['organization-superadmin', 'organization-admin'], $roleNamesArr)) {
+        if (oneFromArrInOtherArr([
+            'organization-superadmin', 'organization-admin'
+        ], $roleNamesArr)) {
             $user          = User::find($user->id);
             $userProfile   = $user->user_profile;
             $departmentId  = $userProfile->department_id;
@@ -311,7 +318,7 @@ class UserDetailsController extends Controller
      *
      * @queryParam id required User Profile ID
      *
-     * @response 200 {
+     * @response   200 {
      *  "success": true,
      *  "code": 200,
      *  "message": "User Details are retrieved successfully.",
@@ -344,26 +351,29 @@ class UserDetailsController extends Controller
      *   }
      * }
      *
-     * @response 453 {
+     * @response   453 {
      *  "success": false,
      *  "message": "You do not have access."
      * }
      *
-     * @response 454 {
+     * @response   454 {
      *  "success": false,
      *  "message": "Permission to the department is absent."
      * }
      *
-     * @response 456 {
+     * @response   456 {
      *  "success": false,
      *  "message": "Incorrect the Entity ID in the URL."
      * }
      *
      * @param $id
+     *
      * @return void
      */
     public
-    function show($id)
+    function show(
+        $id
+    )
     {
         $userDetails = UserDetail::with('user')
             ->whereId($id)
@@ -423,30 +433,33 @@ class UserDetailsController extends Controller
      *     organization-superadmin - to users of his organization
      *     organization-admin - to users of his organization
      *
-     * @response 200 {
+     * @response  200 {
      *  "success": true,
      *  "code": 200,
      *  "message": "User and User Profile are created successfully.",
      *  "data": null
      * }
      *
-     * @response 422 {
+     * @response  422 {
      *  "success": false,
      *  "code": 422,
      *  "message": "The given data was invalid.",
      *  "data": null
      * }
      *
-     * @response 453 {
+     * @response  453 {
      *  "success": false,
      *  "message": "Permission is absent due to Role."
      * }
      *
      * @param StoreUserDetails $request
+     *
      * @return Response
      */
     public
-    function store(StoreUserDetails $request)
+    function store(
+        StoreUserDetails $request
+    )
     {
         $data = $request->all();
 
@@ -468,7 +481,6 @@ class UserDetailsController extends Controller
 
     /**
      * Edit data of the specified user details
-     *
      * Access:
      *   direct access:
      *     superadmin
@@ -477,6 +489,12 @@ class UserDetailsController extends Controller
      *   conditional access:
      *     organization-users - to users of his organization
      *     customer - to own customer
+     *
+     * @param UpdateUserDetails $request Request
+     * @param int               $id      ID
+     *
+     * @queryParam UpdateUserDetails $request Request
+     * @queryParam int               $id      ID
      *
      * @bodyParam user_id int required User First Name
      * @bodyParam prefix string required Prefix
@@ -530,7 +548,7 @@ class UserDetailsController extends Controller
      *    "state": "MI",
      *    "zip": "12345",
      *    "status": "active",
-     *    "deleted_at": Null,
+     *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
      *   }
@@ -555,12 +573,9 @@ class UserDetailsController extends Controller
      *  "data": null
      * }
      *
-     * @param UpdateUserDetails $request
-     * @param $id
      * @return void
      */
-    public
-    function update(UpdateUserDetails $request, $id)
+    public function update(UpdateUserDetails $request, $id)
     {
         $userDetails = UserDetail::whereId($id)->first();
 
@@ -606,19 +621,19 @@ class UserDetailsController extends Controller
      *
      * @queryParam id int required User details
      *
-     * @response 200 {
+     * @response   200 {
      *  "success": true,
      *  "code": 200,
      *  "message": "User Details are soft-deleted successfully.",
      *  "data": null
      * }
      *
-     * @response 453 {
+     * @response   453 {
      *  "success": false,
      *  "message": "You do not have permission."
      * }
      *
-     * @response 456 {
+     * @response   456 {
      *  "success": false,
      *  "code": 456,
      *  "message": "Incorrect entity ID.",
@@ -626,11 +641,14 @@ class UserDetailsController extends Controller
      * }
      *
      * @param $id
+     *
      * @return void
      * @throws \Exception
      */
     public
-    function softDestroy($id)
+    function softDestroy(
+        $id
+    )
     {
         $userDetails = UserDetail::whereId($id)->first();
         if (!$userDetails) {
@@ -673,19 +691,19 @@ class UserDetailsController extends Controller
      *
      * @queryParam id int required User-Details ID
      *
-     * @response 200 {
+     * @response   200 {
      *  "success": true,
      *  "code": 200,
      *  "message": "User Details are restored successfully.",
      *  "data": null
      * }
      *
-     * @response 453 {
+     * @response   453 {
      *  "success": false,
      *  "message": "You do not have permission."
      * }
      *
-     * @response 456 {
+     * @response   456 {
      *  "success": false,
      *  "code": 456,
      *  "message": "Incorrect the Entity ID in the URL.",
@@ -693,6 +711,7 @@ class UserDetailsController extends Controller
      * }
      *
      * @param $id
+     *
      * @return void
      */
     public function restore($id)
@@ -734,17 +753,17 @@ class UserDetailsController extends Controller
      *
      * @queryParam id int required User Details ID
      *
-     * @response 200 {
+     * @response   200 {
      *  "success": true,
      *  "message": "User Details are deleted permanently."
      * }
      *
-     * @response 453 {
+     * @response   453 {
      *  "success": false,
      *  "message": "You do not have permission."
      * }
      *
-     * @response 456 {
+     * @response   456 {
      *  "success": false,
      *  "code": 456,
      *  "message": "Incorrect the Entity ID in the URL.",
@@ -752,10 +771,13 @@ class UserDetailsController extends Controller
      * }
      *
      * @param $id
+     *
      * @return void
      */
     public
-    function destroyPermanently($id)
+    function destroyPermanently(
+        $id
+    )
     {
         $userDetails = UserDetail::withTrashed()->whereId($id)->first();
         if (!$userDetails) {
@@ -773,9 +795,9 @@ class UserDetailsController extends Controller
 
         $response = [
             'success' => true,
-            'code' => 200,
+            'code'    => 200,
             'message' => 'User Details are deleted permanently.',
-            'data' => null
+            'data'    => null
         ];
 
         return response()->json($response, 200);

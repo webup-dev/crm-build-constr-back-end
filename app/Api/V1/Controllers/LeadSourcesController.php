@@ -24,7 +24,7 @@ use App\Traits\Responses;
  * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     Controller
- * @group    LeadSources
+ * @group    Lead Sources
  */
 class LeadSourcesController extends Controller
 {
@@ -55,13 +55,13 @@ class LeadSourcesController extends Controller
      * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": LeadSources.index. Result is successful.",
+     *  "message": "LeadSources.index. Result is successful.",
      *  "data": [{
      *    "id": 1,
      *    "name": "Website - CertainTeed",
      *    "category_id": 18,
      *    "organization_id": 2,
-     *    "status": 'active',
+     *    "status": "active",
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"
@@ -71,7 +71,7 @@ class LeadSourcesController extends Controller
      *    "name": "Website - CertainFeed",
      *    "category_id": 18,
      *    "organization_id": 2,
-     *    "status": 'active',
+     *    "status": "active",
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03"

@@ -6,12 +6,8 @@ use App\Api\V1\Requests\StoreLsCategory;
 use App\Api\V1\Requests\UpdateLsCategory;
 use App\Http\Controllers\Controller;
 use App\Models\LsCategory;
-use App\Models\Role;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Validator;
 use Dingo\Api\Routing\Helpers;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Traits\Responses;
 
 
@@ -23,7 +19,7 @@ use App\Traits\Responses;
  * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     Controller
- * @group    LeadSources
+ * @group    Lead Source Categories
  */
 class LsCategoriesController extends Controller
 {
@@ -36,7 +32,7 @@ class LsCategoriesController extends Controller
      * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": LsCategories.index. Result is successful.",
+     *  "message": "LsCategories.index. Result is successful.",
      *  "data": [{
      *    "id": 1,
      *    "name": "Blogging",
@@ -154,7 +150,7 @@ class LsCategoriesController extends Controller
      *       "created_at": "2019-12-08 13:25:36",
      *       "updated_at": "2019-12-08 13:25:36"
      *     },
-     *  "message": LsCategories.show. Result is successful."
+     *  "message": "LsCategories.show. Result is successful."
      * }
      *
      * @response 453 {

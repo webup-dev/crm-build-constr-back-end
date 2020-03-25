@@ -48,7 +48,9 @@ class FilesController extends Controller
         $this->middleware('show_edit_file')->only(['show', 'update', 'getFile']);
         $this->middleware('create_file')->only(['create']);
         $this->middleware('file_owner')->only(['softDestroy']);
-        $this->middleware('platform.admin')->only(['indexSoftDeleted', 'restore', 'destroyPermanently']);
+        $this->middleware('platform.admin')->only([
+            'indexSoftDeleted', 'restore', 'destroyPermanently'
+        ]);
         $this->middleware('activity');
     }
 
@@ -135,18 +137,18 @@ class FilesController extends Controller
         $roleLevel = $this->checkRoleLevel($roleNamesArr);
 
         switch ($roleLevel) {
-            case "platform":
-                $resp = $this->indexPlatform($customerId);
-                return response()->json($resp, $resp['code']);
-                break;
-            case "organization":
-                $resp = $this->indexOrganization($customerId);
-                return response()->json($resp, $resp['code']);
-                break;
-            case "customer":
-                $resp = $this->indexCustomer($customerId);
-                return response()->json($resp, $resp['code']);
-                break;
+        case "platform":
+            $resp = $this->indexPlatform($customerId);
+            return response()->json($resp, $resp['code']);
+            break;
+        case "organization":
+            $resp = $this->indexOrganization($customerId);
+            return response()->json($resp, $resp['code']);
+            break;
+        case "customer":
+            $resp = $this->indexCustomer($customerId);
+            return response()->json($resp, $resp['code']);
+            break;
         }
     }
 
@@ -298,7 +300,8 @@ class FilesController extends Controller
             $file->author = User::whereId($file->owner_user_id)->first();
 
             if ($file->owner_object_type === 'customer') {
-                $file->owner_object = Customer::whereId($file->owner_object_id)->first();
+                $file->owner_object = Customer::whereId($file->owner_object_id)
+                    ->first();
             }
 
             if ($file->owner_object_type === 'user') {
@@ -316,11 +319,12 @@ class FilesController extends Controller
      *
      *   direct access: platform level
      *
-     *   conditional access: organizational users - to files of their organization, user - to own customer profile
+     *   conditional access: organizational users - to files of their organization,
+     *   user - to own customer profile
      *
      * @queryParam id required File ID
      *
-     * @response 200 {
+     * @response   200 {
      *  "success": true,
      *  "code": 200,
      *  "message": "Result is successful.",
@@ -337,21 +341,21 @@ class FilesController extends Controller
      *  }
      * }
      *
-     * @response 453 {
+     * @response   453 {
      *   "success": false,
      *   "code": 453,
      *   "message":  "Permission is absent by the role.",
      *   "data": null
      * }
      *
-     * @response 454 {
+     * @response   454 {
      *   "success": false,
      *   "code": 454,
      *   "message":  "Middleware.Files. Permission is absent by the role.",
      *   "data": null
      * }
      *
-     * @response 456 {
+     * @response   456 {
      *   "success": false,
      *   "code": 456,
      *   "message":  "Middleware.Files. Incorrect ID in URL.",
@@ -359,10 +363,13 @@ class FilesController extends Controller
      * }
      *
      * @param $id
+     *
      * @return void
      */
     public
-    function show($id)
+    function show(
+        $id
+    )
     {
         $file = File::whereId($id)
             ->first();
@@ -386,7 +393,7 @@ class FilesController extends Controller
      *
      * @queryParam id required File ID
      *
-     * @response 200 {
+     * @response   200 {
      *  "success": true,
      *  "code": 200,
      *  "message": "Result is successful.",
@@ -403,21 +410,21 @@ class FilesController extends Controller
      *  }
      * }
      *
-     * @response 453 {
+     * @response   453 {
      *   "success": false,
      *   "code": 453,
      *   "message":  "Permission is absent by the role.",
      *   "data": null
      * }
      *
-     * @response 454 {
+     * @response   454 {
      *   "success": false,
      *   "code": 454,
      *   "message":  "Middleware.Files. Permission is absent by the role.",
      *   "data": null
      * }
      *
-     * @response 456 {
+     * @response   456 {
      *   "success": false,
      *   "code": 456,
      *   "message":  "Middleware.Files. Incorrect ID in URL.",
@@ -451,7 +458,8 @@ class FilesController extends Controller
             header('Content-Length: ' . $size)
         ];
 
-        return Storage::disk('public')->download($file->filename, $file->filename, $headers);
+        return Storage::disk('public')
+            ->download($file->filename, $file->filename, $headers);
     }
 
     /**
@@ -469,42 +477,42 @@ class FilesController extends Controller
      *   conditional access: users with organizational level to own customers
      *                       users with customer level to qwn files
      *
-     * @response 200 {
+     * @response  200 {
      *  "success": true,
      *  "code": 200,
      *  "message": "Result is successful.",
      *  "data": null
      * }
      *
-     * @response 422 {
+     * @response  422 {
      *  "success": false,
      *  "code": 422,
      *  "message": "The given data was invalid.",
      *  "data": null
      * }
      *
-     * @response 453 {
+     * @response  453 {
      *   "success": false,
      *   "code": 453,
      *   "message":  "Middleware.Files. Permission is absent by the role.",
      *   "data": null
      * }
      *
-     * @response 454 {
+     * @response  454 {
      *   "success": false,
      *   "code": 454,
      *   "message":  "Middleware.Files. Permission is absent by the role.",
      *   "data": null
      * }
      *
-     * @response 456 {
+     * @response  456 {
      *   "success": false,
      *   "code": 456,
      *   "message":  "Middleware.Files. Incorrect ID in URL.",
      *   "data": null
      * }
      *
-     * @response 459 {
+     * @response  459 {
      *   "success": false,
      *   "code": 459,
      *   "message":  "Middleware.Files. File extension is invalid.",
@@ -513,10 +521,13 @@ class FilesController extends Controller
      *
      *
      * @param StoreFile $request
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public
-    function store(StoreFile $request)
+    function store(
+        StoreFile $request
+    )
     {
         $user             = Auth::guard()->user();
         $roles            = $user->roles;
@@ -536,25 +547,25 @@ class FilesController extends Controller
         }
 
         switch ($this->checkCanUserOperateWithFile($file, $isCustomer, $user)) {
-            case 453:
-                return response()->json($this->resp(453, 'Files.store'), 453);
-                break;
+        case 453:
+            return response()->json($this->resp(453, 'Files.store'), 453);
+            break;
 
-            case 454:
-                return response()->json($this->resp(454, 'Files.store'), 454);
-                break;
+        case 454:
+            return response()->json($this->resp(454, 'Files.store'), 454);
+            break;
 
-            case 'Ok':
-                break;
+        case 'Ok':
+            break;
         }
 
         if ($isOrganizational) {
             switch ($this->canOrgUserOperateWithCurrentCustomer($file, $user)) {
-                case 454:
-                    return response()->json($this->resp(454, 'Files.store'), 454);
+            case 454:
+                return response()->json($this->resp(454, 'Files.store'), 454);
 
-                case 'Ok':
-                    break;
+            case 'Ok':
+                break;
             }
         }
 
@@ -565,7 +576,7 @@ class FilesController extends Controller
             $arrayPhoto        = explode('.', $originalname);
             $originalExtension = $arrayPhoto[1];
 //            $fileName          = $file->owner_object_type . '-' . $file->owner_object_id . '-' . date('Y-m-d_h-i-s') . ('-') . rand(0, 999) . '.' . $request->photo->extension();
-            $fileName          = $file->owner_object_type . '-' . $file->owner_object_id . '-' . date('Y-m-d_h-i-s') . ('-') . rand(0, 999) . '.' . $originalExtension;
+            $fileName = $file->owner_object_type . '-' . $file->owner_object_id . '-' . date('Y-m-d_h-i-s') . ('-') . rand(0, 999) . '.' . $originalExtension;
             $request->photo->storeAs('public', $fileName);
 
             $file->filename = $fileName;
@@ -663,49 +674,49 @@ class FilesController extends Controller
      * @bodyParam owner_user_id int required Author ID
      * @bodyParam deleted_at string Date of Soft-deleting or Null
      *
-     * @response 200 {
+     * @response  200 {
      *  "success": true,
      *  "code": 200,
      *  "message": "Result is successful.",
      *  "data": null
      * }
      *
-     * @response 422 {
+     * @response  422 {
      *  "success": false,
      *  "code": 422,
      *  "message": "The given data was invalid.",
      *  "data": null
      * }
      *
-     * @response 453 {
+     * @response  453 {
      *   "success": false,
      *   "code": 453,
      *   "message":  "Permission is absent by the role.",
      *   "data": null
      * }
      *
-     * @response 454 {
+     * @response  454 {
      *   "success": false,
      *   "code": 454,
      *   "message":  "Middleware.Files. Permission is absent by the role.",
      *   "data": null
      * }
      *
-     * @response 456 {
+     * @response  456 {
      *   "success": false,
      *   "code": 456,
      *   "message":  "Middleware.Files. Incorrect ID in URL.",
      *   "data": null
      * }
      *
-     * @response 457 {
+     * @response  457 {
      *   "success": false,
      *   "code": 457,
      *   "message":  "Middleware.Files. You are not the author.",
      *   "data": null
      * }
      *
-     * @response 459 {
+     * @response  459 {
      *   "success": false,
      *   "code": 459,
      *   "message":  "Middleware.Files. File extension is invalid.",
@@ -713,11 +724,14 @@ class FilesController extends Controller
      * }
      *
      * @param UpdateFile $request
-     * @param $id
+     * @param            $id
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public
-    function update(UpdateFile $request, $id)
+    function update(
+        UpdateFile $request, $id
+    )
     {
         /**
          * Platform level may edit
@@ -749,21 +763,21 @@ class FilesController extends Controller
      *
      * @queryParam id int required File ID
      *
-     * @response 200 {
+     * @response   200 {
      *  "success": true,
      *  "code": 200,
      *  "message": "User Details are soft-deleted successfully.",
      *  "data": null
      * }
      *
-     * @response 456 {
+     * @response   456 {
      *  "success": false,
      *  "code": 456,
      *  "message": "Incorrect entity ID.",
      *  "data": null
      * }
      *
-     * @response 457 {
+     * @response   457 {
      *  "success": false,
      *  "code": 457,
      *  "message": "You are not the author.",
@@ -771,11 +785,14 @@ class FilesController extends Controller
      * }
      *
      * @param $id
+     *
      * @return void
      * @throws \Exception
      */
     public
-    function softDestroy($id)
+    function softDestroy(
+        $id
+    )
     {
         $file = File::whereId($id)->first();
         if (!$file) {
@@ -795,21 +812,21 @@ class FilesController extends Controller
      *
      * @queryParam id int required File ID
      *
-     * @response 200 {
+     * @response   200 {
      *  "success": true,
      *  "code": 200,
      *  "message": "File is restored successfully.",
      *  "data": null
      * }
      *
-     * @response 453 {
+     * @response   453 {
      *   "success": false,
      *   "code": 453,
      *   "message":  "Middleware.Files. Permission is absent by the role.",
      *   "data": null
      * }
      *
-     * @response 456 {
+     * @response   456 {
      *   "success": false,
      *   "code": 456,
      *   "message":  "Middleware.Files. Incorrect ID in URL.",
@@ -817,6 +834,7 @@ class FilesController extends Controller
      * }
      *
      * @param $id
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function restore($id)
@@ -835,8 +853,9 @@ class FilesController extends Controller
 
     /**
      * Destroy file permanently
-     *
      * Access: platform level
+     *
+     * @param int $id File ID
      *
      * @queryParam id int required File ID
      *
@@ -861,15 +880,16 @@ class FilesController extends Controller
      *   "data": null
      * }
      *
-     * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public
-    function destroyPermanently($id)
+    public function destroyPermanently($id)
     {
         $file = File::withTrashed()->whereId($id)->first();
         if (!$file) {
-            return response()->json($this->resp(456, 'Files.destroyPermanently'), 456);
+            return response()->json(
+                $this->resp(456, 'Files.destroyPermanently'),
+                456
+            );
         }
 
         $file->forceDelete();
