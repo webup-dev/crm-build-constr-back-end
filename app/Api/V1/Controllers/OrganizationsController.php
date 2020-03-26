@@ -36,14 +36,14 @@ class OrganizationsController extends Controller
      * @response 200 {
      *  "success": true,
      *  "data": [{
-     *    "id": 1,
-     *    "level": 0,
-     *    "order": 1,
-     *    "name": "Platform",
-     *    "parent_id": null,
-     *    "deleted_a": null,
-     *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+         *    "id": 1,
+         *    "level": 0,
+         *    "order": 1,
+         *    "name": "Platform",
+         *    "parent_id": null,
+         *    "deleted_a": null,
+         *    "created_at": "2019-06-24 07:12:03",
+         *    "updated_at": "2019-06-24 07:12:03"
      *   },
      *   {
      *    "id": 1,

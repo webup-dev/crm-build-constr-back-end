@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.23.2] - 2020-03-26
+### Added
+- Module Lead Sources. Method getListOfOrganizations
+    - Tests are created,
+    - Method is created.
+- Module Lead Sources. Method getListOfCategories
+    - Tests are created,
+    - Method is created.
+    
 ## [0.23.1] - 2020-03-25
 ### Changed
 - Module Lead Sources. Method index

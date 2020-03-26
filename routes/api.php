@@ -420,6 +420,14 @@ $api->version(
                     'App\Api\V1\Controllers\LeadSourcesController@indexSoftDeleted'
                 );
                 $api->get(
+                    'lead-sources/organizations',
+                    'App\Api\V1\Controllers\LeadSourcesController@getListOfOrganizations'
+                );
+                $api->get(
+                    'lead-sources/categories',
+                    'App\Api\V1\Controllers\LeadSourcesController@getListOfCategories'
+                );
+                $api->get(
                     'lead-sources/{id}',
                     'App\Api\V1\Controllers\LeadSourcesController@show'
                 );

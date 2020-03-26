@@ -121,6 +121,8 @@ class OrganizationsControllerTest extends WnyTestCase
      *   Check response status
      *   Check response structure
      *   Check response data
+     *
+     * @return void
      */
     public function testIndex()
     {

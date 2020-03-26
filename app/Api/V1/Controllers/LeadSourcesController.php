@@ -6,6 +6,7 @@ use App\Api\V1\Requests\StoreLeadSource;
 use App\Api\V1\Requests\UpdateLeadSource;
 use App\Http\Controllers\Controller;
 use App\Models\LeadSource;
+use App\Models\LsCategory;
 use App\Models\Organization;
 use App\Models\User_profile;
 use Illuminate\Http\JsonResponse;
@@ -41,7 +42,7 @@ class LeadSourcesController extends Controller
         $this->middleware('lead-sources.organization.user')
             ->only(['show']);
         $this->middleware('common.organization.admin')
-            ->only(['store']);
+            ->only(['store', 'getListOfOrganizations', 'getListOfCategories']);
         $this->middleware('lead-sources.organization.admin')
             ->only(['update', 'softDestroy']);
         $this->middleware('platform.admin')
@@ -138,10 +139,8 @@ class LeadSourcesController extends Controller
      */
     private function _getDepartmentId()
     {
-        $user = Auth::guard()->user();
-
-        $roles = $user->roles;
-
+        $user         = Auth::guard()->user();
+        $roles        = $user->roles;
         $roleNamesArr = $roles->pluck('name')->all();
 
         if (oneFromArrInOtherArr(
@@ -156,6 +155,96 @@ class LeadSourcesController extends Controller
         }
 
         return User_profile::whereUserId($user->id)->first()->department_id;
+    }
+
+    /**
+     * Get organizations that are dependent on a user role
+     *
+     * @response 200 {
+     *  "success": true,
+     *  "code": 200,
+     *  "message": "LeadSources.index. Result is successful.",
+     *  "data": [{
+     *    "id": 2,
+     *    "level": 1,
+     *    "order": 1,
+     *    "name": "WNY",
+     *    "parent_id": null,
+     *    "deleted_a": null,
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03"
+     *   },
+     *   {
+     *    "id": 9,
+     *    "level": 1,
+     *    "order": 2,
+     *    "name": "Spring",
+     *    "parent_id": null,
+     *    "deleted_a": null,
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03"
+     *   }]
+     * }
+     *
+     * @response 204 {
+     *  "message": "No content"
+     * }
+     *
+     * @response 453 {
+     *   "success": false,
+     *   "code": 453,
+     *   "message":  "Permission is absent due to Role.",
+     *   "data": null
+     * }
+     *
+     * @return JsonResponse
+     */
+    public function getListOfOrganizations()
+    {
+        $res = $this->_getDepartmentId();
+        if ($res === true) {
+            $organizations = Organization::whereLevel(1)->get();
+            if ($organizations->count() === 0) {
+                return response()->json('', 204);
+            }
+
+            $data = $organizations->toArray();
+        } else {
+            $data = Organization::whereIn('id', [$res])->get()->toArray();
+        }
+
+        return response()->json(
+            $this->resp(
+                200,
+                'LeadSources.getListOfOrganizations',
+                $data
+            ),
+            200
+        );
+    }
+
+    /**
+     * Get Lead Source Categories that are dependent on a user role
+     *
+     * @return JsonResponse
+     */
+    public function getListOfCategories()
+    {
+        $lsCategories = LsCategory::all();
+        if ($lsCategories->count() === 0) {
+            return response()->json('', 204);
+        }
+
+        $data = $lsCategories->toArray();
+
+        return response()->json(
+            $this->resp(
+                200,
+                'LeadSources.getListOfCategories',
+                $data
+            ),
+            200
+        );
     }
 
     /**
@@ -518,19 +607,19 @@ class LeadSourcesController extends Controller
      *
      * @queryParam id int required User-Details ID
      *
-     * @response 200 {
+     * @response   200 {
      *  "success": true,
      *  "code": 200,
      *  "message": "LeadSource.restore. Result is successful.",
      *  "data": null
      * }
      *
-     * @response 453 {
+     * @response   453 {
      *  "success": false,
      *  "message": "You do not have permission."
      * }
      *
-     * @response 456 {
+     * @response   456 {
      *  "success": false,
      *  "code": 456,
      *  "message": "LeadSource.restore. Incorrect ID in the URL.",
@@ -569,17 +658,17 @@ class LeadSourcesController extends Controller
      *
      * @queryParam id int required Lead Source ID
      *
-     * @response 200 {
+     * @response   200 {
      *  "success": true,
      *  "message": "Lead Sources are deleted permanently."
      * }
      *
-     * @response 453 {
+     * @response   453 {
      *  "success": false,
      *  "message": "You do not have permission."
      * }
      *
-     * @response 456 {
+     * @response   456 {
      *  "success": false,
      *  "code": 456,
      *  "message": "Incorrect the Entity ID in the URL.",

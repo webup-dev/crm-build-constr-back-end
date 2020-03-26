@@ -279,7 +279,7 @@ class LeadSourcesControllerTest extends WnyTestCase
      */
     public function testIndexSoftDeletedEmpty()
     {
-        $token = $this->loginDeveloper();
+        $token    = $this->loginDeveloper();
         $response = $this->put('api/lead-sources/6/restore?token=' . $token);
         $response->assertStatus(200);
 
@@ -301,6 +301,237 @@ class LeadSourcesControllerTest extends WnyTestCase
 
         // Request
         $response = $this->get('api/lead-sources/soft-deleted?token=' . $token);
+
+        // Check response status
+        $response->assertStatus(453);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'message'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $message      = $responseJSON['message'];  // array
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals("Permission is absent by the role.", $message);
+    }
+
+    /**
+     * Check getListOfOrganizations ForDeveloper
+     *
+     * @return void
+     */
+    public function testGetListOfOrganizationsForDeveloper()
+    {
+        $token = $this->loginDeveloper();
+
+        $response = $this->get('api/lead-sources/organizations?token=' . $token);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'data' =>
+                    [
+                        [
+                            'id',
+                            'level',
+                            'order',
+                            'name',
+                            'parent_id',
+                            'deleted_at',
+                            'created_at',
+                            'updated_at'
+                        ]
+                    ],
+                'message'
+            ]
+        );
+        $responseJSON = json_decode($response->getContent(), true);
+        $data         = $responseJSON['data'];     // array
+        $message      = $responseJSON['message'];  // array
+        $success      = $responseJSON['success'];  // array
+        $code         = $responseJSON['code'];     // array
+
+        $this->assertEquals(2, count($data));
+        $this->assertEquals(2, $data[0]['id']);
+        $this->assertEquals(
+            'Western New York Exteriors, LLC.',
+            $data[0]['name']
+        );
+        $this->assertEquals(1, $data[0]['level']);
+        $this->assertEquals(1, $data[0]['order']);
+        $this->assertEquals(1, $data[0]['parent_id']);
+        $this->assertEquals(null, $data[0]['deleted_at']);
+        $this->assertEquals(
+            "LeadSources.getListOfOrganizations. Result is successful.",
+            $message
+        );
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+
+    }
+
+    /**
+     * Check getListOfOrganizations For Spring Superadmin
+     *
+     * @return void
+     */
+    public function testGetListOfOrganizationsForSpringSuperadmin()
+    {
+        $token = $this->loginOrganizationSpringSuperadmin();
+
+        $response = $this->get('api/lead-sources/organizations?token=' . $token);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'data' =>
+                    [
+                        [
+                            'id',
+                            'level',
+                            'order',
+                            'name',
+                            'parent_id',
+                            'deleted_at',
+                            'created_at',
+                            'updated_at'
+                        ]
+                    ],
+                'message'
+            ]
+        );
+        $responseJSON = json_decode($response->getContent(), true);
+        $data         = $responseJSON['data'];     // array
+        $message      = $responseJSON['message'];  // array
+        $success      = $responseJSON['success'];  // array
+        $code         = $responseJSON['code'];     // array
+
+        $this->assertEquals(1, count($data));
+        $this->assertEquals(9, $data[0]['id']);
+        $this->assertEquals(
+            'Spring Sheet Metal & Roofing Co.',
+            $data[0]['name']
+        );
+        $this->assertEquals(1, $data[0]['level']);
+        $this->assertEquals(2, $data[0]['order']);
+        $this->assertEquals(1, $data[0]['parent_id']);
+        $this->assertEquals(null, $data[0]['deleted_at']);
+        $this->assertEquals(
+            "LeadSources.getListOfOrganizations. Result is successful.",
+            $message
+        );
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+
+    }
+
+    /**
+     * Check getListOfOrganizations If There Is Not Permission Due To Role
+     *
+     * @return void
+     */
+    public function testGetListOfOrganizationsIfThereIsNotPermissionDueToRole()
+    {
+        $token = $this->loginOrganizationWNYGeneralManager();
+
+        $response = $this->get('api/lead-sources/organizations?token=' . $token);
+
+        // Check response status
+        $response->assertStatus(453);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'message'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $message      = $responseJSON['message'];  // array
+
+        $this->assertEquals(false, $success);
+        $this->assertEquals("Permission is absent by the role.", $message);
+    }
+
+    /**
+     * Check getListOfCategories For Developer
+     *
+     * @return void
+     */
+    public function testGetListOfCategoriesForDeveloper()
+    {
+        $token = $this->loginDeveloper();
+
+        $response = $this->get('api/lead-sources/categories?token=' . $token);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'data' =>
+                    [
+                        [
+                            "id",
+                            "name",
+                            "description",
+                            "deleted_at",
+                            "created_at",
+                            "updated_at"
+                        ]
+                    ],
+                'message'
+            ]
+        );
+        $responseJSON = json_decode($response->getContent(), true);
+        $data         = $responseJSON['data'];     // array
+        $message      = $responseJSON['message'];  // array
+        $success      = $responseJSON['success'];  // array
+        $code         = $responseJSON['code'];     // array
+
+        $this->assertEquals(18, count($data));
+        $this->assertEquals(1, $data[0]['id']);
+        $this->assertEquals('Blogging', $data[0]['name']);
+        $this->assertEquals(null, $data[0]['deleted_at']);
+        $this->assertEquals(
+            "LeadSources.getListOfCategories. Result is successful.",
+            $message
+        );
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+
+    }
+
+    /**
+     * Check getListOfOrganizations If There Is Not Permission Due To Role
+     *
+     * @return void
+     */
+    public function testGetListOfCategoriesIfThereIsNotPermissionDueToRole()
+    {
+        $token = $this->loginOrganizationWNYGeneralManager();
+
+        $response = $this->get('api/lead-sources/categories?token=' . $token);
 
         // Check response status
         $response->assertStatus(453);
@@ -475,103 +706,6 @@ class LeadSourcesControllerTest extends WnyTestCase
         $this->assertEquals("Permission to department is absent.", $message);
     }
 
-//    /**
-//     * Check Soft-deleted Index For Developer
-//     *
-//     * @return void
-//     */
-//    public function testIndexAllSoftDeleted()
-//    {
-//        $token = $this->loginDeveloper();
-//
-//        // Create soft deleted
-//        $response = $this->delete('api/lead-source-categories/1?token=' . $token);
-//        $response->assertStatus(200);
-//
-//        $response = $this->delete('api/lead-source-categories/2?token=' . $token);
-//        $response->assertStatus(200);
-//
-//        $response = $this->get('api/lead-source-categories/soft-deleted?token=' . $token);
-//
-//        // Check response status
-//        $response->assertStatus(200);
-//
-//        // Check response structure
-//        $response->assertJsonStructure(
-//            [
-//                'success',
-//                'code',
-//                'data' =>
-//                    [
-//                        [
-//                            "id",
-//                            "name",
-//                            "description",
-//                            "deleted_at",
-//                            "created_at",
-//                            "updated_at"
-//                        ]
-//                    ],
-//                'message'
-//            ]
-//        );
-//        $responseJSON = json_decode($response->getContent(), true);
-//        $success      = $responseJSON['success'];  // array
-//        $code         = $responseJSON['code'];     // array
-//        $message      = $responseJSON['message'];  // array
-//        $data         = $responseJSON['data'];     // array
-//
-//        $this->assertEquals(true, $success);
-//        $this->assertEquals(200, $code);
-//        $this->assertEquals(
-//            "LsCategories.indexSoftDeleted. Result is successful.",
-//            $message
-//        );
-//        $this->assertEquals(2, count($data));
-//        $this->assertEquals(1, $data[0]['id']);
-//        $this->assertEquals('Blogging', $data[0]['name']);
-//        $this->assertNotEquals(null, $data[0]['deleted_at']);
-//    }
-//
-//    /**
-//     * Check Empty Soft-deleted Index
-//     *
-//     * @return void
-//     */
-//    public function testIndexAllSoftDeletedEmpty()
-//    {
-//        $token = $this->loginDeveloper();
-//
-//        // Request
-//        $response = $this->get('api/lead-source-categories/soft-deleted?token=' . $token);
-//
-//        // Check response status
-//        $response->assertStatus(204);
-//    }
-//
-//    /**
-//     * Check Soft-deleted Index If Permission Is Absent Due To Role
-//     *
-//     * @return void
-//     */
-//    public function testIndexAllSoftDeletedIfPermissionIsAbsentDueToRole()
-//    {
-//        $token = $this->loginOrganizationWNYAdmin();
-//
-//        // Request
-//        $response = $this->get('api/lead-source-categories/soft-deleted?token=' . $token);
-//
-//        // Check response status
-//        $response->assertStatus(453);
-//
-//        $responseJSON = json_decode($response->getContent(), true);
-//        $message      = $responseJSON['message'];  // array
-//        $success      = $responseJSON['success'];  // array
-//
-//        $this->assertEquals("Permission is absent by the role.", $message);
-//        $this->assertEquals(false, $success);
-//    }
-//
     /**
      * Check Store For Developer
      *
@@ -624,6 +758,62 @@ class LeadSourcesControllerTest extends WnyTestCase
         $this->assertEquals('Test Lead Source', $leadSources->name);
         $this->assertEquals(17, $leadSources->category_id);
         $this->assertEquals(2, $leadSources->organization_id);
+        $this->assertEquals('active', $leadSources->status);
+        $this->assertEquals(null, $leadSources->deleted_at);
+    }
+
+    /**
+     * Check Store For Developer
+     *
+     * @return void
+     */
+    public function testStoreForDeveloperBugCCBEC745()
+    {
+        $token = $this->loginDeveloper();
+
+        // Create data
+        $data = [
+            "name"            => 'Test Name',
+            "category_id"     => 1,
+            "organization_id" => 1,
+            "status"          => 'active'
+        ];
+
+        // Store the Lead Source
+        $response = $this->post('api/lead-sources?token=' . $token, $data);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'code',
+                'message',
+                'data'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $code         = $responseJSON['code'];     // array
+        $message      = $responseJSON['message'];  // array
+        $data         = $responseJSON['data'];     // array
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+        $this->assertEquals("LeadSources.store. Result is successful.", $message);
+        $this->assertEquals(null, $data);
+
+        // Check DB table customer_details
+        $leadSources = DB::table('lead_sources')
+            ->where('id', '=', 7)
+            ->first();
+        $this->assertEquals('Test Name', $leadSources->name);
+        $this->assertEquals(1, $leadSources->category_id);
+        $this->assertEquals(1, $leadSources->organization_id);
         $this->assertEquals('active', $leadSources->status);
         $this->assertEquals(null, $leadSources->deleted_at);
     }
