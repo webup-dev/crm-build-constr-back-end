@@ -87,6 +87,7 @@ class MenusController extends Controller
         $res[] = $this->_getUserCustomers($collectValues, $userProfileDepartmentId);
         $res[] = $this->_getFiles();
         $res[] = $this->_getLsCategories();
+        $res[] = $this->_getLeadSources();
 
         $response = [
             "success" => true,
@@ -219,7 +220,7 @@ class MenusController extends Controller
     }
 
     /**
-     * Method to get soft-deleted Lead Sources
+     * Method to get soft-deleted Lead Source Categories
      *
      * @return array
      */
@@ -234,6 +235,25 @@ class MenusController extends Controller
             "name"  => 'Lead Source Categories',
             "url"   => 'lead-source-categories/soft-deleted',
             "count" => $lsCategoriesCount
+        ];
+    }
+
+    /**
+     * Method to get soft-deleted Lead Sources
+     *
+     * @return array
+     */
+    private function _getLeadSources()
+    {
+        $leadSources = LeadSource::onlyTrashed()
+            ->select('id')
+            ->get()
+            ->count();
+
+        return [
+            "name"  => 'Lead Sources',
+            "url"   => 'lead-sources/soft-deleted',
+            "count" => $leadSources
         ];
     }
 }

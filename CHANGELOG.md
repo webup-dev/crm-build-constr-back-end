@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.23.3] - 2020-03-27
+### Changed
+- MenusController
+    - SoftDeleted LeadSources is added.
+
 ## [0.23.2] - 2020-03-26
 ### Added
 - Module Lead Sources. Method getListOfOrganizations

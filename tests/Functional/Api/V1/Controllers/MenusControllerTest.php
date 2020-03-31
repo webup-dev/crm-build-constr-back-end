@@ -140,7 +140,7 @@ class MenusControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $data         = $responseJSON['data'];  // array
 
-        $this->assertEquals(6, count($data));
+        $this->assertEquals(7, count($data));
         $this->assertEquals('User Profiles', $data[0]['name']);
         $this->assertEquals("user-profiles/soft-deleted", $data[0]['url']);
 
@@ -159,6 +159,10 @@ class MenusControllerTest extends WnyTestCase
         $this->assertEquals(2, $data[5]['count']);
         $this->assertEquals('Lead Source Categories', $data[5]['name']);
         $this->assertEquals("lead-source-categories/soft-deleted", $data[5]['url']);
+
+        $this->assertEquals(1, $data[6]['count']);
+        $this->assertEquals('Lead Sources', $data[6]['name']);
+        $this->assertEquals("lead-sources/soft-deleted", $data[6]['url']);
 
         $this->assertEquals("Soft-deleted retrieved successfully.", $message);
         $this->assertEquals(true, $success);
@@ -233,7 +237,7 @@ class MenusControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $data         = $responseJSON['data'];  // array
 
-        $this->assertEquals(6, count($data));
+        $this->assertEquals(7, count($data));
         $this->assertEquals('User Profiles', $data[0]['name']);
         $this->assertEquals("user-profiles/soft-deleted", $data[0]['url']);
 
@@ -252,6 +256,10 @@ class MenusControllerTest extends WnyTestCase
         $this->assertEquals(2, $data[5]['count']);
         $this->assertEquals('Lead Source Categories', $data[5]['name']);
         $this->assertEquals("lead-source-categories/soft-deleted", $data[5]['url']);
+
+        $this->assertEquals(1, $data[6]['count']);
+        $this->assertEquals('Lead Sources', $data[6]['name']);
+        $this->assertEquals("lead-sources/soft-deleted", $data[6]['url']);
 
         $this->assertEquals("Soft-deleted retrieved successfully.", $message);
         $this->assertEquals(true, $success);
@@ -350,7 +358,7 @@ class MenusControllerTest extends WnyTestCase
         $message      = $responseJSON['message'];  // array
         $data         = $responseJSON['data'];  // array
 
-        $this->assertEquals(6, count($data));
+        $this->assertEquals(7, count($data));
 
         $this->assertEquals(0, $data[0]['count']);
         $this->assertEquals('User Profiles', $data[0]['name']);
@@ -367,6 +375,10 @@ class MenusControllerTest extends WnyTestCase
         $this->assertEquals(0, $data[3]['count']);
         $this->assertEquals('User-Customers', $data[3]['name']);
         $this->assertEquals("user-customers/soft-deleted", $data[3]['url']);
+
+        $this->assertEquals(1, $data[6]['count']);
+        $this->assertEquals('Lead Sources', $data[6]['name']);
+        $this->assertEquals("lead-sources/soft-deleted", $data[6]['url']);
 
         $this->assertEquals("Soft-deleted retrieved successfully.", $message);
         $this->assertEquals(true, $success);
