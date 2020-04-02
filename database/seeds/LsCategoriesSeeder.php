@@ -23,126 +23,175 @@ class LsCategoriesSeeder extends Seeder
         // 1
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Blogging'
+                'name' => 'Billboard'
             ]
         );
 
         // 2
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Premium Content'
+                'name' => 'Canvassing'
             ]
         );
 
         // 3
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Organic Search'
+                'name' => 'Company Sign'
             ]
         );
 
         // 4
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Email Marketing'
+                'name' => 'Contest'
             ]
         );
 
         // 5
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Digital Advertising'
+                'name' => 'Direct Mail'
             ]
         );
 
         // 6
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Media Coverage'
+                'name' => 'Email Campaign'
             ]
         );
 
         // 7
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Social Media'
+                'name' => 'Home Show'
             ]
         );
 
         // 8
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Website'
+                'name' => 'Flyer'
             ]
         );
 
         // 9
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Direct Marketing'
+                'name' => 'Internet'
             ]
         );
 
         // 10
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Traditional Advertising'
+                'name' => 'Kiosk'
             ]
         );
 
         // 11
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Sponsorships'
+                'name' => 'Lead Service'
             ]
         );
 
         // 12
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Affiliate / Partner Programs'
+                'name' => 'Magazine'
             ]
         );
 
         // 13
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Events / Shows'
+                'name' => 'Network/Vendor'
             ]
         );
 
         // 14
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Inbound Phone Calls'
+                'name' => 'Newsletter'
             ]
         );
 
         // 15
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Outbound Sales'
+                'name' => 'Newspaper'
             ]
         );
 
         // 16
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Referrals'
+                'name' => 'Other'
             ]
         );
 
         // 17
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Speaking Engagements'
+                'name' => 'Phone Book'
             ]
         );
 
         // 18
         DB::table('ls_categories')->insert(
             [
-                'name' => 'Internet'
+                'name' => 'Previous Customer'
+            ]
+        );
+
+        // 19
+        DB::table('ls_categories')->insert(
+            [
+                'name' => 'Radio'
+            ]
+        );
+
+        // 20
+        DB::table('ls_categories')->insert(
+            [
+                'name' => 'Referral'
+            ]
+        );
+
+        // 21
+        DB::table('ls_categories')->insert(
+            [
+                'name' => 'Self Generated'
+            ]
+        );
+
+        // 22
+        DB::table('ls_categories')->insert(
+            [
+                'name' => 'Social Media'
+            ]
+        );
+
+        // 23
+        DB::table('ls_categories')->insert(
+            [
+                'name' => 'Telemarking'
+            ]
+        );
+
+        // 24
+        DB::table('ls_categories')->insert(
+            [
+                'name' => 'TV'
+            ]
+        );
+
+        // 25
+        DB::table('ls_categories')->insert(
+            [
+                'name' => 'Walk In'
             ]
         );
 

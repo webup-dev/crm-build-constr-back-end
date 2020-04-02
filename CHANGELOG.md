@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.23.4] - 2020-04-02
+### Changed
+- Lead Source Category Seeder is changed.
+
 ## [0.23.3] - 2020-03-27
 ### Changed
 - MenusController
