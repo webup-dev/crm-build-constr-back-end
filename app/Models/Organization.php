@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property Carbon|null                    $deleted_at
  * @property int                            $level
  *
+ * @property-read Collection|LeadType[]     $leadType
  * @property-read Collection|Organization[] $childOrganizations
  * @property-read Organization              $parentOrganization
  * @property-read Collection|User_profile[] $user_profile
@@ -125,6 +126,20 @@ class Organization extends Model
     {
         return $this->hasMany(
             'App\Models\LeadSource',
+            'organization_id',
+            'id'
+        );
+    }
+
+    /**
+     * Relationship LeadType to Organization as many-to-one
+     *
+     * @return HasMany
+     */
+    public function leadType()
+    {
+        return $this->hasMany(
+            'App\Models\LeadType',
             'organization_id',
             'id'
         );

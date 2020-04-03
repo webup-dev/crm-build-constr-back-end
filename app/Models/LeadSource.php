@@ -13,11 +13,10 @@ use Illuminate\Support\Carbon;
  * App\Models\LeadSource
  *
  * @category Model
- * @package  LeadSourceCategoriess
- * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
- * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
- * @link     Model
- *
+ * @package LeadSourceCategoriess
+ * @author Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link Model
  * @property int         $id
  * @property string      $name
  * @property int         $category_id
@@ -26,10 +25,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
  * @property-read LsCategory   $lsCategory
  * @property-read Organization $organization
- *
  * @method static bool|null forceDelete()
  * @method static Builder|LeadSource newModelQuery()
  * @method static Builder|LeadSource newQuery()
@@ -46,7 +43,6 @@ use Illuminate\Support\Carbon;
  * @method static Builder|LeadSource whereUpdatedAt($value)
  * @method static Query\Builder|LeadSource withTrashed()
  * @method static Query\Builder|LeadSource withoutTrashed()
- *
  * @mixin \Eloquent
  */
 class LeadSource extends Model

@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.24.0] - 2020-04-03
+### Added 
+- Module Lead Types/Trades is created
+    - Specification
+    - Migration
+    - Seeders
+    - Tests
+    - Request validations
+    - Methods: index, store, update, softDestroy, show,
+      indexSoftDeleted, restore, permanentDelete. 
+
 ## [0.23.4] - 2020-04-02
 ### Changed
 - Lead Source Category Seeder is changed.

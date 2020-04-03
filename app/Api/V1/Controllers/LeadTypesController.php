@@ -2,82 +2,80 @@
 
 namespace App\Api\V1\Controllers;
 
-use App\Api\V1\Requests\StoreLeadSource;
-use App\Api\V1\Requests\UpdateLeadSource;
+use App\Api\V1\Requests\StoreLeadType;
+use App\Api\V1\Requests\UpdateLeadType;
 use App\Http\Controllers\Controller;
-use App\Models\LeadSource;
-use App\Models\LsCategory;
+use App\Models\LeadType;
 use App\Models\Organization;
 use App\Models\User_profile;
 use App\Traits\GetOrganizations;
+use App\Traits\Responses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Dingo\Api\Routing\Helpers;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use App\Traits\Responses;
 
 
 /**
- * Controller to operate with LeadSources
+ * Controller to operate with LeadTypes
  *
  * @category Controller
- * @package  LeadSources
+ * @package  LeadTypes
  * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     Controller
- * @group    Lead Sources
+ * @group    Lead Types
  */
-class LeadSourcesController extends Controller
+class LeadTypesController extends Controller
 {
     use Helpers;
     use Responses;
     use GetOrganizations;
 
     /**
-     * LeadSourcesController constructor.
+     * LeadTypesController constructor.
      */
     public function __construct()
     {
-        $this->middleware('organization.user')
-            ->only(['index']);
-        $this->middleware('lead-sources.organization.user')
-            ->only(['show']);
-        $this->middleware('common.organization.admin')
-            ->only(['store', 'getListOfOrganizations', 'getListOfCategories']);
-        $this->middleware('lead-sources.organization.admin')
-            ->only(['update', 'softDestroy']);
-        $this->middleware('platform.admin')
-            ->only(['indexSoftDeleted', 'restore', 'destroyPermanently']);
-        $this->middleware('activity');
+        $this->middleware('organizations_organization.admin')
+            ->only(
+                [
+                    'index',
+                    'show',
+                    'store',
+                    'getListOfOrganizations',
+                    'update',
+                    'softDestroy',
+                    'indexSoftDeleted',
+                    'restore',
+                    'destroyPermanently'
+                ]
+            );
     }
 
     /**
-     * Get index of Lead Sources
+     * Get index of Lead Types
      *
      * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": "LeadSources.index. Result is successful.",
+     *  "message": "LeadTypes.index. Result is successful.",
      *  "data": [{
      *    "id": 1,
      *    "name": "Website - CertainTeed",
-     *    "category_id": 18,
      *    "organization_id": 2,
-     *    "status": "active",
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object"
      *   },
      *   {
      *    "id": 2,
      *    "name": "Website - CertainFeed",
-     *    "category_id": 18,
      *    "organization_id": 2,
-     *    "status": "active",
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object"
      *   }]
      * }
      *
@@ -105,29 +103,29 @@ class LeadSourcesController extends Controller
     {
         $res = $this->_getDepartmentId();
         if ($res === true) {
-            $leadSources = LeadSource::with(['lsCategory', 'organization'])->get();
-            if ($leadSources->count() === 0) {
+            $leadTypes = LeadType::with(['organization'])->get();
+            if ($leadTypes->count() === 0) {
                 return response()->json('', 204);
             }
 
-            $data = $leadSources->toArray();
+            $data = $leadTypes->toArray();
         } else {
             $organizations = Organization::all()->toArray();
             $collectedIds  = collectIds($organizations, $res);
-            $leadSources   = LeadSource::with(['lsCategory', 'organization'])
+            $leadTypes   = LeadType::with(['organization'])
                 ->whereIn('organization_id', $collectedIds)
                 ->get();
-            if ($leadSources->count() === 0) {
+            if ($leadTypes->count() === 0) {
                 return response()->json('', 204);
             }
 
-            $data = $leadSources->toArray();
+            $data = $leadTypes->toArray();
         }
 
         return response()->json(
             $this->resp(
                 200,
-                'LeadSources.index',
+                'LeadTypes.index',
                 $data
             ),
             200
@@ -135,38 +133,14 @@ class LeadSourcesController extends Controller
     }
 
     /**
-     * Get Lead Source Categories that are dependent on a user role
+     * Store a newly created LeadType in DB
      *
-     * @return JsonResponse
-     */
-    public function getListOfCategories()
-    {
-        $lsCategories = LsCategory::all();
-        if ($lsCategories->count() === 0) {
-            return response()->json('', 204);
-        }
-
-        $data = $lsCategories->toArray();
-
-        return response()->json(
-            $this->resp(
-                200,
-                'LeadSources.getListOfCategories',
-                $data
-            ),
-            200
-        );
-    }
-
-    /**
-     * Store a newly created LsCategory in DB
-     *
-     * @param StoreLeadSource $request Request
+     * @param StoreLeadType $request Request
      *
      * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": "LsCategory.store. Result is successful."
+     *  "message": "LeadType.store. Result is successful."
      * }
      *
      * @response 422 {
@@ -188,52 +162,65 @@ class LeadSourcesController extends Controller
      *
      * @response 500 {
      *  "error": {
-     *      "message": "Could not create Role",
+     *      "message": "Could not create LeadType",
      *      "status_code": 500
      *    }
      * }
      *
      * @return JsonResponse
      */
-    public function store(StoreLeadSource $request)
+    public function store(StoreLeadType $request)
     {
-        $leadSource = new LeadSource();
+        $leadType = new LeadType();
 
-        $leadSource->name            = $request->get('name');
-        $leadSource->category_id     = $request->get('category_id');
-        $leadSource->organization_id = $request->get('organization_id');
-        $leadSource->status          = $request->get('status');
+        $leadType->name            = $request->get('name');
+        $leadType->organization_id = $request->get('organization_id');
 
-        // check permission to organization_id
+        // check permission to organization_id from the request
+        $response = $this->_checkPermissionToOrganizationId($leadType);
+        if ($response !== true) {
+            return response()->json($response, 454);
+        }
+
+        if ($leadType->save()) {
+            return response()->json(
+                $this->resp(
+                    200,
+                    'LeadTypes.store'
+                ),
+                200
+            );
+        } else {
+            return $this->response->error(
+                'Could not create LeadType',
+                500
+            );
+        }
+    }
+
+    /**
+     * Check permission to organization_id from the request
+     *
+     * @param $leadType Object
+     *
+     * @return array|bool
+     */
+    private function _checkPermissionToOrganizationId($leadType)
+    {
         $user        = Auth::guard()->user();
         $userProfile = User_profile::whereUserId($user->id)->first();
         if ($userProfile) {
             $userOrganizationId = $userProfile->department_id;
             $organizations      = Organization::all()->toArray();
             $collectedIds       = collectIds($organizations, $userOrganizationId);
-            if (!in_array($leadSource->organization_id, $collectedIds)) {
-                $response = [
+            if (!in_array($leadType->organization_id, $collectedIds)) {
+                return [
                     'success' => false,
                     'message' => 'Permission to the department is absent.'
                 ];
-                return response()->json($response, 454);
             }
         }
-
-        if ($leadSource->save()) {
-            return response()->json(
-                $this->resp(
-                    200,
-                    'LeadSources.store'
-                ),
-                200
-            );
-        } else {
-            return $this->response->error(
-                'Could not create LeadSource',
-                500
-            );
-        }
+        return true;
     }
 
     /**
@@ -245,12 +232,13 @@ class LeadSourcesController extends Controller
      *  "success": true,
      *  "data": {
      *       "id": 1,
-     *       "name": "Lead Source 1",
-     *       "description": "Description 1",
+     *       "name": "Lead Type 1",
+     *       "organization_id": 2,
      *       "created_at": "2019-12-08 13:25:36",
-     *       "updated_at": "2019-12-08 13:25:36"
+     *       "updated_at": "2019-12-08 13:25:36",
+     *       "organization": "object"
      *     },
-     *  "message": LsCategories.show. Result is successful."
+     *  "message": "LeadTypes.show. Result is successful."
      * }
      *
      * @response 453 {
@@ -269,27 +257,26 @@ class LeadSourcesController extends Controller
      */
     public function show($id)
     {
-        $leadSource = LeadSource::whereId($id)->first();
+        $leadType = LeadType::whereId($id)->first();
 
-        if (!$leadSource) {
+        if (!$leadType) {
             return response()->json(
                 $this->resp(
                     456,
-                    'LeadSources.show'
+                    'LeadTypes.show'
                 ),
                 456
             );
         }
 
-        $leadSource['category']     = $leadSource->lsCategory;
-        $leadSource['organization'] = $leadSource->organization;
+        $leadType['organization'] = $leadType->organization;
 
-        $data = $leadSource->toArray();
+        $data = $leadType->toArray();
 
         return response()->json(
             $this->resp(
                 200,
-                'LeadSources.show',
+                'LeadTypes.show',
                 $data
             ),
             200
@@ -298,21 +285,21 @@ class LeadSourcesController extends Controller
 
 
     /**
-     * Update the specified Lead Source.
+     * Update the specified Lead Type.
      *
-     * @param UpdateLeadSouce $request Request
-     * @param int             $id      ID
+     * @param UpdateLeadType $request Request
+     * @param int            $id      ID
      *
      * @response 200 {
      *  "success": true,
      *  "data": {
      *       "id": 1,
-     *       "name": "LsCategory Updated",
-     *       "description": "Description Updated",
+     *       "name": "LeadType Updated",
+     *       "organization_id": 2,
      *       "created_at": "2019-12-08 13:25:36",
      *       "updated_at": "2019-12-09 13:25:36"
      *     },
-     *  "message": "LsCategory.update. Result is successful."
+     *  "message": "LeadTypes.update. Result is successful."
      * }
      *
      * @response 422 {
@@ -348,28 +335,28 @@ class LeadSourcesController extends Controller
      *
      * @return JsonResponse
      */
-    public function update(UpdateLeadSource $request, $id)
+    public function update(UpdateLeadType $request, $id)
     {
-        $leadSource = LeadSource::whereId($id)->first();
+        $leadType = LeadType::whereId($id)->first();
 
-        if (!$leadSource) {
+        if (!$leadType) {
             return response()->json(
                 $this->resp(
                     456,
-                    'LeadSources.update'
+                    'LeadTypes.update'
                 ),
                 456
             );
         }
 
-        $leadSource->fill($request->all());
+        $leadType->fill($request->all());
 
-        if ($leadSource->save()) {
+        if ($leadType->save()) {
             return response()->json(
                 $this->resp(
                     200,
-                    'LeadSources.update',
-                    $leadSource
+                    'LeadTypes.update',
+                    $leadType
                 ),
                 200
             );
@@ -388,7 +375,7 @@ class LeadSourcesController extends Controller
      *
      * @response 200 {
      *  "success": true,
-     *  "message": "Role is deleted successfully",
+     *  "message": "LeadTypes.softDestroy. Result is successful.",
      *  "data": null
      * }
      *
@@ -410,7 +397,7 @@ class LeadSourcesController extends Controller
      * }
      *
      * @response 500 {
-     *  "message": "Could not delete Lead Source Category."
+     *  "message": "Could not delete Lead Type."
      * }
      *
      * @return JsonResponse|void
@@ -418,56 +405,58 @@ class LeadSourcesController extends Controller
      */
     public function softDestroy($id)
     {
-        $leadSource = LeadSource::whereId($id)->first();
+        $leadType = LeadType::whereId($id)->first();
 
-        if (!$leadSource) {
+        if (!$leadType) {
             return response()->json(
                 $this->resp(
                     456,
-                    'LeadSources.softDestroy'
+                    'LeadTypes.softDestroy'
                 ),
                 456
             );
         }
 
-        if ($leadSource->delete()) {
+        if ($leadType->delete()) {
             return response()->json(
                 $this->resp(
                     200,
-                    'LeadSources.softDestroy'
+                    'LeadTypes.softDestroy'
                 ),
                 200
             );
         } else {
             return $this->response->error(
-                '"Could not delete Lead Source."',
+                '"Could not delete Lead Type."',
                 500
             );
         }
     }
 
     /**
-     * Get index of soft-deleted files
+     * Get index of soft-deleted LeadTypes
      *
      * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": "Result is successful.",
+     *  "message": "LeadTypes.indexSoftDeleted. Result is successful.",
      *  "data": [{
      *    "id": 1,
      *    "name": "blogging",
-     *    "description": "Description text",
+     *    "organization_id": 2,
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object"
      *   },
      *   {
      *    "id": 2,
      *    "name": "Social Media",
-     *    "description": "Description text",
+     *    "organization_id": 2,
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object"
      *   }]
      * }
      *
@@ -489,14 +478,14 @@ class LeadSourcesController extends Controller
      */
     public function indexSoftDeleted()
     {
-        $leadSources = LeadSource::with(['lsCategory', 'organization'])
+        $leadTypes = LeadType::with(['organization'])
             ->onlyTrashed()->get();
 
-        if (!$leadSources->count()) {
+        if (!$leadTypes->count()) {
             return response()->json(
                 $this->resp(
                     204,
-                    'LeadSources.indexSoftDeleted'
+                    'LeadTypes.indexSoftDeleted'
                 ),
                 204
             );
@@ -505,35 +494,35 @@ class LeadSourcesController extends Controller
         return response()->json(
             $this->resp(
                 200,
-                'LeadSources.indexSoftDeleted',
-                $leadSources
+                'LeadTypes.indexSoftDeleted',
+                $leadTypes
             ), 200
         );
     }
 
     /**
-     * Restore Lead Source
+     * Restore Lead Type
      *
      * @param $id int ID
      *
      * @queryParam id int required User-Details ID
      *
-     * @response   200 {
+     * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": "LeadSource.restore. Result is successful.",
+     *  "message": "LeadTypes.restore. Result is successful.",
      *  "data": null
      * }
      *
-     * @response   453 {
+     * @response 453 {
      *  "success": false,
      *  "message": "You do not have permission."
      * }
      *
-     * @response   456 {
+     * @response 456 {
      *  "success": false,
      *  "code": 456,
-     *  "message": "LeadSource.restore. Incorrect ID in the URL.",
+     *  "message": "LeadTypes.restore. Incorrect ID in the URL.",
      *  "data": null
      * }
      *
@@ -541,45 +530,45 @@ class LeadSourcesController extends Controller
      */
     public function restore($id)
     {
-        $leadSources = LeadSource::onlyTrashed()->whereId($id)->first();
+        $leadType = LeadType::onlyTrashed()->whereId($id)->first();
 
-        if (!$leadSources) {
+        if (!$leadType) {
             return response()->json(
                 $this->resp(
                     456,
-                    'LeadSources.restore'
+                    'LeadTypes.restore'
                 ),
                 456
             );
         }
 
         // Restore user-details
-        $leadSources->restore();
+        $leadType->restore();
 
         return response()->json(
-            $this->resp(200, 'LeadSources.restore'),
+            $this->resp(200, 'LeadTypes.restore'),
             200
         );
     }
 
     /**
-     * Destroy Lead Source permanently
+     * Destroy Lead Type permanently
      *
      * @param $id int ID
      *
-     * @queryParam id int required Lead Source ID
+     * @queryParam id int required Lead Type ID
      *
-     * @response   200 {
+     * @response 200 {
      *  "success": true,
-     *  "message": "Lead Sources are deleted permanently."
+     *  "message": "LeadTypes.destroyPermanently. Result is successful."
      * }
      *
-     * @response   453 {
+     * @response 453 {
      *  "success": false,
      *  "message": "You do not have permission."
      * }
      *
-     * @response   456 {
+     * @response 456 {
      *  "success": false,
      *  "code": 456,
      *  "message": "Incorrect the Entity ID in the URL.",
@@ -590,18 +579,18 @@ class LeadSourcesController extends Controller
      */
     public function destroyPermanently($id)
     {
-        $leadSource = LeadSource::withTrashed()->whereId($id)->first();
-        if (!$leadSource) {
+        $leadType = LeadType::withTrashed()->whereId($id)->first();
+        if (!$leadType) {
             return response()->json(
-                $this->resp(456, 'LeadSources.destroyPermanently'),
+                $this->resp(456, 'LeadTypes.destroyPermanently'),
                 456
             );
         }
 
-        $leadSource->forceDelete();
+        $leadType->forceDelete();
 
         return response()->json(
-            $this->resp(200, 'LeadSources.destroyPermanently'),
+            $this->resp(200, 'LeadTypes.destroyPermanently'),
             200
         );
     }

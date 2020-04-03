@@ -27,5 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(FileSeeder::class);
         $this->call(LsCategoriesSeeder::class);
         $this->call(LeadSourcesSeeder::class);
+        $this->call(LeadTypesSeeder::class);
     }
 }

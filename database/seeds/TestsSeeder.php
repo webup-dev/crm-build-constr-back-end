@@ -24,5 +24,6 @@ class TestsSeeder extends Seeder
         $this->call(TestFileSeeder::class);
         $this->call(TestLsCategoriesSeeder::class);
         $this->call(TestLeadSourcesSeeder::class);
+        $this->call(TestLeadTypesSeeder::class);
     }
 }
