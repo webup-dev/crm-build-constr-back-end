@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Models\LeadSource;
+use App\Models\LeadStatus;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 
@@ -1094,7 +1094,7 @@ class LeadStatusesControllerTest extends WnyTestCase
         $this->assertEquals("LeadStatuses.restore. Result is successful.", $message);
         $this->assertEquals(null, $data);
 
-        $leadStatus = LeadSource::where('id', 8)->first();
+        $leadStatus = LeadStatus::where('id', 8)->first();
         $this->assertEquals(null, $leadStatus['deleted_at']);
     }
 

@@ -2,8 +2,7 @@
 
 namespace App;
 
-use App\Models\LeadSource;
-use App\Models\LsCategory;
+use App\Models\LeadType;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 
@@ -1094,7 +1093,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $this->assertEquals("LeadTypes.restore. Result is successful.", $message);
         $this->assertEquals(null, $data);
 
-        $leadType = LeadSource::where('id', 8)->first();
+        $leadType = LeadType::where('id', 8)->first();
         $this->assertEquals(null, $leadType['deleted_at']);
     }
 
