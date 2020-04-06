@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.25.0] - 2020-04-06
+### Added 
+- Module Lead Status is created
+    - Specification
+    - Migration
+    - Seeders
+    - Tests
+    - Request validations
+    - Methods: index, store, update, softDestroy, show,
+      indexSoftDeleted, restore, permanentDelete. 
+
 ## [0.24.0] - 2020-04-03
 ### Added 
 - Module Lead Types/Trades is created

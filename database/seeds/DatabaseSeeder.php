@@ -28,5 +28,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LsCategoriesSeeder::class);
         $this->call(LeadSourcesSeeder::class);
         $this->call(LeadTypesSeeder::class);
+        $this->call(LeadStatusesSeeder::class);
     }
 }

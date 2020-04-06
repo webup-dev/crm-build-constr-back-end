@@ -3,21 +3,20 @@
 namespace App;
 
 use App\Models\LeadSource;
-use App\Models\LsCategory;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Tests to test Lead LeadTypesController
+ * Tests to test LeadStatusesController
  * php version 7
  *
  * @category Tests
- * @package  LeadTypesController
+ * @package  LeadStatusesController
  * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     Tests
  */
-class LeadTypesControllerTest extends WnyTestCase
+class LeadStatusesControllerTest extends WnyTestCase
 {
     use DatabaseMigrations;
 
@@ -51,8 +50,8 @@ class LeadTypesControllerTest extends WnyTestCase
      */
     public function testSeeder()
     {
-        $lead_sources = DB::table('lead_types')->get();
-        $this->assertEquals(16, $lead_sources->count());
+        $leadStatuses = DB::table('lead_statuses')->get();
+        $this->assertEquals(8, $leadStatuses->count());
 
         $user = DB::table('users')->where('id', 1)->first();
         $this->assertEquals('Volodymyr Vadiasov', $user->name);
@@ -68,7 +67,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->get('api/lead-types?token=' . $token);
+        $response = $this->get('api/lead-statuses?token=' . $token);
 
         // Check response status
         $response->assertStatus(200);
@@ -84,60 +83,7 @@ class LeadTypesControllerTest extends WnyTestCase
                             "id",
                             "name",
                             "organization_id",
-                            "deleted_at",
-                            "created_at",
-                            "updated_at",
-                            "organization"
-                        ]
-                    ],
-                'message'
-            ]
-        );
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];  // array
-        $code         = $responseJSON['code'];     // array
-        $message      = $responseJSON['message'];  // array
-        $data         = $responseJSON['data'];     // array
-
-        $this->assertEquals(true, $success);
-        $this->assertEquals(200, $code);
-        $this->assertEquals(16, count($data));
-        $this->assertEquals('Steep Slope Roofing', $data[0]['name']);
-        $this->assertEquals(2, $data[0]['organization_id']);
-        $this->assertEquals(null, $data[0]['deleted_at']);
-        $this->assertEquals(
-            'Western New York Exteriors, LLC.',
-            $data[0]['organization']['name']
-        );
-        $this->assertEquals("LeadTypes.index. Result is successful.", $message);
-    }
-
-    /**
-     * Check Index For WNY admin
-     *
-     * @return void
-     */
-    public function testIndexForWNYAdmin()
-    {
-        $token = $this->loginOrganizationWNYAdmin();
-
-        // Request
-        $response = $this->get('api/lead-types?token=' . $token);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        // Check response structure
-        $response->assertJsonStructure(
-            [
-                'success',
-                'code',
-                'data' =>
-                    [
-                        [
-                            "id",
-                            "name",
-                            "organization_id",
+                            "parent_id",
                             "deleted_at",
                             "created_at",
                             "updated_at",
@@ -156,81 +102,28 @@ class LeadTypesControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
         $this->assertEquals(8, count($data));
-        $this->assertEquals('Steep Slope Roofing', $data[0]['name']);
+        $this->assertEquals('Unqualified', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
+        $this->assertEquals(null, $data[0]['parent_id']);
         $this->assertEquals(null, $data[0]['deleted_at']);
         $this->assertEquals(
             'Western New York Exteriors, LLC.',
             $data[0]['organization']['name']
         );
-        $this->assertEquals("LeadTypes.index. Result is successful.", $message);
+        $this->assertEquals("LeadStatuses.index. Result is successful.", $message);
     }
 
     /**
-     * Test IndexForDeveloper
+     * Check Index For WNY admin
      *
      * @return void
      */
-    public function testIndexEmpty()
+    public function testIndexForWNYAdmin()
     {
-        $token = $this->loginOrganizationSpringSuperadmin();
-
-        $response = $this->delete('api/lead-types/9?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/lead-types/10?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/lead-types/11?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/lead-types/12?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/lead-types/13?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/lead-types/14?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/lead-types/15?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/lead-types/16?token=' . $token);
-        $response->assertStatus(200);
+        $token = $this->loginOrganizationWNYAdmin();
 
         // Request
-        $response = $this->get('api/lead-types?token=' . $token);
-
-        // Check response status
-        $response->assertStatus(204);
-    }
-
-    /**
-     * Check Index If Permission Is Absent
-     *
-     * @return void
-     */
-    public function testIndexIfPermissionIsAbsent()
-    {
-        $token = $this->loginOrganizationWNYGeneralManager();
-
-        // Request
-        $response = $this->get('api/lead-types?token=' . $token);
-
-        // Check response status
-        $response->assertStatus(453);
-    }
-
-    /**
-     * Check SoftDeleted Index For Developer
-     *
-     * @return void
-     */
-    public function testIndexSoftDeleted()
-    {
-        $token = $this->loginDeveloper();
-
-        // Request
-        $response = $this->delete('api/lead-types/8?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/lead-types/7?token=' . $token);
-        $response->assertStatus(200);
-
-        $response = $this->get('api/lead-types/soft-deleted?token=' . $token);
+        $response = $this->get('api/lead-statuses?token=' . $token);
 
         // Check response status
         $response->assertStatus(200);
@@ -246,6 +139,100 @@ class LeadTypesControllerTest extends WnyTestCase
                             "id",
                             "name",
                             "organization_id",
+                            "parent_id",
+                            "deleted_at",
+                            "created_at",
+                            "updated_at",
+                            "organization"
+                        ]
+                    ],
+                'message'
+            ]
+        );
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $code         = $responseJSON['code'];     // array
+        $message      = $responseJSON['message'];  // array
+        $data         = $responseJSON['data'];     // array
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+        $this->assertEquals(8, count($data));
+        $this->assertEquals('Unqualified', $data[0]['name']);
+        $this->assertEquals(2, $data[0]['organization_id']);
+        $this->assertEquals(null, $data[0]['parent_id']);
+        $this->assertEquals(null, $data[0]['deleted_at']);
+        $this->assertEquals(
+            'Western New York Exteriors, LLC.',
+            $data[0]['organization']['name']
+        );
+        $this->assertEquals("LeadStatuses.index. Result is successful.", $message);
+    }
+
+    /**
+     * Test IndexForDeveloper
+     *
+     * @return void
+     */
+    public function testIndexEmpty()
+    {
+        $token = $this->loginOrganizationSpringSuperadmin();
+
+        // Request
+        $response = $this->get('api/lead-statuses?token=' . $token);
+
+        // Check response status
+        $response->assertStatus(204);
+    }
+
+    /**
+     * Check Index If Permission Is Absent
+     *
+     * @return void
+     */
+    public function testIndexIfPermissionIsAbsent()
+    {
+        $token = $this->loginOrganizationWNYGeneralManager();
+
+        // Request
+        $response = $this->get('api/lead-statuses?token=' . $token);
+
+        // Check response status
+        $response->assertStatus(453);
+    }
+
+    /**
+     * Check SoftDeleted Index For Developer
+     *
+     * @return void
+     */
+    public function testIndexSoftDeleted()
+    {
+        $token = $this->loginDeveloper();
+
+        // Request
+        $response = $this->delete('api/lead-statuses/8?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/lead-statuses/7?token=' . $token);
+        $response->assertStatus(200);
+
+        $response = $this->get('api/lead-statuses/soft-deleted?token=' . $token);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'code',
+                'data' =>
+                    [
+                        [
+                            "id",
+                            "name",
+                            "organization_id",
+                            "parent_id",
                             "deleted_at",
                             "created_at",
                             "updated_at",
@@ -264,11 +251,13 @@ class LeadTypesControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
         $this->assertEquals(2, count($data));
-        $this->assertEquals('Carpentry', $data[0]['name']);
+        $this->assertEquals('Duplicate', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
+        $this->assertEquals(3, $data[0]['parent_id']);
+        $this->assertEquals(null, $data[0]['other_reason']);
         $this->assertNotEquals(null, $data[0]['deleted_at']);
         $this->assertEquals('Western New York Exteriors, LLC.', $data[0]['organization']['name']);
-        $this->assertEquals("LeadTypes.indexSoftDeleted. Result is successful.", $message);
+        $this->assertEquals("LeadStatuses.indexSoftDeleted. Result is successful.", $message);
     }
 
     /**
@@ -281,7 +270,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $token    = $this->loginDeveloper();
 
         // Request
-        $response = $this->get('api/lead-types/soft-deleted?token=' . $token);
+        $response = $this->get('api/lead-statuses/soft-deleted?token=' . $token);
 
         // Check response status
         $response->assertStatus(204);
@@ -297,7 +286,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $token = $this->loginOrganizationWNYGeneralManager();
 
         // Request
-        $response = $this->get('api/lead-types/soft-deleted?token=' . $token);
+        $response = $this->get('api/lead-statuses/soft-deleted?token=' . $token);
 
         // Check response status
         $response->assertStatus(453);
@@ -328,7 +317,7 @@ class LeadTypesControllerTest extends WnyTestCase
     {
         $token = $this->loginDeveloper();
 
-        $response = $this->get('api/lead-types/organizations?token=' . $token);
+        $response = $this->get('api/lead-statuses/organizations?token=' . $token);
 
         // Check response status
         $response->assertStatus(200);
@@ -377,97 +366,97 @@ class LeadTypesControllerTest extends WnyTestCase
         $this->assertEquals(200, $code);
 
     }
-
-    /**
-     * Check getListOfOrganizations For Spring Superadmin
-     *
-     * @return void
-     */
-    public function testGetListOfOrganizationsForSpringSuperadmin()
-    {
-        $token = $this->loginOrganizationSpringSuperadmin();
-
-        $response = $this->get('api/lead-types/organizations?token=' . $token);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        // Check response structure
-        $response->assertJsonStructure(
-            [
-                'success',
-                'data' =>
-                    [
-                        [
-                            'id',
-                            'level',
-                            'order',
-                            'name',
-                            'parent_id',
-                            'deleted_at',
-                            'created_at',
-                            'updated_at'
-                        ]
-                    ],
-                'message'
-            ]
-        );
-        $responseJSON = json_decode($response->getContent(), true);
-        $data         = $responseJSON['data'];     // array
-        $message      = $responseJSON['message'];  // array
-        $success      = $responseJSON['success'];  // array
-        $code         = $responseJSON['code'];     // array
-
-        $this->assertEquals(1, count($data));
-        $this->assertEquals(9, $data[0]['id']);
-        $this->assertEquals(
-            'Spring Sheet Metal & Roofing Co.',
-            $data[0]['name']
-        );
-        $this->assertEquals(1, $data[0]['level']);
-        $this->assertEquals(2, $data[0]['order']);
-        $this->assertEquals(1, $data[0]['parent_id']);
-        $this->assertEquals(null, $data[0]['deleted_at']);
-        $this->assertEquals(
-            "Trait.getListOfOrganizations. Result is successful.",
-            $message
-        );
-        $this->assertEquals(true, $success);
-        $this->assertEquals(200, $code);
-
-    }
-
-    /**
-     * Check getListOfOrganizations If There Is Not Permission Due To Role
-     *
-     * @return void
-     */
-    public function testGetListOfOrganizationsIfThereIsNotPermissionDueToRole()
-    {
-        $token = $this->loginOrganizationWNYGeneralManager();
-
-        $response = $this->get('api/lead-types/organizations?token=' . $token);
-
-        // Check response status
-        $response->assertStatus(453);
-
-        // Check response structure
-        $response->assertJsonStructure(
-            [
-                'success',
-                'message'
-            ]
-        );
-
-        //Check response data
-        $responseJSON = json_decode($response->getContent(), true);
-        $success      = $responseJSON['success'];  // array
-        $message      = $responseJSON['message'];  // array
-
-        $this->assertEquals(false, $success);
-        $this->assertEquals("Permission is absent by the role.", $message);
-    }
-
+//
+//    /**
+//     * Check getListOfOrganizations For Spring Superadmin
+//     *
+//     * @return void
+//     */
+//    public function testGetListOfOrganizationsForSpringSuperadmin()
+//    {
+//        $token = $this->loginOrganizationSpringSuperadmin();
+//
+//        $response = $this->get('api/lead-statuses/organizations?token=' . $token);
+//
+//        // Check response status
+//        $response->assertStatus(200);
+//
+//        // Check response structure
+//        $response->assertJsonStructure(
+//            [
+//                'success',
+//                'data' =>
+//                    [
+//                        [
+//                            'id',
+//                            'level',
+//                            'order',
+//                            'name',
+//                            'parent_id',
+//                            'deleted_at',
+//                            'created_at',
+//                            'updated_at'
+//                        ]
+//                    ],
+//                'message'
+//            ]
+//        );
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $data         = $responseJSON['data'];     // array
+//        $message      = $responseJSON['message'];  // array
+//        $success      = $responseJSON['success'];  // array
+//        $code         = $responseJSON['code'];     // array
+//
+//        $this->assertEquals(1, count($data));
+//        $this->assertEquals(9, $data[0]['id']);
+//        $this->assertEquals(
+//            'Spring Sheet Metal & Roofing Co.',
+//            $data[0]['name']
+//        );
+//        $this->assertEquals(1, $data[0]['level']);
+//        $this->assertEquals(2, $data[0]['order']);
+//        $this->assertEquals(1, $data[0]['parent_id']);
+//        $this->assertEquals(null, $data[0]['deleted_at']);
+//        $this->assertEquals(
+//            "Trait.getListOfOrganizations. Result is successful.",
+//            $message
+//        );
+//        $this->assertEquals(true, $success);
+//        $this->assertEquals(200, $code);
+//
+//    }
+//
+//    /**
+//     * Check getListOfOrganizations If There Is Not Permission Due To Role
+//     *
+//     * @return void
+//     */
+//    public function testGetListOfOrganizationsIfThereIsNotPermissionDueToRole()
+//    {
+//        $token = $this->loginOrganizationWNYGeneralManager();
+//
+//        $response = $this->get('api/lead-statuses/organizations?token=' . $token);
+//
+//        // Check response status
+//        $response->assertStatus(453);
+//
+//        // Check response structure
+//        $response->assertJsonStructure(
+//            [
+//                'success',
+//                'message'
+//            ]
+//        );
+//
+//        //Check response data
+//        $responseJSON = json_decode($response->getContent(), true);
+//        $success      = $responseJSON['success'];  // array
+//        $message      = $responseJSON['message'];  // array
+//
+//        $this->assertEquals(false, $success);
+//        $this->assertEquals("Permission is absent by the role.", $message);
+//    }
+//
     /**
      * Check Show For Developer
      *
@@ -478,7 +467,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->get('api/lead-types/1?token=' . $token);
+        $response = $this->get('api/lead-statuses/8?token=' . $token);
 
         // Check response status
         $response->assertStatus(200);
@@ -494,6 +483,7 @@ class LeadTypesControllerTest extends WnyTestCase
                         "id",
                         "name",
                         "organization_id",
+                        "parent_id",
                         "deleted_at",
                         "created_at",
                         "updated_at",
@@ -509,10 +499,12 @@ class LeadTypesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals("LeadTypes.show. Result is successful.", $message);
-        $this->assertEquals(1, $data['id']);
-        $this->assertEquals('Steep Slope Roofing', $data['name']);
+        $this->assertEquals("LeadStatuses.show. Result is successful.", $message);
+        $this->assertEquals(8, $data['id']);
+        $this->assertEquals('Other', $data['name']);
         $this->assertEquals(2, $data['organization_id']);
+        $this->assertEquals(3, $data['parent_id']);
+        $this->assertEquals(null, $data['other_reason']);
         $this->assertEquals(null, $data['deleted_at']);
         $this->assertEquals('Western New York Exteriors, LLC.', $data['organization']['name']);
     }
@@ -526,7 +518,7 @@ class LeadTypesControllerTest extends WnyTestCase
     {
         $token = $this->loginDeveloper();
 
-        $response = $this->get('api/lead-types/44444?token=' . $token, []);
+        $response = $this->get('api/lead-statuses/44444?token=' . $token, []);
 
         // Check response status
         $response->assertStatus(456);
@@ -549,7 +541,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $this->assertEquals(false, $success);
         $this->assertEquals(456, $code);
         $this->assertEquals(
-            "LeadTypes.show. Incorrect ID in URL.",
+            "LeadStatuses.show. Incorrect ID in URL.",
             $message
         );
         $this->assertEquals(null, $data);
@@ -564,7 +556,7 @@ class LeadTypesControllerTest extends WnyTestCase
     {
         $token = $this->loginCustomerWny();
 
-        $response = $this->get('api/lead-types/1?token=' . $token);
+        $response = $this->get('api/lead-statuses/1?token=' . $token);
 
         // Check response status
         $response->assertStatus(453);
@@ -595,7 +587,7 @@ class LeadTypesControllerTest extends WnyTestCase
     {
         $token = $this->loginOrganizationSpringSuperadmin();
 
-        $response = $this->get('api/lead-types/1?token=' . $token);
+        $response = $this->get('api/lead-statuses/1?token=' . $token);
 
         // Check response status
         $response->assertStatus(454);
@@ -628,12 +620,13 @@ class LeadTypesControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            "name"            => 'Test Lead Type',
-            "organization_id" => 2
+            "name"            => 'Test Lead Status',
+            "organization_id" => 2,
+            "parent_id"       => 3,
         ];
 
         // Store the Lead Source
-        $response = $this->post('api/lead-types?token=' . $token, $data);
+        $response = $this->post('api/lead-statuses?token=' . $token, $data);
 
         // Check response status
         $response->assertStatus(200);
@@ -657,16 +650,17 @@ class LeadTypesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals("LeadTypes.store. Result is successful.", $message);
+        $this->assertEquals("LeadStatuses.store. Result is successful.", $message);
         $this->assertEquals(null, $data);
 
         // Check DB table customer_details
-        $leadType = DB::table('lead_types')
-            ->where('id', '=', 17)
+        $leadStatus = DB::table('lead_statuses')
+            ->where('id', '=', 9)
             ->first();
-        $this->assertEquals('Test Lead Type', $leadType->name);
-        $this->assertEquals(2, $leadType->organization_id);
-        $this->assertEquals(null, $leadType->deleted_at);
+        $this->assertEquals('Test Lead Status', $leadStatus->name);
+        $this->assertEquals(2, $leadStatus->organization_id);
+        $this->assertEquals(3, $leadStatus->parent_id);
+        $this->assertEquals(null, $leadStatus->deleted_at);
     }
 
     /**
@@ -680,12 +674,12 @@ class LeadTypesControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            "name"            => 'Test Lead Type',
+            "name"            => 'Test Lead Status',
             "organization_id" => 2
         ];
 
         // Store the Lead Source
-        $response = $this->post('api/lead-types?token=' . $token, $data);
+        $response = $this->post('api/lead-statuses?token=' . $token, $data);
 
         // Check response status
         $response->assertStatus(453);
@@ -723,7 +717,7 @@ class LeadTypesControllerTest extends WnyTestCase
         ];
 
         // Store the Lead Source
-        $response = $this->post('api/lead-types?token=' . $token, $data);
+        $response = $this->post('api/lead-statuses?token=' . $token, $data);
 
         // Check response status
         $response->assertStatus(454);
@@ -757,11 +751,13 @@ class LeadTypesControllerTest extends WnyTestCase
         // Create data
         $data = [
             "name"            => [],
-            "organization_id" => []
+            "organization_id" => [],
+            "parent_id"       => [],
+            "other_reason"    => [],
         ];
 
         // Store the Lead Source
-        $response = $this->post('api/lead-types?token=' . $token, $data);
+        $response = $this->post('api/lead-statuses?token=' . $token, $data);
 
         // Check response status
         $response->assertStatus(422);
@@ -782,7 +778,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(2, count($error['errors']));
+        $this->assertEquals(4, count($error['errors']));
     }
 
     /**
@@ -799,7 +795,7 @@ class LeadTypesControllerTest extends WnyTestCase
             'name' => 'Name edited'
         ];
 
-        $response = $this->put('api/lead-types/1?token=' . $token, $data);
+        $response = $this->put('api/lead-statuses/1?token=' . $token, $data);
         $response->assertStatus(200);
 
         $responseJSON = json_decode($response->getContent(), true);
@@ -810,10 +806,12 @@ class LeadTypesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals("LeadTypes.update. Result is successful.", $message);
+        $this->assertEquals("LeadStatuses.update. Result is successful.", $message);
         $this->assertEquals(1, $data['id']);
         $this->assertEquals("Name edited", $data['name']);
         $this->assertEquals(2, $data['organization_id']);
+        $this->assertEquals(null, $data['parent_id']);
+        $this->assertEquals(null, $data['other_reason']);
     }
 
     /**
@@ -830,7 +828,7 @@ class LeadTypesControllerTest extends WnyTestCase
             'name' => 'Name edited'
         ];
 
-        $response = $this->put('api/lead-types/44444?token=' . $token, $data);
+        $response = $this->put('api/lead-statuses/44444?token=' . $token, $data);
         $response->assertStatus(456);
 
         $responseJSON = json_decode($response->getContent(), true);
@@ -841,7 +839,7 @@ class LeadTypesControllerTest extends WnyTestCase
 
         $this->assertEquals(false, $success);
         $this->assertEquals(456, $code);
-        $this->assertEquals("LeadTypes.update. Incorrect ID in URL.", $message);
+        $this->assertEquals("LeadStatuses.update. Incorrect ID in URL.", $message);
         $this->assertEquals(null, $data);
     }
 
@@ -858,9 +856,11 @@ class LeadTypesControllerTest extends WnyTestCase
         $data = [
             "name"            => [],
             "organization_id" => [],
+            "parent_id"       => [],
+            "other_reason"    => [],
         ];
 
-        $response = $this->put('api/lead-types/1?token=' . $token, $data);
+        $response = $this->put('api/lead-statuses/1?token=' . $token, $data);
         $response->assertStatus(422);
 
         // Check response structure
@@ -879,7 +879,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(2, count($error['errors']));
+        $this->assertEquals(4, count($error['errors']));
     }
 
     /**
@@ -896,7 +896,7 @@ class LeadTypesControllerTest extends WnyTestCase
             'name' => 'Name edited'
         ];
 
-        $response = $this->put('api/lead-types/1?token=' . $token, $data);
+        $response = $this->put('api/lead-statuses/1?token=' . $token, $data);
 
         // Check response status
         $response->assertStatus(453);
@@ -932,7 +932,7 @@ class LeadTypesControllerTest extends WnyTestCase
             'name' => 'Name edited'
         ];
 
-        $response = $this->put('api/lead-types/1?token=' . $token, $data);
+        $response = $this->put('api/lead-statuses/1?token=' . $token, $data);
 
         // Check response status
         $response->assertStatus(454);
@@ -964,7 +964,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->delete('api/lead-types/8?token=' . $token);
+        $response = $this->delete('api/lead-statuses/8?token=' . $token);
         $response->assertStatus(200);
 
         $responseJSON = json_decode($response->getContent(), true);
@@ -976,13 +976,13 @@ class LeadTypesControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
         $this->assertEquals(
-            "LeadTypes.softDestroy. Result is successful.",
+            "LeadStatuses.softDestroy. Result is successful.",
             $message
         );
         $this->assertEquals(null, $data);
 
-        $leadType = DB::table('lead_types')->where('id', 8)->first();
-        $this->assertNotEquals(null, $leadType->deleted_at);
+        $leadStatus = DB::table('lead_statuses')->where('id', 8)->first();
+        $this->assertNotEquals(null, $leadStatus->deleted_at);
     }
 
 
@@ -996,7 +996,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->delete('api/lead-types/4444?token=' . $token);
+        $response = $this->delete('api/lead-statuses/4444?token=' . $token);
 
         $response->assertStatus(456);
 
@@ -1009,7 +1009,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $this->assertEquals(false, $success);
         $this->assertEquals(456, $code);
         $this->assertEquals(
-            "LeadTypes.softDestroy. Incorrect ID in URL.",
+            "LeadStatuses.softDestroy. Incorrect ID in URL.",
             $message
         );
         $this->assertEquals(null, $data);
@@ -1025,7 +1025,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $token = $this->loginOrganizationWNYGeneralManager();
 
         // Request
-        $response = $this->delete('api/lead-types/5?token=' . $token);
+        $response = $this->delete('api/lead-statuses/5?token=' . $token);
 
         $response->assertStatus(453);
 
@@ -1050,7 +1050,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $token = $this->loginOrganizationSpringSuperadmin();
 
         // Request
-        $response = $this->delete('api/lead-types/5?token=' . $token);
+        $response = $this->delete('api/lead-statuses/5?token=' . $token);
 
         $response->assertStatus(454);
 
@@ -1076,11 +1076,11 @@ class LeadTypesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Preparation
-        $response = $this->delete('api/lead-types/8?token=' . $token);
+        $response = $this->delete('api/lead-statuses/8?token=' . $token);
         $response->assertStatus(200);
 
         // Request
-        $response = $this->put('api/lead-types/8/restore?token=' . $token);
+        $response = $this->put('api/lead-statuses/8/restore?token=' . $token);
         $response->assertStatus(200);
 
         $responseJSON = json_decode($response->getContent(), true);
@@ -1091,11 +1091,11 @@ class LeadTypesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals("LeadTypes.restore. Result is successful.", $message);
+        $this->assertEquals("LeadStatuses.restore. Result is successful.", $message);
         $this->assertEquals(null, $data);
 
-        $leadType = LeadSource::where('id', 8)->first();
-        $this->assertEquals(null, $leadType['deleted_at']);
+        $leadStatus = LeadSource::where('id', 8)->first();
+        $this->assertEquals(null, $leadStatus['deleted_at']);
     }
 
     /**
@@ -1108,7 +1108,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->put('api/lead-types/4444/restore?token=' . $token);
+        $response = $this->put('api/lead-statuses/4444/restore?token=' . $token);
 
         $response->assertStatus(456);
 
@@ -1120,7 +1120,7 @@ class LeadTypesControllerTest extends WnyTestCase
 
         $this->assertEquals(false, $success);
         $this->assertEquals(456, $code);
-        $this->assertEquals("LeadTypes.restore. Incorrect ID in URL.", $message);
+        $this->assertEquals("LeadStatuses.restore. Incorrect ID in URL.", $message);
         $this->assertEquals(null, $data);
     }
 
@@ -1133,12 +1133,12 @@ class LeadTypesControllerTest extends WnyTestCase
     {
         $token = $this->loginDeveloper();
         // Preparation
-        $response = $this->delete('api/lead-types/8?token=' . $token);
+        $response = $this->delete('api/lead-statuses/8?token=' . $token);
         $response->assertStatus(200);
 
         $token = $this->loginOrganizationWNYGeneralManager();
         // Request
-        $response = $this->put('api/lead-types/8/restore?token=' . $token);
+        $response = $this->put('api/lead-statuses/8/restore?token=' . $token);
 
         $response->assertStatus(453);
 
@@ -1159,11 +1159,11 @@ class LeadTypesControllerTest extends WnyTestCase
     {
         // Preparation
         $token = $this->loginDeveloper();
-        $response = $this->delete('api/lead-types/8?token=' . $token);
+        $response = $this->delete('api/lead-statuses/8?token=' . $token);
         $response->assertStatus(200);
 
         // Request
-        $response = $this->delete('api/lead-types/8/permanently?token=' . $token);
+        $response = $this->delete('api/lead-statuses/8/permanently?token=' . $token);
         $response->assertStatus(200);
 
         $responseJSON = json_decode($response->getContent(), true);
@@ -1174,10 +1174,10 @@ class LeadTypesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals("LeadTypes.destroyPermanently. Result is successful.", $message);
+        $this->assertEquals("LeadStatuses.destroyPermanently. Result is successful.", $message);
 
-        $leadType = DB::table('lead_types')->where('id', 8)->first();
-        $this->assertEquals(null, $leadType);
+        $leadStatus = DB::table('lead_statuses')->where('id', 8)->first();
+        $this->assertEquals(null, $leadStatus);
     }
 
     /**
@@ -1191,7 +1191,7 @@ class LeadTypesControllerTest extends WnyTestCase
 
         // Request
         $response = $this->delete(
-            'api/lead-types/2222/permanently?token=' . $token
+            'api/lead-statuses/2222/permanently?token=' . $token
         );
 
         $response->assertStatus(456);
@@ -1205,7 +1205,7 @@ class LeadTypesControllerTest extends WnyTestCase
         $this->assertEquals(false, $success);
         $this->assertEquals(456, $code);
         $this->assertEquals(
-            "LeadTypes.destroyPermanently. Incorrect ID in URL.",
+            "LeadStatuses.destroyPermanently. Incorrect ID in URL.",
             $message
         );
         $this->assertEquals(null, $data);
@@ -1221,13 +1221,13 @@ class LeadTypesControllerTest extends WnyTestCase
         // Preparation
         $token = $this->loginDeveloper();
         $response = $this->delete(
-            'api/lead-types/8/permanently?token=' . $token
+            'api/lead-statuses/8/permanently?token=' . $token
         );
         $response->assertStatus(200);
 
         // Request
         $token    = $this->loginOrganizationWNYGeneralManager();
-        $response = $this->delete('api/lead-types/8/permanently?token=' . $token);
+        $response = $this->delete('api/lead-statuses/8/permanently?token=' . $token);
 
         $response->assertStatus(453);
 

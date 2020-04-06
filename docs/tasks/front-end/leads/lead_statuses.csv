@@ -1,0 +1,16 @@
+Issue Type,Summary,Task Point Estimate
+Story,Create page Trades,13
+Task,Planning,3
+Task,Create new Branch,0.5
+Task,Create routes,0.5
+Task,Create menu 'Trades',0.5
+Task,Create page Trades by copy-paste,0.5
+Task,Check page,0.5
+Task,Create table in the page for index of trades w/o data,2
+Task,Create endpoint in the api,0.5
+Task,Create mounted with endpoint,0.5
+Task,CHANGELOG,0.5
+Task,Commit,0.5
+Task,Deployment/Checking/Testing,1
+Task,Version,0.5
+Task,Report,0.5

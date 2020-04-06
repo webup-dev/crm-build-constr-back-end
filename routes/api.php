@@ -500,6 +500,52 @@ $api->version(
             }
         );
 
+        $api->group(
+            [
+                'middleware' => [
+                    'api.auth', 'activity'
+                ]
+            ],
+            function (Router $api) {
+                $api->get(
+                    'lead-statuses',
+                    'App\Api\V1\Controllers\LeadStatusesController@index'
+                );
+                $api->get(
+                    'lead-statuses/soft-deleted',
+                    'App\Api\V1\Controllers\LeadStatusesController@indexSoftDeleted'
+                );
+                $api->get(
+                    'lead-statuses/organizations',
+                    'App\Api\V1\Controllers\LeadStatusesController@getListOfOrganizations'
+                );
+                $api->get(
+                    'lead-statuses/{id}',
+                    'App\Api\V1\Controllers\LeadStatusesController@show'
+                );
+                $api->post(
+                    'lead-statuses',
+                    'App\Api\V1\Controllers\LeadStatusesController@store'
+                );
+                $api->put(
+                    'lead-statuses/{id}',
+                    'App\Api\V1\Controllers\LeadStatusesController@update'
+                );
+                $api->delete(
+                    'lead-statuses/{id}',
+                    'App\Api\V1\Controllers\LeadStatusesController@softDestroy'
+                );
+                $api->put(
+                    'lead-statuses/{id}/restore',
+                    'App\Api\V1\Controllers\LeadStatusesController@restore'
+                );
+                $api->delete(
+                    'lead-statuses/{id}/permanently',
+                    'App\Api\V1\Controllers\LeadStatusesController@destroyPermanently'
+                );
+            }
+        );
+
 
         $api->get('book', 'App\Api\V1\Controllers\BookController@index');
 
