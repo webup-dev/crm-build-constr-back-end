@@ -1,9 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Api\V1\Controllers;
 
 use App\Models\LeadSource;
-use App\Models\LsCategory;
+use App\WnyTestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 
