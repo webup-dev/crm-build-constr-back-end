@@ -169,7 +169,7 @@ class MenusControllerTest extends WnyTestCase
         $this->assertEquals('Lead Sources', $data[6]['name']);
         $this->assertEquals("lead-sources/soft-deleted", $data[6]['url']);
 
-        $this->assertEquals(1, $data[7]['count']);
+        $this->assertEquals(2, $data[7]['count']);
         $this->assertEquals('Trades', $data[7]['name']);
         $this->assertEquals("trades/soft-deleted", $data[7]['url']);
 
@@ -275,7 +275,7 @@ class MenusControllerTest extends WnyTestCase
         $this->assertEquals('Lead Sources', $data[6]['name']);
         $this->assertEquals("lead-sources/soft-deleted", $data[6]['url']);
 
-        $this->assertEquals(1, $data[7]['count']);
+        $this->assertEquals(2, $data[7]['count']);
         $this->assertEquals('Trades', $data[7]['name']);
         $this->assertEquals("trades/soft-deleted", $data[7]['url']);
 
@@ -398,7 +398,7 @@ class MenusControllerTest extends WnyTestCase
         $this->assertEquals('Lead Sources', $data[6]['name']);
         $this->assertEquals("lead-sources/soft-deleted", $data[6]['url']);
 
-        $this->assertEquals(1, $data[7]['count']);
+        $this->assertEquals(0, $data[7]['count']);
         $this->assertEquals('Trades', $data[7]['name']);
         $this->assertEquals("trades/soft-deleted", $data[7]['url']);
 
