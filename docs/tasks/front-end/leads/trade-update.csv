@@ -1,0 +1,20 @@
+Issue Type,Summary,Task Point Estimate
+Story,Create component UpdateTrade,13
+Task,Create new Branch,0.5
+Task,Create page FormUpdateTrade (copy-paste page NewTrade),0.5
+Task,Create route,0.5
+Task,Create the button 'Update' in the table of the Index page Trades,0.5
+Task,Test page FormUpdateTrade,0.5
+Task,Edit page FormUpdateTrade,2
+Task,Test page FormUpdateTrade,0.5
+Task,Change Title,0.5
+Task,Change tag form,0.5
+Task,Validation,0.5
+Task,Mounted,0.5
+Task,Change create() to update(),0.5
+Task,Config buttons,0.5
+Task,CHANGELOG,0.5
+Task,Commit,0.5
+Task,Deployment/Checking/Testing,0.5
+Task,Version,0.5
+Task,Report,0.5

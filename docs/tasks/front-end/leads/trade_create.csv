@@ -1,0 +1,17 @@
+Issue Type,Summary,Task Point Estimate
+Story,Create component CreateLeadSource,13
+Task,Create new Branch,0.5
+Task,Create page FormCreateTrade by copy-paste,0.5
+Task,Create the button 'Create Trade' in the table of the Index page 'Trades',0.5
+Task,Test page FormCreateTrade,0.5
+Task,Edit page FormCreateTrade,2
+Task,Test page FormCreateTrade,0.5
+Task,Validation,0.5
+Task,Create endpoint in the api,0.5
+Task,Import API endpoint,0.5
+Task,Mounted,0.5
+Task,CHANGELOG,0.5
+Task,Commit,0.5
+Task,Deployment/Checking/Testing,1
+Task,Version,0.5
+Task,Report,0.5
