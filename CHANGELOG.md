@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.26.0] - 2020-04-07
+### Changed 
+- MenusController. Soft-deleted trades are added
+    - MenusControllerTest are updated.
+
 ## [0.25.0] - 2020-04-06
 ### Added 
 - Module Lead Status is created
