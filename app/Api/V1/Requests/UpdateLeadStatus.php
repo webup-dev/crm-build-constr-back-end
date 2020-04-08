@@ -35,8 +35,7 @@ class UpdateLeadStatus extends FormRequest
         return [
             "name"            => 'string',
             "organization_id" => 'integer',
-            "parent_id"       => 'integer',
-            "other_reason"    => 'string',
+            "parent_id"       => 'integer|nullable'
         ];
     }
 }

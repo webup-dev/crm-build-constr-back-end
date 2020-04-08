@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.26.1] - 2020-04-08
+### Changed 
+- Lead Status migration. Column other_reason is deleted
+    - Model LeadStatus
+    - Validations for requests of store, update
+    - LeadStatusesControllerTest
+    - LeadStatusesController.
+
 ## [0.26.0] - 2020-04-07
 ### Changed 
 - MenusController. Soft-deleted trades are added

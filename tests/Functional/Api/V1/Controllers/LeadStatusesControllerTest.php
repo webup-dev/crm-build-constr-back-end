@@ -366,97 +366,7 @@ class LeadStatusesControllerTest extends WnyTestCase
         $this->assertEquals(200, $code);
 
     }
-//
-//    /**
-//     * Check getListOfOrganizations For Spring Superadmin
-//     *
-//     * @return void
-//     */
-//    public function testGetListOfOrganizationsForSpringSuperadmin()
-//    {
-//        $token = $this->loginOrganizationSpringSuperadmin();
-//
-//        $response = $this->get('api/lead-statuses/organizations?token=' . $token);
-//
-//        // Check response status
-//        $response->assertStatus(200);
-//
-//        // Check response structure
-//        $response->assertJsonStructure(
-//            [
-//                'success',
-//                'data' =>
-//                    [
-//                        [
-//                            'id',
-//                            'level',
-//                            'order',
-//                            'name',
-//                            'parent_id',
-//                            'deleted_at',
-//                            'created_at',
-//                            'updated_at'
-//                        ]
-//                    ],
-//                'message'
-//            ]
-//        );
-//        $responseJSON = json_decode($response->getContent(), true);
-//        $data         = $responseJSON['data'];     // array
-//        $message      = $responseJSON['message'];  // array
-//        $success      = $responseJSON['success'];  // array
-//        $code         = $responseJSON['code'];     // array
-//
-//        $this->assertEquals(1, count($data));
-//        $this->assertEquals(9, $data[0]['id']);
-//        $this->assertEquals(
-//            'Spring Sheet Metal & Roofing Co.',
-//            $data[0]['name']
-//        );
-//        $this->assertEquals(1, $data[0]['level']);
-//        $this->assertEquals(2, $data[0]['order']);
-//        $this->assertEquals(1, $data[0]['parent_id']);
-//        $this->assertEquals(null, $data[0]['deleted_at']);
-//        $this->assertEquals(
-//            "Trait.getListOfOrganizations. Result is successful.",
-//            $message
-//        );
-//        $this->assertEquals(true, $success);
-//        $this->assertEquals(200, $code);
-//
-//    }
-//
-//    /**
-//     * Check getListOfOrganizations If There Is Not Permission Due To Role
-//     *
-//     * @return void
-//     */
-//    public function testGetListOfOrganizationsIfThereIsNotPermissionDueToRole()
-//    {
-//        $token = $this->loginOrganizationWNYGeneralManager();
-//
-//        $response = $this->get('api/lead-statuses/organizations?token=' . $token);
-//
-//        // Check response status
-//        $response->assertStatus(453);
-//
-//        // Check response structure
-//        $response->assertJsonStructure(
-//            [
-//                'success',
-//                'message'
-//            ]
-//        );
-//
-//        //Check response data
-//        $responseJSON = json_decode($response->getContent(), true);
-//        $success      = $responseJSON['success'];  // array
-//        $message      = $responseJSON['message'];  // array
-//
-//        $this->assertEquals(false, $success);
-//        $this->assertEquals("Permission is absent by the role.", $message);
-//    }
-//
+
     /**
      * Check Show For Developer
      *
@@ -752,8 +662,7 @@ class LeadStatusesControllerTest extends WnyTestCase
         $data = [
             "name"            => [],
             "organization_id" => [],
-            "parent_id"       => [],
-            "other_reason"    => [],
+            "parent_id"       => []
         ];
 
         // Store the Lead Source
@@ -856,8 +765,7 @@ class LeadStatusesControllerTest extends WnyTestCase
         $data = [
             "name"            => [],
             "organization_id" => [],
-            "parent_id"       => [],
-            "other_reason"    => [],
+            "parent_id"       => []
         ];
 
         $response = $this->put('api/lead-statuses/1?token=' . $token, $data);

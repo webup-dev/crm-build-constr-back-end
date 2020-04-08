@@ -37,7 +37,6 @@ class CreateLeadStatusesTable extends Migration
                     ->references('id')
                     ->on('lead_statuses')
                     ->onDelete('cascade');
-                $table->string('other_reason')->nullable();
                 $table->softDeletes();
                 $table->timestamps();
             }

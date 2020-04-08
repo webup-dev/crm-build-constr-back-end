@@ -64,7 +64,6 @@ class LeadStatusesController extends Controller
      *    "name": "Website - CertainTeed",
      *    "organization_id": 2,
      *    "parent_id": 3,
-     *    "other_reason": null,
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03",
@@ -75,7 +74,6 @@ class LeadStatusesController extends Controller
      *    "name": "Website - CertainTeed",
      *    "organization_id": 2,
      *    "parent_id": 3,
-     *    "other_reason": null,
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03",
@@ -180,7 +178,6 @@ class LeadStatusesController extends Controller
         $leadStatus->name            = $request->get('name');
         $leadStatus->organization_id = $request->get('organization_id');
         $leadStatus->parent_id       = $request->get('parent_id');
-        $leadStatus->other_reason    = $request->get('other_reason');
 
         // check permission to organization_id from the request
         $response = $this->_checkPermissionToOrganizationId($leadStatus);
@@ -241,7 +238,6 @@ class LeadStatusesController extends Controller
      *       "name": "Lead Status 1",
      *       "organization_id": 2,
      *       "parent_id": 3,
-     *       "other_reason": null,
      *       "created_at": "2019-12-08 13:25:36",
      *       "updated_at": "2019-12-08 13:25:36",
      *       "organization": "object"
@@ -305,7 +301,6 @@ class LeadStatusesController extends Controller
      *       "name": "LeadStatus Updated",
      *       "organization_id": 2,
      *       "parent_id": 2,
-     *       "other_reason": null,
      *       "created_at": "2019-12-08 13:25:36",
      *       "updated_at": "2019-12-09 13:25:36",
      *       "organization": "object"
@@ -456,7 +451,6 @@ class LeadStatusesController extends Controller
      *    "name": "blogging",
      *    "organization_id": 2,
      *    "parent_id": 2,
-     *    "other_reason": null,
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03",
@@ -467,7 +461,6 @@ class LeadStatusesController extends Controller
      *    "name": "blogging",
      *    "organization_id": 2,
      *    "parent_id": 2,
-     *    "other_reason": null,
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03",
