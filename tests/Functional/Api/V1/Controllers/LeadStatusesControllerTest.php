@@ -254,7 +254,6 @@ class LeadStatusesControllerTest extends WnyTestCase
         $this->assertEquals('Duplicate', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals(3, $data[0]['parent_id']);
-        $this->assertEquals(null, $data[0]['other_reason']);
         $this->assertNotEquals(null, $data[0]['deleted_at']);
         $this->assertEquals('Western New York Exteriors, LLC.', $data[0]['organization']['name']);
         $this->assertEquals("LeadStatuses.indexSoftDeleted. Result is successful.", $message);
@@ -414,7 +413,6 @@ class LeadStatusesControllerTest extends WnyTestCase
         $this->assertEquals('Other', $data['name']);
         $this->assertEquals(2, $data['organization_id']);
         $this->assertEquals(3, $data['parent_id']);
-        $this->assertEquals(null, $data['other_reason']);
         $this->assertEquals(null, $data['deleted_at']);
         $this->assertEquals('Western New York Exteriors, LLC.', $data['organization']['name']);
     }
@@ -687,7 +685,7 @@ class LeadStatusesControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(4, count($error['errors']));
+        $this->assertEquals(3, count($error['errors']));
     }
 
     /**
@@ -720,7 +718,6 @@ class LeadStatusesControllerTest extends WnyTestCase
         $this->assertEquals("Name edited", $data['name']);
         $this->assertEquals(2, $data['organization_id']);
         $this->assertEquals(null, $data['parent_id']);
-        $this->assertEquals(null, $data['other_reason']);
     }
 
     /**
@@ -787,7 +784,7 @@ class LeadStatusesControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(4, count($error['errors']));
+        $this->assertEquals(3, count($error['errors']));
     }
 
     /**
