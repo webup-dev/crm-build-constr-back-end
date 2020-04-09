@@ -236,7 +236,8 @@ class LeadStatusesControllerTest extends WnyTestCase
                             "deleted_at",
                             "created_at",
                             "updated_at",
-                            "organization"
+                            "organization",
+                            "lead_status_of_parent"
                         ]
                     ],
                 'message'
@@ -254,6 +255,7 @@ class LeadStatusesControllerTest extends WnyTestCase
         $this->assertEquals('Duplicate', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals(3, $data[0]['parent_id']);
+        $this->assertEquals('Declined', $data[0]['lead_status_of_parent']['name']);
         $this->assertNotEquals(null, $data[0]['deleted_at']);
         $this->assertEquals('Western New York Exteriors, LLC.', $data[0]['organization']['name']);
         $this->assertEquals("LeadStatuses.indexSoftDeleted. Result is successful.", $message);

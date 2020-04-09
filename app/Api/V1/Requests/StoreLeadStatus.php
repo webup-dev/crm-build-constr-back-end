@@ -35,7 +35,7 @@ class StoreLeadStatus extends FormRequest
         return [
             "name"            => 'required|string',
             "organization_id" => 'required|integer',
-            "parent_id"       => 'integer|nullable'
+            "parent_id"       => 'nullable|integer'
         ];
     }
 }

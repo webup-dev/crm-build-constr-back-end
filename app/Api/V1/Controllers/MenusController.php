@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\File;
 use App\Models\LeadSource;
+use App\Models\LeadStatus;
 use App\Models\LeadType;
 use App\Models\LsCategory;
 use App\Models\Organization;
@@ -90,6 +91,7 @@ class MenusController extends Controller
         $res[] = $this->_getLsCategories();
         $res[] = $this->_getLeadSources();
         $res[] = $this->_getTrades();
+        $res[] = $this->_getStatuses();
 
         $response = [
             "success" => true,
@@ -275,6 +277,25 @@ class MenusController extends Controller
             "name"  => 'Trades',
             "url"   => 'trades/soft-deleted',
             "count" => $trades
+        ];
+    }
+
+    /**
+     * Method to get soft-deleted Statuses
+     *
+     * @return array
+     */
+    private function _getStatuses()
+    {
+        $leadStatuses = LeadStatus::onlyTrashed()
+            ->select('id')
+            ->get()
+            ->count();
+
+        return [
+            "name"  => 'Lead Statuses',
+            "url"   => 'lead-statuses/soft-deleted',
+            "count" => $leadStatuses
         ];
     }
 }

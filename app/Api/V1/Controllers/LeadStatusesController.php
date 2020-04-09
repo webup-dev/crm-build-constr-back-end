@@ -486,7 +486,7 @@ class LeadStatusesController extends Controller
      */
     public function indexSoftDeleted()
     {
-        $leadStatus = LeadStatus::with(['organization'])
+        $leadStatus = LeadStatus::with(['organization', 'leadStatusOfParent'])
             ->onlyTrashed()->get();
 
         if (!$leadStatus->count()) {

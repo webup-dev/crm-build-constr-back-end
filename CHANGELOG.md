@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.26.3] - 2020-04-09
+### Changed 
+- LeadStatusesController. Method Soft-deleted lead-statuses
+    - Tests are updated
+    - Model LeadStatus. Relationship requests functions are added
+    - lead_status_of_parent is added in the response.
+    
+## [0.26.2] - 2020-04-08
+### Changed 
+- MenusController. Soft-deleted lead-statuses are added
+    - MenusControllerTest are updated.
+
 ## [0.26.1] - 2020-04-08
 ### Changed 
 - Lead Status migration. Column other_reason is deleted

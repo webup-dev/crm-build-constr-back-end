@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -71,6 +72,38 @@ class LeadStatus extends Model
         return $this->belongsTo(
             'App\Models\Organization',
             'organization_id',
+            'id'
+        );
+    }
+
+    /**
+     * LeadStatus <-> parent LeadStatus: one-to-many
+     *
+     * Get the parents that belong to the LeadStatus
+     *
+     * @return HasMany
+     */
+    public function parents()
+    {
+        return $this->hasMany(
+            'App\Models\LeadStatus',
+            'parent_id',
+            'id'
+        );
+    }
+
+    /**
+     * LeadStatus <-> parent LeadStatus: one-to-many
+     *
+     * Get the LeadStatus that owns the parent
+     *
+     * @return BelongsTo
+     */
+    public function leadStatusOfParent()
+    {
+        return $this->belongsTo(
+            'App\Models\LeadStatus',
+            'parent_id',
             'id'
         );
     }
