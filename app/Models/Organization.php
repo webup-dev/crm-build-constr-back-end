@@ -50,6 +50,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|Organization whereLevel($value)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\LeadStatus[] $leadStatuses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RwStage[] $rwStages
  */
 class Organization extends Model
 {
@@ -153,6 +154,22 @@ class Organization extends Model
     {
         return $this->hasMany(
             'App\Models\LeadStatus',
+            'organization_id',
+            'id'
+        );
+    }
+
+    /**
+     * Organization - RwStage: one-to-many
+     *
+     * Get the RwStages of the Organization.
+     *
+     * @return HasMany
+     */
+    public function rwStages()
+    {
+        return $this->hasMany(
+            'App\Models\Stage',
             'organization_id',
             'id'
         );

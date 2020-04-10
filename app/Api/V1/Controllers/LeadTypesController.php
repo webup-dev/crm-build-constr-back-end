@@ -9,6 +9,7 @@ use App\Models\LeadType;
 use App\Models\Organization;
 use App\Models\User_profile;
 use App\Traits\GetOrganizations;
+use App\Api\V1\Traits\CheckPermissionToOrganizationId;
 use App\Traits\Responses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,7 @@ class LeadTypesController extends Controller
 {
     use Helpers;
     use Responses;
+    use CheckPermissionToOrganizationId;
     use GetOrganizations;
 
     /**

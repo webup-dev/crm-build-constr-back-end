@@ -2,6 +2,15 @@
 
 use Illuminate\Database\Seeder;
 
+/**
+ * Seeder for stages table
+ *
+ * @category Seed
+ * @package  Stages
+ * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link     Seed
+ */
 class TestsSeeder extends Seeder
 {
     /**
@@ -12,6 +21,7 @@ class TestsSeeder extends Seeder
     public function run()
     {
         $this->call(TestOrganizationsSeeder::class);
+        $this->call(TestStagesSeeder::class);
         $this->call(TestRolesSeeder::class);
         $this->call(TestUsersSeeder::class);
         $this->call(TestUserProfilesSeeder::class);

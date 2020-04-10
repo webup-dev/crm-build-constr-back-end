@@ -546,6 +546,52 @@ $api->version(
             }
         );
 
+        $api->group(
+            [
+                'middleware' => [
+                    'api.auth', 'activity'
+                ]
+            ],
+            function (Router $api) {
+                $api->get(
+                    'stages',
+                    'App\Api\V1\Controllers\StagesController@index'
+                );
+                $api->get(
+                    'stages/soft-deleted',
+                    'App\Api\V1\Controllers\StagesController@indexSoftDeleted'
+                );
+                $api->get(
+                    'stages/organizations',
+                    'App\Api\V1\Controllers\StagesController@getListOfOrganizations'
+                );
+                $api->get(
+                    'stages/{id}',
+                    'App\Api\V1\Controllers\StagesController@show'
+                );
+                $api->post(
+                    'stages',
+                    'App\Api\V1\Controllers\StagesController@store'
+                );
+                $api->put(
+                    'stages/{id}',
+                    'App\Api\V1\Controllers\StagesController@update'
+                );
+                $api->delete(
+                    'stages/{id}',
+                    'App\Api\V1\Controllers\StagesController@softDestroy'
+                );
+                $api->put(
+                    'stages/{id}/restore',
+                    'App\Api\V1\Controllers\StagesController@restore'
+                );
+                $api->delete(
+                    'stages/{id}/permanently',
+                    'App\Api\V1\Controllers\StagesController@destroyPermanently'
+                );
+            }
+        );
+
 
         $api->get('book', 'App\Api\V1\Controllers\BookController@index');
 

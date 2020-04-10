@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\LeadStatus;
 use App\Models\Organization;
 use App\Models\User_profile;
+use App\Api\V1\Traits\CheckPermissionToOrganizationId;
 use App\Traits\GetOrganizations;
 use App\Traits\Responses;
 use Illuminate\Http\JsonResponse;
@@ -29,6 +30,7 @@ class LeadStatusesController extends Controller
 {
     use Helpers;
     use Responses;
+    use CheckPermissionToOrganizationId;
     use GetOrganizations;
 
     /**

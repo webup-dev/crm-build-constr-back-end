@@ -29,5 +29,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LeadSourcesSeeder::class);
         $this->call(LeadTypesSeeder::class);
         $this->call(LeadStatusesSeeder::class);
+        $this->call(StagesSeeder::class);
     }
 }

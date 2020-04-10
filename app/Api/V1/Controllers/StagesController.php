@@ -2,32 +2,29 @@
 
 namespace App\Api\V1\Controllers;
 
-use App\Api\V1\Requests\StoreLeadSource;
-use App\Api\V1\Requests\UpdateLeadSource;
+use App\Api\V1\Requests\StoreStageRequest;
+use App\Api\V1\Requests\UpdateStage;
 use App\Http\Controllers\Controller;
-use App\Models\LeadSource;
-use App\Models\LsCategory;
+use App\Models\Stage;
 use App\Models\Organization;
-use App\Models\User_profile;
 use App\Api\V1\Traits\CheckPermissionToOrganizationId;
+use App\Traits\Responses;
 use App\Traits\GetOrganizations;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Dingo\Api\Routing\Helpers;
-use App\Traits\Responses;
 
 
 /**
- * Controller to operate with LeadSources
+ * Controller to operate with Stages
  *
  * @category Controller
- * @package  LeadSources
+ * @package  Stages
  * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     Controller
- * @group    Lead Sources
+ * @group    Stages
  */
-class LeadSourcesController extends Controller
+class StagesController extends Controller
 {
     use Helpers;
     use Responses;
@@ -35,49 +32,54 @@ class LeadSourcesController extends Controller
     use GetOrganizations;
 
     /**
-     * LeadSourcesController constructor.
+     * StagesController constructor.
      */
     public function __construct()
     {
-        $this->middleware('organization.user')
-            ->only(['index']);
-        $this->middleware('lead-sources.organization.user')
-            ->only(['show']);
-        $this->middleware('common.organization.admin')
-            ->only(['store', 'getListOfOrganizations', 'getListOfCategories']);
-        $this->middleware('lead-sources.organization.admin')
-            ->only(['update', 'softDestroy']);
-        $this->middleware('platform.admin')
-            ->only(['indexSoftDeleted', 'restore', 'destroyPermanently']);
-        $this->middleware('activity');
+        $this->middleware('organizations_organization.admin')
+            ->only(
+                [
+                    'index',
+                    'show',
+                    'store',
+                    'getListOfOrganizations',
+                    'update',
+                    'softDestroy',
+                    'indexSoftDeleted',
+                    'restore',
+                    'destroyPermanently'
+                ]
+            );
     }
 
     /**
-     * Get index of Lead Sources
+     * Get index of Stages
      *
      * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": "LeadSources.index. Result is successful.",
+     *  "message": "Stages.index. Result is successful.",
      *  "data": [{
      *    "id": 1,
      *    "name": "Website - CertainTeed",
-     *    "category_id": 18,
      *    "organization_id": 2,
-     *    "status": "active",
+     *    "workflow_type": "request",
+     *    "description": "",
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object"
      *   },
      *   {
      *    "id": 2,
-     *    "name": "Website - CertainFeed",
-     *    "category_id": 18,
+     *    "name": "Website - CertainTeed",
      *    "organization_id": 2,
-     *    "status": "active",
+     *    "workflow_type": "request",
+     *    "description": "",
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object"
      *   }]
      * }
      *
@@ -92,42 +94,35 @@ class LeadSourcesController extends Controller
      *   "data": null
      * }
      *
-     * @response 454 {
-     *   "success": false,
-     *   "code": 454,
-     *   "message":  "Permission to the department is absent .",
-     *   "data": null
-     * }
-     *
      * @return JsonResponse
      */
     public function index()
     {
         $res = $this->_getDepartmentId();
         if ($res === true) {
-            $leadSources = LeadSource::with(['lsCategory', 'organization'])->get();
-            if ($leadSources->count() === 0) {
+            $stages = Stage::with(['organization'])->get();
+            if ($stages->count() === 0) {
                 return response()->json('', 204);
             }
 
-            $data = $leadSources->toArray();
+            $data = $stages->toArray();
         } else {
             $organizations = Organization::all()->toArray();
             $collectedIds  = collectIds($organizations, $res);
-            $leadSources   = LeadSource::with(['lsCategory', 'organization'])
+            $stages        = Stage::with(['organization'])
                 ->whereIn('organization_id', $collectedIds)
                 ->get();
-            if ($leadSources->count() === 0) {
+            if ($stages->count() === 0) {
                 return response()->json('', 204);
             }
 
-            $data = $leadSources->toArray();
+            $data = $stages->toArray();
         }
 
         return response()->json(
             $this->resp(
                 200,
-                'LeadSources.index',
+                'Stages.index',
                 $data
             ),
             200
@@ -135,38 +130,14 @@ class LeadSourcesController extends Controller
     }
 
     /**
-     * Get Lead Source Categories that are dependent on a user role
+     * Store a newly created Stage in DB
      *
-     * @return JsonResponse
-     */
-    public function getListOfCategories()
-    {
-        $lsCategories = LsCategory::all();
-        if ($lsCategories->count() === 0) {
-            return response()->json('', 204);
-        }
-
-        $data = $lsCategories->toArray();
-
-        return response()->json(
-            $this->resp(
-                200,
-                'LeadSources.getListOfCategories',
-                $data
-            ),
-            200
-        );
-    }
-
-    /**
-     * Store a newly created LsCategory in DB
-     *
-     * @param StoreLeadSource $request Request
+     * @param StoreStageRequest $request Request
      *
      * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": "LsCategory.store. Result is successful."
+     *  "message": "Stage.store. Result is successful."
      * }
      *
      * @response 422 {
@@ -188,56 +159,46 @@ class LeadSourcesController extends Controller
      *
      * @response 500 {
      *  "error": {
-     *      "message": "Could not create Role",
+     *      "message": "Could not create Stage",
      *      "status_code": 500
      *    }
      * }
      *
      * @return JsonResponse
      */
-    public function store(StoreLeadSource $request)
+    public function store(StoreStageRequest $request)
     {
-        $leadSource = new LeadSource();
+        $stage = new Stage();
 
-        $leadSource->name            = $request->get('name');
-        $leadSource->category_id     = $request->get('category_id');
-        $leadSource->organization_id = $request->get('organization_id');
-        $leadSource->status          = $request->get('status');
+        $stage->name            = $request->get('name');
+        $stage->organization_id = $request->get('organization_id');
+        $stage->workflow_type   = $request->get('workflow_type');
+        $stage->description     = $request->get('description');
 
-        // check permission to organization_id
-        $user        = Auth::guard()->user();
-        $userProfile = User_profile::whereUserId($user->id)->first();
-        if ($userProfile) {
-            $userOrganizationId = $userProfile->department_id;
-            $organizations      = Organization::all()->toArray();
-            $collectedIds       = collectIds($organizations, $userOrganizationId);
-            if (!in_array($leadSource->organization_id, $collectedIds)) {
-                $response = [
-                    'success' => false,
-                    'message' => 'Permission to the department is absent.'
-                ];
-                return response()->json($response, 454);
-            }
+        // check permission to organization_id from the request
+        $response = $this->_checkPermissionToOrganizationId($stage);
+        if ($response !== true) {
+            return response()->json($response, 454);
         }
 
-        if ($leadSource->save()) {
+        if ($stage->save()) {
             return response()->json(
                 $this->resp(
                     200,
-                    'LeadSources.store'
+                    'Stages.store'
                 ),
                 200
             );
         } else {
             return $this->response->error(
-                'Could not create LeadSource',
+                'Could not create Stage',
                 500
             );
         }
     }
 
     /**
-     * Show the specified LeadSource.
+     * Show the specified Stage.
      *
      * @param int $id ID
      *
@@ -245,17 +206,25 @@ class LeadSourcesController extends Controller
      *  "success": true,
      *  "data": {
      *       "id": 1,
-     *       "name": "Lead Source 1",
-     *       "description": "Description 1",
+     *       "name": "Lead Status 1",
+     *       "organization_id": 2,
+     *       "workflow_type": "request",
+     *       "description": "",
      *       "created_at": "2019-12-08 13:25:36",
-     *       "updated_at": "2019-12-08 13:25:36"
+     *       "updated_at": "2019-12-08 13:25:36",
+     *       "organization": "object"
      *     },
-     *  "message": "LsCategories.show. Result is successful."
+     *  "message": "Stages.show. Result is successful."
      * }
      *
      * @response 453 {
      *  "success": false,
      *  "message": "Permission is absent due to Role."
+     * }
+     *
+     * @response 454 {
+     *  "success": false,
+     *  "message": "Permission to department is absent."
      * }
      *
      * @response 456 {
@@ -269,27 +238,26 @@ class LeadSourcesController extends Controller
      */
     public function show($id)
     {
-        $leadSource = LeadSource::whereId($id)->first();
+        $stage = Stage::whereId($id)->first();
 
-        if (!$leadSource) {
+        if (!$stage) {
             return response()->json(
                 $this->resp(
                     456,
-                    'LeadSources.show'
+                    'Stages.show'
                 ),
                 456
             );
         }
 
-        $leadSource['category']     = $leadSource->lsCategory;
-        $leadSource['organization'] = $leadSource->organization;
+        $stage['organization'] = $stage->organization;
 
-        $data = $leadSource->toArray();
+        $data = $stage->toArray();
 
         return response()->json(
             $this->resp(
                 200,
-                'LeadSources.show',
+                'Stages.show',
                 $data
             ),
             200
@@ -298,21 +266,25 @@ class LeadSourcesController extends Controller
 
 
     /**
-     * Update the specified Lead Source.
+     * Update the specified Stage.
      *
-     * @param UpdateLeadSouce $request Request
-     * @param int             $id      ID
+     * @param UpdateStage $request Request
+     * @param int         $id      ID
      *
      * @response 200 {
      *  "success": true,
      *  "data": {
      *       "id": 1,
-     *       "name": "LsCategory Updated",
-     *       "description": "Description Updated",
+     *       "name": "Stage Updated",
+     *       "organization_id": 2,
+     *       "workflow_type": "request",
+     *       "description": "",
+     *       "deleted_at": null,
      *       "created_at": "2019-12-08 13:25:36",
-     *       "updated_at": "2019-12-09 13:25:36"
+     *       "updated_at": "2019-12-09 13:25:36",
+     *       "organization": "object"
      *     },
-     *  "message": "LsCategory.update. Result is successful."
+     *  "message": "Stages.update. Result is successful."
      * }
      *
      * @response 422 {
@@ -348,28 +320,28 @@ class LeadSourcesController extends Controller
      *
      * @return JsonResponse
      */
-    public function update(UpdateLeadSource $request, $id)
+    public function update(UpdateStage $request, $id)
     {
-        $leadSource = LeadSource::whereId($id)->first();
+        $stage = Stage::whereId($id)->first();
 
-        if (!$leadSource) {
+        if (!$stage) {
             return response()->json(
                 $this->resp(
                     456,
-                    'LeadSources.update'
+                    'Stages.update'
                 ),
                 456
             );
         }
 
-        $leadSource->fill($request->all());
+        $stage->fill($request->all());
 
-        if ($leadSource->save()) {
+        if ($stage->save()) {
             return response()->json(
                 $this->resp(
                     200,
-                    'LeadSources.update',
-                    $leadSource
+                    'Stages.update',
+                    $stage
                 ),
                 200
             );
@@ -382,13 +354,13 @@ class LeadSourcesController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from DB.
      *
      * @param int $id ID
      *
      * @response 200 {
      *  "success": true,
-     *  "message": "Role is deleted successfully",
+     *  "message": "Stages.softDestroy. Result is successful.",
      *  "data": null
      * }
      *
@@ -410,7 +382,7 @@ class LeadSourcesController extends Controller
      * }
      *
      * @response 500 {
-     *  "message": "Could not delete Lead Source Category."
+     *  "message": "Could not delete Lead Status."
      * }
      *
      * @return JsonResponse|void
@@ -418,56 +390,62 @@ class LeadSourcesController extends Controller
      */
     public function softDestroy($id)
     {
-        $leadSource = LeadSource::whereId($id)->first();
+        $stage = Stage::whereId($id)->first();
 
-        if (!$leadSource) {
+        if (!$stage) {
             return response()->json(
                 $this->resp(
                     456,
-                    'LeadSources.softDestroy'
+                    'Stages.softDestroy'
                 ),
                 456
             );
         }
 
-        if ($leadSource->delete()) {
+        if ($stage->delete()) {
             return response()->json(
                 $this->resp(
                     200,
-                    'LeadSources.softDestroy'
+                    'Stages.softDestroy'
                 ),
                 200
             );
         } else {
             return $this->response->error(
-                '"Could not delete Lead Source."',
+                '"Could not delete Lead Status."',
                 500
             );
         }
     }
 
     /**
-     * Get index of soft-deleted files
+     * Get index of soft-deleted Stages
      *
      * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": "Result is successful.",
+     *  "message": "Stages.indexSoftDeleted. Result is successful.",
      *  "data": [{
      *    "id": 1,
      *    "name": "blogging",
-     *    "description": "Description text",
+     *    "organization_id": 2,
+     *    "workflow_type": "request",
+     *    "description": "",
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object"
      *   },
      *   {
      *    "id": 2,
-     *    "name": "Social Media",
-     *    "description": "Description text",
+     *    "name": "blogging",
+     *    "organization_id": 2,
+     *    "workflow_type": "request",
+     *    "description": "",
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
-     *    "updated_at": "2019-06-24 07:12:03"
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object"
      *   }]
      * }
      *
@@ -489,14 +467,14 @@ class LeadSourcesController extends Controller
      */
     public function indexSoftDeleted()
     {
-        $leadSources = LeadSource::with(['lsCategory', 'organization'])
+        $stage = Stage::with(['organization'])
             ->onlyTrashed()->get();
 
-        if (!$leadSources->count()) {
+        if (!$stage->count()) {
             return response()->json(
                 $this->resp(
                     204,
-                    'LeadSources.indexSoftDeleted'
+                    'Stages.indexSoftDeleted'
                 ),
                 204
             );
@@ -505,35 +483,35 @@ class LeadSourcesController extends Controller
         return response()->json(
             $this->resp(
                 200,
-                'LeadSources.indexSoftDeleted',
-                $leadSources
+                'Stages.indexSoftDeleted',
+                $stage
             ), 200
         );
     }
 
     /**
-     * Restore Lead Source
+     * Restore Stage
      *
      * @param $id int ID
      *
-     * @queryParam id int required User-Details ID
+     * @queryParam id int required Stage ID
      *
-     * @response   200 {
+     * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": "LeadSource.restore. Result is successful.",
+     *  "message": "Stages.restore. Result is successful.",
      *  "data": null
      * }
      *
-     * @response   453 {
+     * @response 453 {
      *  "success": false,
      *  "message": "You do not have permission."
      * }
      *
-     * @response   456 {
+     * @response 456 {
      *  "success": false,
      *  "code": 456,
-     *  "message": "LeadSource.restore. Incorrect ID in the URL.",
+     *  "message": "Stages.restore. Incorrect ID in the URL.",
      *  "data": null
      * }
      *
@@ -541,45 +519,45 @@ class LeadSourcesController extends Controller
      */
     public function restore($id)
     {
-        $leadSources = LeadSource::onlyTrashed()->whereId($id)->first();
+        $stage = Stage::onlyTrashed()->whereId($id)->first();
 
-        if (!$leadSources) {
+        if (!$stage) {
             return response()->json(
                 $this->resp(
                     456,
-                    'LeadSources.restore'
+                    'Stages.restore'
                 ),
                 456
             );
         }
 
         // Restore user-details
-        $leadSources->restore();
+        $stage->restore();
 
         return response()->json(
-            $this->resp(200, 'LeadSources.restore'),
+            $this->resp(200, 'Stages.restore'),
             200
         );
     }
 
     /**
-     * Destroy Lead Source permanently
+     * Destroy Stage permanently
      *
      * @param $id int ID
      *
-     * @queryParam id int required Lead Source ID
+     * @queryParam id int required Stage ID
      *
-     * @response   200 {
+     * @response 200 {
      *  "success": true,
-     *  "message": "Lead Sources are deleted permanently."
+     *  "message": "Stages.destroyPermanently. Result is successful."
      * }
      *
-     * @response   453 {
+     * @response 453 {
      *  "success": false,
      *  "message": "You do not have permission."
      * }
      *
-     * @response   456 {
+     * @response 456 {
      *  "success": false,
      *  "code": 456,
      *  "message": "Incorrect the Entity ID in the URL.",
@@ -590,18 +568,18 @@ class LeadSourcesController extends Controller
      */
     public function destroyPermanently($id)
     {
-        $leadSource = LeadSource::withTrashed()->whereId($id)->first();
-        if (!$leadSource) {
+        $stage = Stage::withTrashed()->whereId($id)->first();
+        if (!$stage) {
             return response()->json(
-                $this->resp(456, 'LeadSources.destroyPermanently'),
+                $this->resp(456, 'Stages.destroyPermanently'),
                 456
             );
         }
 
-        $leadSource->forceDelete();
+        $stage->forceDelete();
 
         return response()->json(
-            $this->resp(200, 'LeadSources.destroyPermanently'),
+            $this->resp(200, 'Stages.destroyPermanently'),
             200
         );
     }

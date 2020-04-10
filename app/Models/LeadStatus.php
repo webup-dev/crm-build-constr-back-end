@@ -13,11 +13,10 @@ use Illuminate\Support\Carbon;
  * App\Models\LeadStatus
  *
  * @category Model
- * @package  LeadStatus
- * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
- * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
- * @link     Model
- *
+ * @package LeadStatus
+ * @author Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link Model
  * @property int         $id
  * @property string      $name
  * @property int         $organization_id
@@ -26,9 +25,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property int|null    $parent_id
  * @property string|null $other_reason
- *
  * @property-read \App\Models\Organization $organization
- *
  * @method static bool|null forceDelete()
  * @method static Builder|\App\Models\LeadStatus newModelQuery()
  * @method static Builder|\App\Models\LeadStatus newQuery()
@@ -45,8 +42,9 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\LeadStatus withoutTrashed()
  * @method static Builder|\App\Models\LeadStatus whereOtherReason($value)
  * @method static Builder|\App\Models\LeadStatus whereParentId($value)
- *
  * @mixin \Eloquent
+ * @property-read \App\Models\LeadStatus|null $leadStatusOfParent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\LeadStatus[] $parents
  */
 class LeadStatus extends Model
 {

@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.27.0] - 2020-04-10
+### Added 
+- Module 'Stages' is created
+    - Specification
+    - Migration
+    - Seeders
+    - Tests
+    - Request validations
+    - Traits
+    - Methods: index, store, update, softDestroy, show,
+      indexSoftDeleted, restore, permanentDelete. 
+
 ## [0.26.3] - 2020-04-09
 ### Changed 
 - LeadStatusesController. Method Soft-deleted lead-statuses
