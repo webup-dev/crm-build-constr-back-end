@@ -259,7 +259,7 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals('Under review', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals('request', $data[0]['workflow_type']);
-        $this->assertEquals('', $data[0]['description']['name']);
+        $this->assertEquals('', $data[0]['description']);
         $this->assertNotEquals(null, $data[0]['deleted_at']);
         $this->assertEquals('Western New York Exteriors, LLC.', $data[0]['organization']['name']);
         $this->assertEquals("Stages.indexSoftDeleted. Result is successful.", $message);
