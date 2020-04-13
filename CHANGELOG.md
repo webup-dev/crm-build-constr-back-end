@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.27.1] - 2020-04-13
+### Changed
+- Stages seeder is changed
+    - StagesControllerTest is updated.
+
 ## [0.27.0] - 2020-04-10
 ### Added 
 - Module 'Stages' is created
