@@ -51,7 +51,7 @@ class StagesControllerTest extends WnyTestCase
     public function testSeeder()
     {
         $stages = DB::table('stages')->get();
-        $this->assertEquals(6, $stages->count());
+        $this->assertEquals(5, $stages->count());
 
         $user = DB::table('users')->where('id', 1)->first();
         $this->assertEquals('Volodymyr Vadiasov', $user->name);
@@ -102,7 +102,7 @@ class StagesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals(6, count($data));
+        $this->assertEquals(5, count($data));
         $this->assertEquals('Documenting', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals('request', $data[0]['workflow_type']);
@@ -160,7 +160,7 @@ class StagesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals(6, count($data));
+        $this->assertEquals(5, count($data));
         $this->assertEquals('Documenting', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals('request', $data[0]['workflow_type']);
@@ -215,9 +215,9 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->delete('api/stages/6?token=' . $token);
-        $response->assertStatus(200);
         $response = $this->delete('api/stages/5?token=' . $token);
+        $response->assertStatus(200);
+        $response = $this->delete('api/stages/4?token=' . $token);
         $response->assertStatus(200);
 
         $response = $this->get('api/stages/soft-deleted?token=' . $token);
@@ -256,7 +256,7 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
         $this->assertEquals(2, count($data));
-        $this->assertEquals('Internal Estimation', $data[0]['name']);
+        $this->assertEquals('Under review', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals('request', $data[0]['workflow_type']);
         $this->assertEquals('', $data[0]['description']['name']);
@@ -382,7 +382,7 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->get('api/stages/6?token=' . $token);
+        $response = $this->get('api/stages/5?token=' . $token);
 
         // Check response status
         $response->assertStatus(200);
@@ -416,8 +416,8 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
         $this->assertEquals("Stages.show. Result is successful.", $message);
-        $this->assertEquals(6, $data['id']);
-        $this->assertEquals('Decision', $data['name']);
+        $this->assertEquals(5, $data['id']);
+        $this->assertEquals('Determination', $data['name']);
         $this->assertEquals(2, $data['organization_id']);
         $this->assertEquals('request', $data['workflow_type']);
         $this->assertEquals('', $data['description']);
@@ -571,7 +571,7 @@ class StagesControllerTest extends WnyTestCase
 
         // Check DB table customer_details
         $stage = DB::table('stages')
-            ->where('id', '=', 7)
+            ->where('id', '=', 6)
             ->first();
         $this->assertEquals('Test Stages', $stage->name);
         $this->assertEquals(2, $stage->organization_id);
@@ -883,7 +883,7 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->delete('api/stages/6?token=' . $token);
+        $response = $this->delete('api/stages/5?token=' . $token);
         $response->assertStatus(200);
 
         $responseJSON = json_decode($response->getContent(), true);
@@ -900,7 +900,7 @@ class StagesControllerTest extends WnyTestCase
         );
         $this->assertEquals(null, $data);
 
-        $stages = DB::table('stages')->where('id', 6)->first();
+        $stages = DB::table('stages')->where('id', 5)->first();
         $this->assertNotEquals(null, $stages->deleted_at);
     }
 
@@ -995,11 +995,11 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Preparation
-        $response = $this->delete('api/stages/6?token=' . $token);
+        $response = $this->delete('api/stages/4?token=' . $token);
         $response->assertStatus(200);
 
         // Request
-        $response = $this->put('api/stages/6/restore?token=' . $token);
+        $response = $this->put('api/stages/4/restore?token=' . $token);
         $response->assertStatus(200);
 
         $responseJSON = json_decode($response->getContent(), true);
@@ -1013,7 +1013,7 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals("Stages.restore. Result is successful.", $message);
         $this->assertEquals(null, $data);
 
-        $stage = Stage::where('id', 6)->first();
+        $stage = Stage::where('id', 4)->first();
         $this->assertEquals(null, $stage['deleted_at']);
     }
 
@@ -1052,7 +1052,7 @@ class StagesControllerTest extends WnyTestCase
     {
         $token = $this->loginDeveloper();
         // Preparation
-        $response = $this->delete('api/stages/6?token=' . $token);
+        $response = $this->delete('api/stages/4?token=' . $token);
         $response->assertStatus(200);
 
         $token = $this->loginOrganizationWNYGeneralManager();
@@ -1078,11 +1078,11 @@ class StagesControllerTest extends WnyTestCase
     {
         // Preparation
         $token = $this->loginDeveloper();
-        $response = $this->delete('api/stages/6?token=' . $token);
+        $response = $this->delete('api/stages/4?token=' . $token);
         $response->assertStatus(200);
 
         // Request
-        $response = $this->delete('api/stages/6/permanently?token=' . $token);
+        $response = $this->delete('api/stages/4/permanently?token=' . $token);
         $response->assertStatus(200);
 
         $responseJSON = json_decode($response->getContent(), true);
@@ -1095,7 +1095,7 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals(200, $code);
         $this->assertEquals("Stages.destroyPermanently. Result is successful.", $message);
 
-        $stage = DB::table('stages')->where('id', 6)->first();
+        $stage = DB::table('stages')->where('id', 4)->first();
         $this->assertEquals(null, $stage);
     }
 
@@ -1140,13 +1140,13 @@ class StagesControllerTest extends WnyTestCase
         // Preparation
         $token = $this->loginDeveloper();
         $response = $this->delete(
-            'api/stages/6/permanently?token=' . $token
+            'api/stages/5/permanently?token=' . $token
         );
         $response->assertStatus(200);
 
         // Request
         $token    = $this->loginOrganizationWNYGeneralManager();
-        $response = $this->delete('api/stages/6/permanently?token=' . $token);
+        $response = $this->delete('api/stages/5/permanently?token=' . $token);
 
         $response->assertStatus(453);
 

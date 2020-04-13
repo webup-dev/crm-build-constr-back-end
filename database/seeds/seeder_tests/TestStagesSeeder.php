@@ -32,7 +32,7 @@ class TestStagesSeeder extends Seeder
         // 2
         DB::table('stages')->insert(
             [
-                'name'            => 'Clarification',
+                'name'            => 'Review of plans and specifications',
                 'organization_id' => 2,
                 'workflow_type' => 'request',
             ]
@@ -41,7 +41,7 @@ class TestStagesSeeder extends Seeder
         // 3
         DB::table('stages')->insert(
             [
-                'name'            => 'Estimation by estimator',
+                'name'            => 'Clarification',
                 'organization_id' => 2,
                 'workflow_type' => 'request',
             ]
@@ -50,7 +50,7 @@ class TestStagesSeeder extends Seeder
         // 4
         DB::table('stages')->insert(
             [
-                'name'            => 'Receiving architectural drawings and specification documents',
+                'name'            => 'Under review',
                 'organization_id' => 2,
                 'workflow_type' => 'request',
             ]
@@ -59,16 +59,7 @@ class TestStagesSeeder extends Seeder
         // 5
         DB::table('stages')->insert(
             [
-                'name'            => 'Internal Estimation',
-                'organization_id' => 2,
-                'workflow_type' => 'request',
-            ]
-        );
-
-        // 6
-        DB::table('stages')->insert(
-            [
-                'name'            => 'Decision',
+                'name'            => 'Determination',
                 'organization_id' => 2,
                 'workflow_type' => 'request',
             ]
