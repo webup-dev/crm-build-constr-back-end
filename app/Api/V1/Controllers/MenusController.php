@@ -10,6 +10,7 @@ use App\Models\LeadStatus;
 use App\Models\LeadType;
 use App\Models\LsCategory;
 use App\Models\Organization;
+use App\Models\Stage;
 use App\Models\User_profile;
 use App\Models\UserCustomer;
 use Dingo\Api\Routing\Helpers;
@@ -92,6 +93,7 @@ class MenusController extends Controller
         $res[] = $this->_getLeadSources();
         $res[] = $this->_getTrades();
         $res[] = $this->_getStatuses();
+        $res[] = $this->_getStages();
 
         $response = [
             "success" => true,
@@ -296,6 +298,25 @@ class MenusController extends Controller
             "name"  => 'Lead Statuses',
             "url"   => 'lead-statuses/soft-deleted',
             "count" => $leadStatuses
+        ];
+    }
+
+    /**
+     * Method to get soft-deleted Stages
+     *
+     * @return array
+     */
+    private function _getStages()
+    {
+        $stages = Stage::onlyTrashed()
+            ->select('id')
+            ->get()
+            ->count();
+
+        return [
+            "name"  => 'Stages',
+            "url"   => 'stages/soft-deleted',
+            "count" => $stages
         ];
     }
 }

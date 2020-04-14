@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.27.2] - 2020-04-13
+### Changed
+- MenusController
+    - Soft Deleted Stages are added
+    - MenusControllerTest is updated.
+
 ## [0.27.1] - 2020-04-13
 ### Changed
 - Stages seeder is changed
