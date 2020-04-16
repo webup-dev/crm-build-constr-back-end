@@ -2,21 +2,22 @@
 
 namespace App;
 
-use App\Models\Stage;
+use App\Models\Workflow;
+use App\Models\WorkflowStage;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Tests to test StagesController
+ * Tests to test WorkflowsController
  * php version 7
  *
  * @category Tests
- * @package  StagesController
+ * @package  WorkflowsController
  * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     Tests
  */
-class StagesControllerTest extends WnyTestCase
+class WorkflowsControllerTest extends WnyTestCase
 {
     use DatabaseMigrations;
 
@@ -50,8 +51,11 @@ class StagesControllerTest extends WnyTestCase
      */
     public function testSeeder()
     {
-        $stages = DB::table('stages')->get();
-        $this->assertEquals(5, $stages->count());
+        $workflows = DB::table('workflows')->get();
+        $this->assertEquals(2, $workflows->count());
+
+        $workflow_stages = DB::table('workflow_stages')->get();
+        $this->assertEquals(7, $workflow_stages->count());
 
         $user = DB::table('users')->where('id', 1)->first();
         $this->assertEquals('Volodymyr Vadiasov', $user->name);
@@ -67,7 +71,7 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->get('api/stages?token=' . $token);
+        $response = $this->get('api/workflows?token=' . $token);
 
         // Check response status
         $response->assertStatus(200);
@@ -88,7 +92,8 @@ class StagesControllerTest extends WnyTestCase
                             "deleted_at",
                             "created_at",
                             "updated_at",
-                            "organization"
+                            "organization",
+                            "stages"
                         ]
                     ],
                 'message'
@@ -102,8 +107,8 @@ class StagesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals(5, count($data));
-        $this->assertEquals('Documenting', $data[0]['name']);
+        $this->assertEquals(2, count($data));
+        $this->assertEquals('Simple', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals('request', $data[0]['workflow_type']);
         $this->assertEquals('', $data[0]['description']);
@@ -112,7 +117,14 @@ class StagesControllerTest extends WnyTestCase
             'Western New York Exteriors, LLC.',
             $data[0]['organization']['name']
         );
-        $this->assertEquals("Stages.index. Result is successful.", $message);
+        $this->assertEquals(2, count($data[0]['stages']));
+        $this->assertEquals(1, $data[0]['stages'][0]['id']);
+        $this->assertEquals('Documenting', $data[0]['stages'][0]['name']);
+        $this->assertEquals(2, $data[0]['stages'][0]['organization_id']);
+        $this->assertEquals('request', $data[0]['stages'][0]['workflow_type']);
+        $this->assertEquals('', $data[0]['stages'][0]['description']);
+        $this->assertEquals(1, $data[0]['stages'][0]['pivot']['order']);
+        $this->assertEquals("Workflows.index. Result is successful.", $message);
     }
 
     /**
@@ -125,7 +137,7 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginOrganizationWNYAdmin();
 
         // Request
-        $response = $this->get('api/stages?token=' . $token);
+        $response = $this->get('api/workflows?token=' . $token);
 
         // Check response status
         $response->assertStatus(200);
@@ -146,7 +158,8 @@ class StagesControllerTest extends WnyTestCase
                             "deleted_at",
                             "created_at",
                             "updated_at",
-                            "organization"
+                            "organization",
+                            "stages"
                         ]
                     ],
                 'message'
@@ -160,8 +173,8 @@ class StagesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals(5, count($data));
-        $this->assertEquals('Documenting', $data[0]['name']);
+        $this->assertEquals(2, count($data));
+        $this->assertEquals('Simple', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals('request', $data[0]['workflow_type']);
         $this->assertEquals('', $data[0]['description']);
@@ -170,7 +183,14 @@ class StagesControllerTest extends WnyTestCase
             'Western New York Exteriors, LLC.',
             $data[0]['organization']['name']
         );
-        $this->assertEquals("Stages.index. Result is successful.", $message);
+        $this->assertEquals(2, count($data[0]['stages']));
+        $this->assertEquals(1, $data[0]['stages'][0]['id']);
+        $this->assertEquals('Documenting', $data[0]['stages'][0]['name']);
+        $this->assertEquals(2, $data[0]['stages'][0]['organization_id']);
+        $this->assertEquals('request', $data[0]['stages'][0]['workflow_type']);
+        $this->assertEquals('', $data[0]['stages'][0]['description']);
+        $this->assertEquals(1, $data[0]['stages'][0]['pivot']['order']);
+        $this->assertEquals("Workflows.index. Result is successful.", $message);
     }
 
     /**
@@ -183,7 +203,7 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginOrganizationSpringSuperadmin();
 
         // Request
-        $response = $this->get('api/stages?token=' . $token);
+        $response = $this->get('api/workflows?token=' . $token);
 
         // Check response status
         $response->assertStatus(204);
@@ -199,7 +219,7 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginOrganizationWNYGeneralManager();
 
         // Request
-        $response = $this->get('api/stages?token=' . $token);
+        $response = $this->get('api/workflows?token=' . $token);
 
         // Check response status
         $response->assertStatus(453);
@@ -215,12 +235,10 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->delete('api/stages/5?token=' . $token);
-        $response->assertStatus(200);
-        $response = $this->delete('api/stages/4?token=' . $token);
+        $response = $this->delete('api/workflows/1?token=' . $token);
         $response->assertStatus(200);
 
-        $response = $this->get('api/stages/soft-deleted?token=' . $token);
+        $response = $this->get('api/workflows/soft-deleted?token=' . $token);
 
         // Check response status
         $response->assertStatus(200);
@@ -241,7 +259,8 @@ class StagesControllerTest extends WnyTestCase
                             "deleted_at",
                             "created_at",
                             "updated_at",
-                            "organization"
+                            "organization",
+                            "stages"
                         ]
                     ],
                 'message'
@@ -255,14 +274,23 @@ class StagesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals(2, count($data));
-        $this->assertEquals('Under review', $data[0]['name']);
+        $this->assertCount(1, $data);
+        $this->assertEquals('Simple', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals('request', $data[0]['workflow_type']);
         $this->assertEquals('', $data[0]['description']);
         $this->assertNotEquals(null, $data[0]['deleted_at']);
-        $this->assertEquals('Western New York Exteriors, LLC.', $data[0]['organization']['name']);
-        $this->assertEquals("Stages.indexSoftDeleted. Result is successful.", $message);
+        $this->assertEquals(
+            'Western New York Exteriors, LLC.',
+            $data[0]['organization']['name']
+        );
+        $this->assertEquals(
+            "Workflows.indexSoftDeleted. Result is successful.",
+            $message
+        );
+        $this->assertCount(2, $data[0]['stages']);
+        $this->assertEquals(1, $data[0]['stages'][0]['pivot']['order']);
+        $this->assertEquals(1, $data[0]['stages'][0]['pivot']['stage_id']);
     }
 
     /**
@@ -275,7 +303,7 @@ class StagesControllerTest extends WnyTestCase
         $token    = $this->loginDeveloper();
 
         // Request
-        $response = $this->get('api/stages/soft-deleted?token=' . $token);
+        $response = $this->get('api/workflows/soft-deleted?token=' . $token);
 
         // Check response status
         $response->assertStatus(204);
@@ -291,7 +319,7 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginOrganizationWNYGeneralManager();
 
         // Request
-        $response = $this->get('api/stages/soft-deleted?token=' . $token);
+        $response = $this->get('api/workflows/soft-deleted?token=' . $token);
 
         // Check response status
         $response->assertStatus(453);
@@ -314,65 +342,6 @@ class StagesControllerTest extends WnyTestCase
     }
 
     /**
-     * Check getListOfOrganizations ForDeveloper
-     *
-     * @return void
-     */
-    public function testGetListOfOrganizationsForDeveloper()
-    {
-        $token = $this->loginDeveloper();
-
-        $response = $this->get('api/stages/organizations?token=' . $token);
-
-        // Check response status
-        $response->assertStatus(200);
-
-        // Check response structure
-        $response->assertJsonStructure(
-            [
-                'success',
-                'data' =>
-                    [
-                        [
-                            'id',
-                            'level',
-                            'order',
-                            'name',
-                            'parent_id',
-                            'deleted_at',
-                            'created_at',
-                            'updated_at'
-                        ]
-                    ],
-                'message'
-            ]
-        );
-        $responseJSON = json_decode($response->getContent(), true);
-        $data         = $responseJSON['data'];     // array
-        $message      = $responseJSON['message'];  // array
-        $success      = $responseJSON['success'];  // array
-        $code         = $responseJSON['code'];     // array
-
-        $this->assertEquals(2, count($data));
-        $this->assertEquals(2, $data[0]['id']);
-        $this->assertEquals(
-            'Western New York Exteriors, LLC.',
-            $data[0]['name']
-        );
-        $this->assertEquals(1, $data[0]['level']);
-        $this->assertEquals(1, $data[0]['order']);
-        $this->assertEquals(1, $data[0]['parent_id']);
-        $this->assertEquals(null, $data[0]['deleted_at']);
-        $this->assertEquals(
-            "Trait.getListOfOrganizations. Result is successful.",
-            $message
-        );
-        $this->assertEquals(true, $success);
-        $this->assertEquals(200, $code);
-
-    }
-
-    /**
      * Check Show For Developer
      *
      * @return void
@@ -382,7 +351,7 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->get('api/stages/5?token=' . $token);
+        $response = $this->get('api/workflows/1?token=' . $token);
 
         // Check response status
         $response->assertStatus(200);
@@ -403,7 +372,8 @@ class StagesControllerTest extends WnyTestCase
                         "deleted_at",
                         "created_at",
                         "updated_at",
-                        "organization"
+                        "organization",
+                        "stages"
                     ]
             ]
         );
@@ -415,14 +385,20 @@ class StagesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals("Stages.show. Result is successful.", $message);
-        $this->assertEquals(5, $data['id']);
-        $this->assertEquals('Determination', $data['name']);
+        $this->assertEquals("Workflows.show. Result is successful.", $message);
+        $this->assertEquals(1, $data['id']);
+        $this->assertEquals('Simple', $data['name']);
         $this->assertEquals(2, $data['organization_id']);
         $this->assertEquals('request', $data['workflow_type']);
         $this->assertEquals('', $data['description']);
         $this->assertEquals(null, $data['deleted_at']);
-        $this->assertEquals('Western New York Exteriors, LLC.', $data['organization']['name']);
+        $this->assertEquals(
+            'Western New York Exteriors, LLC.',
+            $data['organization']['name']
+        );
+        $this->assertEquals('Documenting', $data['stages'][0]['name']);
+        $this->assertEquals(1, $data['stages'][0]['pivot']['order']);
+        $this->assertEquals(1, $data['stages'][0]['pivot']['stage_id']);
     }
 
     /**
@@ -434,7 +410,7 @@ class StagesControllerTest extends WnyTestCase
     {
         $token = $this->loginDeveloper();
 
-        $response = $this->get('api/stages/44444?token=' . $token, []);
+        $response = $this->get('api/workflows/44444?token=' . $token, []);
 
         // Check response status
         $response->assertStatus(456);
@@ -457,7 +433,7 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals(false, $success);
         $this->assertEquals(456, $code);
         $this->assertEquals(
-            "Stages.show. Incorrect ID in URL.",
+            "Workflows.show. Incorrect ID in URL.",
             $message
         );
         $this->assertEquals(null, $data);
@@ -472,7 +448,7 @@ class StagesControllerTest extends WnyTestCase
     {
         $token = $this->loginCustomerWny();
 
-        $response = $this->get('api/stages/1?token=' . $token);
+        $response = $this->get('api/workflows/1?token=' . $token);
 
         // Check response status
         $response->assertStatus(453);
@@ -503,7 +479,7 @@ class StagesControllerTest extends WnyTestCase
     {
         $token = $this->loginOrganizationSpringSuperadmin();
 
-        $response = $this->get('api/stages/1?token=' . $token);
+        $response = $this->get('api/workflows/1?token=' . $token);
 
         // Check response status
         $response->assertStatus(454);
@@ -536,13 +512,19 @@ class StagesControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            "name"            => 'Test Stages',
+            "name"            => 'Test Workflow',
             "organization_id" => 2,
             "workflow_type"   => 'request',
+            "stages"          => [
+                ['id' => 1, 'order' => 1],
+                ['id' => 2, 'order' => 2],
+                ['id' => 3, 'order' => 3],
+                ['id' => 5, 'order' => 4],
+            ]
         ];
 
-        // Store the Lead Source
-        $response = $this->post('api/stages?token=' . $token, $data);
+        // Store the Workflow
+        $response = $this->post('api/workflows?token=' . $token, $data);
 
         // Check response status
         $response->assertStatus(200);
@@ -566,16 +548,84 @@ class StagesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals("Stages.store. Result is successful.", $message);
+        $this->assertEquals("Workflows.store. Result is successful.", $message);
         $this->assertEquals(null, $data);
 
         // Check DB table customer_details
-        $stage = Stage::whereId(6)->first();
-        $this->assertEquals('Test Stages', $stage->name);
-        $this->assertEquals(2, $stage->organization_id);
-        $this->assertEquals('request', $stage->workflow_type);
-        $this->assertEquals('', $stage->description);
-        $this->assertEquals(null, $stage->deleted_at);
+        $workflow = DB::table('workflows')
+            ->where('id', '=', 3)
+            ->first();
+        $this->assertEquals('Test Workflow', $workflow->name);
+        $this->assertEquals(2, $workflow->organization_id);
+        $this->assertEquals('request', $workflow->workflow_type);
+        $this->assertEquals('', $workflow->description);
+        $this->assertEquals(null, $workflow->deleted_at);
+
+        $workflowStages = WorkflowStage::whereWorkflowId(3)->get();
+        $this->assertCount(4, $workflowStages);
+        $this->assertEquals(8, $workflowStages[0]['id']);
+        $this->assertEquals(3, $workflowStages[0]['workflow_id']);
+        $this->assertEquals(1, $workflowStages[0]['stage_id']);
+        $this->assertEquals(1, $workflowStages[0]['order']);
+    }
+
+    /**
+     * Check Store For Developer If Stages Are Empty
+     *
+     * @return void
+     */
+    public function testStoreForDeveloperIfStagesAreEmpty()
+    {
+        $token = $this->loginDeveloper();
+
+        // Create data
+        $data = [
+            "name"            => 'Test Workflow',
+            "organization_id" => 2,
+            "workflow_type"   => 'request',
+            "stages"          => []
+        ];
+
+        // Store the Workflow
+        $response = $this->post('api/workflows?token=' . $token, $data);
+
+        // Check response status
+        $response->assertStatus(200);
+
+        // Check response structure
+        $response->assertJsonStructure(
+            [
+                'success',
+                'code',
+                'message',
+                'data'
+            ]
+        );
+
+        //Check response data
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];  // array
+        $code         = $responseJSON['code'];     // array
+        $message      = $responseJSON['message'];  // array
+        $data         = $responseJSON['data'];     // array
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+        $this->assertEquals("Workflows.store. Result is successful.", $message);
+        $this->assertEquals(null, $data);
+
+        // Check DB table customer_details
+        $workflow = DB::table('workflows')
+            ->where('id', '=', 3)
+            ->first();
+        $this->assertEquals('Test Workflow', $workflow->name);
+        $this->assertEquals(2, $workflow->organization_id);
+        $this->assertEquals('request', $workflow->workflow_type);
+        $this->assertEquals('', $workflow->description);
+        $this->assertEquals(null, $workflow->deleted_at);
+
+        $workflowStages = WorkflowStage::whereWorkflowId(3)->get();
+        $this->assertCount(0, $workflowStages);
     }
 
     /**
@@ -589,13 +639,19 @@ class StagesControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            "name"            => 'Test Stages',
+            "name"            => 'Test Workflow',
             "organization_id" => 2,
             "workflow_type"   => 'request',
+            "stages"          => [
+                ['id' => 1, 'order' => 1],
+                ['id' => 2, 'order' => 2],
+                ['id' => 3, 'order' => 3],
+                ['id' => 5, 'order' => 4],
+            ]
         ];
 
-        // Store the Lead Source
-        $response = $this->post('api/stages?token=' . $token, $data);
+        // Store the Workflow
+        $response = $this->post('api/workflows?token=' . $token, $data);
 
         // Check response status
         $response->assertStatus(453);
@@ -628,13 +684,19 @@ class StagesControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            "name"            => 'Test Stage',
+            "name"            => 'Test Workflow',
             "organization_id" => 2,
             "workflow_type"   => 'request',
+            "stages"          => [
+                ['id' => 1, 'order' => 1],
+                ['id' => 2, 'order' => 2],
+                ['id' => 3, 'order' => 3],
+                ['id' => 5, 'order' => 4],
+            ]
         ];
 
-        // Store the Lead Source
-        $response = $this->post('api/stages?token=' . $token, $data);
+        // Store the Workflow
+        $response = $this->post('api/workflows?token=' . $token, $data);
 
         // Check response status
         $response->assertStatus(454);
@@ -673,8 +735,8 @@ class StagesControllerTest extends WnyTestCase
             "description"     => [],
         ];
 
-        // Store the Lead Source
-        $response = $this->post('api/stages?token=' . $token, $data);
+        // Store the Workflow
+        $response = $this->post('api/workflows?token=' . $token, $data);
 
         // Check response status
         $response->assertStatus(422);
@@ -709,10 +771,15 @@ class StagesControllerTest extends WnyTestCase
 
         // Create data
         $data = [
-            'name' => 'Name edited'
+            'name'   => 'Name edited',
+            "stages" => [
+                ['id' => 1, 'order' => 1],
+                ['id' => 2, 'order' => 2],
+                ['id' => 5, 'order' => 3],
+            ]
         ];
 
-        $response = $this->put('api/stages/1?token=' . $token, $data);
+        $response = $this->put('api/workflows/1?token=' . $token, $data);
         $response->assertStatus(200);
 
         $responseJSON = json_decode($response->getContent(), true);
@@ -723,12 +790,69 @@ class StagesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals("Stages.update. Result is successful.", $message);
+        $this->assertEquals("Workflows.update. Result is successful.", $message);
         $this->assertEquals(1, $data['id']);
         $this->assertEquals("Name edited", $data['name']);
         $this->assertEquals(2, $data['organization_id']);
         $this->assertEquals('request', $data['workflow_type']);
         $this->assertEquals('', $data['description']);
+
+        $this->assertEquals(
+            'Western New York Exteriors, LLC.',
+            $data['organization']['name']
+        );
+
+        $this->assertCount(3, $data['stages']);
+        $this->assertEquals(1, $data['stages'][0]['id']);
+        $this->assertEquals('Documenting', $data['stages'][0]['name']);
+        $this->assertEquals('request', $data['stages'][0]['workflow_type']);
+        $this->assertEquals(null, $data['stages'][0]['description']);
+        $this->assertEquals(null, $data['stages'][0]['deleted_at']);
+
+        $this->assertEquals(1, $data['stages'][0]['pivot']['workflow_id']);
+        $this->assertEquals(1, $data['stages'][0]['pivot']['stage_id']);
+        $this->assertEquals(1, $data['stages'][0]['pivot']['order']);
+    }
+
+    /**
+     * Check Update For Developer If Stages Are Empty
+     *
+     * @return void
+     */
+    public function testUpdateForDeveloperIfStagesAreEmpty()
+    {
+        $token = $this->loginDeveloper();
+
+        // Create data
+        $data = [
+            'name'   => 'Name edited',
+            "stages" => []
+        ];
+
+        $response = $this->put('api/workflows/1?token=' . $token, $data);
+        $response->assertStatus(200);
+
+        $responseJSON = json_decode($response->getContent(), true);
+        $success      = $responseJSON['success'];
+        $code         = $responseJSON['code'];
+        $message      = $responseJSON['message'];
+        $data         = $responseJSON['data'];
+
+        $this->assertEquals(true, $success);
+        $this->assertEquals(200, $code);
+        $this->assertEquals("Workflows.update. Result is successful.", $message);
+        $this->assertEquals(1, $data['id']);
+        $this->assertEquals("Name edited", $data['name']);
+        $this->assertEquals(2, $data['organization_id']);
+        $this->assertEquals('request', $data['workflow_type']);
+        $this->assertEquals('', $data['description']);
+
+        $this->assertEquals(
+            'Western New York Exteriors, LLC.',
+            $data['organization']['name']
+        );
+
+        $this->assertCount(0, $data['stages']);
     }
 
     /**
@@ -742,10 +866,15 @@ class StagesControllerTest extends WnyTestCase
 
         // Update data
         $data = [
-            'name' => 'Name edited'
+            'name'   => 'Name edited',
+            "stages" => [
+                ['id' => 1, 'order' => 1],
+                ['id' => 2, 'order' => 2],
+                ['id' => 5, 'order' => 3],
+            ]
         ];
 
-        $response = $this->put('api/stages/44444?token=' . $token, $data);
+        $response = $this->put('api/workflows/44444?token=' . $token, $data);
         $response->assertStatus(456);
 
         $responseJSON = json_decode($response->getContent(), true);
@@ -756,7 +885,7 @@ class StagesControllerTest extends WnyTestCase
 
         $this->assertEquals(false, $success);
         $this->assertEquals(456, $code);
-        $this->assertEquals("Stages.update. Incorrect ID in URL.", $message);
+        $this->assertEquals("Workflows.update. Incorrect ID in URL.", $message);
         $this->assertEquals(null, $data);
     }
 
@@ -777,7 +906,7 @@ class StagesControllerTest extends WnyTestCase
             "description"     => [],
         ];
 
-        $response = $this->put('api/stages/1?token=' . $token, $data);
+        $response = $this->put('api/workflows/1?token=' . $token, $data);
         $response->assertStatus(422);
 
         // Check response structure
@@ -796,7 +925,7 @@ class StagesControllerTest extends WnyTestCase
         $error        = $responseJSON['error'];  // array
 
         $this->assertEquals("The given data was invalid.", $error['message']);
-        $this->assertEquals(4, count($error['errors']));
+        $this->assertCount(4, $error['errors']);
     }
 
     /**
@@ -813,7 +942,7 @@ class StagesControllerTest extends WnyTestCase
             'name' => 'Name edited'
         ];
 
-        $response = $this->put('api/stages/1?token=' . $token, $data);
+        $response = $this->put('api/workflows/1?token=' . $token, $data);
 
         // Check response status
         $response->assertStatus(453);
@@ -849,7 +978,7 @@ class StagesControllerTest extends WnyTestCase
             'name' => 'Name edited'
         ];
 
-        $response = $this->put('api/stages/1?token=' . $token, $data);
+        $response = $this->put('api/workflows/1?token=' . $token, $data);
 
         // Check response status
         $response->assertStatus(454);
@@ -881,7 +1010,7 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->delete('api/stages/5?token=' . $token);
+        $response = $this->delete('api/workflows/1?token=' . $token);
         $response->assertStatus(200);
 
         $responseJSON = json_decode($response->getContent(), true);
@@ -893,15 +1022,18 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
         $this->assertEquals(
-            "Stages.softDestroy. Result is successful.",
+            "Workflows.softDestroy. Result is successful.",
             $message
         );
         $this->assertEquals(null, $data);
 
-        $stages = DB::table('stages')->where('id', 5)->first();
-        $this->assertNotEquals(null, $stages->deleted_at);
-    }
+        $workflow = DB::table('workflows')->where('id', 1)->first();
+        $this->assertNotEquals(null, $workflow->deleted_at);
 
+        $workflowStages = WorkflowStage::withTrashed()
+            ->where('workflow_id', 1)->get();
+        $this->assertCount(2, $workflowStages);
+    }
 
     /**
      * Check Soft Delete If The Id Is Wrong
@@ -913,7 +1045,7 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->delete('api/stages/4444?token=' . $token);
+        $response = $this->delete('api/workflows/4444?token=' . $token);
 
         $response->assertStatus(456);
 
@@ -926,7 +1058,7 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals(false, $success);
         $this->assertEquals(456, $code);
         $this->assertEquals(
-            "Stages.softDestroy. Incorrect ID in URL.",
+            "Workflows.softDestroy. Incorrect ID in URL.",
             $message
         );
         $this->assertEquals(null, $data);
@@ -942,7 +1074,7 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginOrganizationWNYGeneralManager();
 
         // Request
-        $response = $this->delete('api/stages/5?token=' . $token);
+        $response = $this->delete('api/workflows/5?token=' . $token);
 
         $response->assertStatus(453);
 
@@ -967,7 +1099,7 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginOrganizationSpringSuperadmin();
 
         // Request
-        $response = $this->delete('api/stages/5?token=' . $token);
+        $response = $this->delete('api/workflows/5?token=' . $token);
 
         $response->assertStatus(454);
 
@@ -993,11 +1125,11 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Preparation
-        $response = $this->delete('api/stages/4?token=' . $token);
+        $response = $this->delete('api/workflows/1?token=' . $token);
         $response->assertStatus(200);
 
         // Request
-        $response = $this->put('api/stages/4/restore?token=' . $token);
+        $response = $this->put('api/workflows/1/restore?token=' . $token);
         $response->assertStatus(200);
 
         $responseJSON = json_decode($response->getContent(), true);
@@ -1008,11 +1140,13 @@ class StagesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals("Stages.restore. Result is successful.", $message);
+        $this->assertEquals("Workflows.restore. Result is successful.", $message);
         $this->assertEquals(null, $data);
 
-        $stage = Stage::where('id', 4)->first();
-        $this->assertEquals(null, $stage['deleted_at']);
+        $workflow = Workflow::with(['organization', 'stages'])->where('id', 1)->first();
+        $this->assertCount(2, $workflow['stages']);
+        $this->assertEquals(null, $workflow['deleted_at']);
+        $this->assertEquals(1, $workflow['stages'][0]['pivot']['stage_id']);
     }
 
     /**
@@ -1025,7 +1159,7 @@ class StagesControllerTest extends WnyTestCase
         $token = $this->loginDeveloper();
 
         // Request
-        $response = $this->put('api/stages/4444/restore?token=' . $token);
+        $response = $this->put('api/workflows/4444/restore?token=' . $token);
 
         $response->assertStatus(456);
 
@@ -1037,7 +1171,7 @@ class StagesControllerTest extends WnyTestCase
 
         $this->assertEquals(false, $success);
         $this->assertEquals(456, $code);
-        $this->assertEquals("Stages.restore. Incorrect ID in URL.", $message);
+        $this->assertEquals("Workflows.restore. Incorrect ID in URL.", $message);
         $this->assertEquals(null, $data);
     }
 
@@ -1050,12 +1184,12 @@ class StagesControllerTest extends WnyTestCase
     {
         $token = $this->loginDeveloper();
         // Preparation
-        $response = $this->delete('api/stages/4?token=' . $token);
+        $response = $this->delete('api/workflows/1?token=' . $token);
         $response->assertStatus(200);
 
         $token = $this->loginOrganizationWNYGeneralManager();
         // Request
-        $response = $this->put('api/stages/8/restore?token=' . $token);
+        $response = $this->put('api/workflows/1/restore?token=' . $token);
 
         $response->assertStatus(453);
 
@@ -1076,11 +1210,11 @@ class StagesControllerTest extends WnyTestCase
     {
         // Preparation
         $token = $this->loginDeveloper();
-        $response = $this->delete('api/stages/4?token=' . $token);
+        $response = $this->delete('api/workflows/1?token=' . $token);
         $response->assertStatus(200);
 
         // Request
-        $response = $this->delete('api/stages/4/permanently?token=' . $token);
+        $response = $this->delete('api/workflows/1/permanently?token=' . $token);
         $response->assertStatus(200);
 
         $responseJSON = json_decode($response->getContent(), true);
@@ -1091,10 +1225,17 @@ class StagesControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals("Stages.destroyPermanently. Result is successful.", $message);
+        $this->assertEquals("Workflows.destroyPermanently. Result is successful.", $message);
 
-        $stage = DB::table('stages')->where('id', 4)->first();
-        $this->assertEquals(null, $stage);
+        $workflow = DB::table('workflows')->where('id', 1)->first();
+        $this->assertEquals(null, $workflow);
+
+        $workflowStages = WorkflowStage::whereWorkflowId(1)->get();
+        $this->assertCount(0, $workflowStages);
+
+        $workflowStages = WorkflowStage::withTrashed()
+            ->whereWorkflowId(1)->get();
+        $this->assertCount(0, $workflowStages);
     }
 
     /**
@@ -1108,7 +1249,7 @@ class StagesControllerTest extends WnyTestCase
 
         // Request
         $response = $this->delete(
-            'api/stages/2222/permanently?token=' . $token
+            'api/workflows/2222/permanently?token=' . $token
         );
 
         $response->assertStatus(456);
@@ -1122,7 +1263,7 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals(false, $success);
         $this->assertEquals(456, $code);
         $this->assertEquals(
-            "Stages.destroyPermanently. Incorrect ID in URL.",
+            "Workflows.destroyPermanently. Incorrect ID in URL.",
             $message
         );
         $this->assertEquals(null, $data);
@@ -1138,13 +1279,13 @@ class StagesControllerTest extends WnyTestCase
         // Preparation
         $token = $this->loginDeveloper();
         $response = $this->delete(
-            'api/stages/5/permanently?token=' . $token
+            'api/workflows/1/permanently?token=' . $token
         );
         $response->assertStatus(200);
 
         // Request
         $token    = $this->loginOrganizationWNYGeneralManager();
-        $response = $this->delete('api/stages/5/permanently?token=' . $token);
+        $response = $this->delete('api/workflows/1/permanently?token=' . $token);
 
         $response->assertStatus(453);
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -12,21 +13,22 @@ use Illuminate\Support\Carbon;
  * Model App\Models\Stages
  *
  * @category Model
- * @package  Stagess
+ * @package  Stages
  * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     Model
  *
- * @property int               $id
- * @property string            $name
- * @property int               $organization_id
- * @property string            $workflow_type
- * @property string|null       $description
- * @property Carbon|null       $deleted_at
- * @property Carbon|null       $created_at
- * @property Carbon|null       $updated_at
+ * @property int         $id
+ * @property string      $name
+ * @property int         $organization_id
+ * @property string      $workflow_type
+ * @property string|null $description
+ * @property Carbon|null $deleted_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
  * @property-read Organization $organization
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Workflow[] $stages
  *
  * @method static bool|null forceDelete()
  * @method static Builder|\App\Models\Stage newModelQuery()
@@ -51,7 +53,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin \Eloquent
  */
-class Stage extends Model
+class   Stage extends Model
 {
     use SoftDeletes;
 
@@ -78,5 +80,21 @@ class Stage extends Model
             'organization_id',
             'id'
         );
+    }
+
+    /**
+     * Workflows <-> stages: many-to-many
+     *
+     * Get the workflows that owns the stages through pivot table
+     *
+     * @return BelongsToMany
+     */
+    public function stages()
+    {
+        return $this->belongsToMany(
+            'App\Models\Workflow',
+            'workflow_stages'
+        )
+            ->withTimestamps();
     }
 }

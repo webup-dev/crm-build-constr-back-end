@@ -2,6 +2,15 @@
 
 use Illuminate\Database\Seeder;
 
+/**
+ * Seeder for tests
+ *
+ * @category Seed
+ * @package  WNY
+ * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link     Seed
+ */
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -11,12 +20,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         $this->call(UsersSeeder::class);
-         $this->call(RolesSeeder::class);
-         $this->call(UserRolesSeeder::class);
-         $this->call(VcontrollersSeeder::class);
-         $this->call(MethodsSeeder::class);
-         $this->call(MethodRolesSeeder::class);
+        $this->call(UsersSeeder::class);
+        $this->call(RolesSeeder::class);
+        $this->call(UserRolesSeeder::class);
+        $this->call(VcontrollersSeeder::class);
+        $this->call(MethodsSeeder::class);
+        $this->call(MethodRolesSeeder::class);
         $this->call(OrganizationsSeeder::class);
         $this->call(UserProfilesSeeder::class);
         $this->call(CustomerSeeder::class);
@@ -30,5 +39,7 @@ class DatabaseSeeder extends Seeder
         $this->call(LeadTypesSeeder::class);
         $this->call(LeadStatusesSeeder::class);
         $this->call(StagesSeeder::class);
+        $this->call(WorkflowSeeder::class);
+        $this->call(WorkflowStagesSeeder::class);
     }
 }

@@ -3,10 +3,10 @@
 use Illuminate\Database\Seeder;
 
 /**
- * Seeder for stages table
+ * Seeder for tests
  *
  * @category Seed
- * @package  Stages
+ * @package  WNY
  * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     Seed
@@ -36,5 +36,7 @@ class TestsSeeder extends Seeder
         $this->call(TestLeadSourcesSeeder::class);
         $this->call(TestLeadTypesSeeder::class);
         $this->call(TestLeadStatusesSeeder::class);
+        $this->call(TestWorkflowSeeder::class);
+        $this->call(TestWorkflowStagesSeeder::class);
     }
 }

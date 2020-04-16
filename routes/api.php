@@ -592,6 +592,52 @@ $api->version(
             }
         );
 
+        $api->group(
+            [
+                'middleware' => [
+                    'api.auth', 'activity'
+                ]
+            ],
+            function (Router $api) {
+                $api->get(
+                    'workflows',
+                    'App\Api\V1\Controllers\WorkflowsController@index'
+                );
+                $api->get(
+                    'workflows/soft-deleted',
+                    'App\Api\V1\Controllers\WorkflowsController@indexSoftDeleted'
+                );
+                $api->get(
+                    'workflows/organizations',
+                    'App\Api\V1\Controllers\WorkflowsController@getListOfOrganizations'
+                );
+                $api->get(
+                    'workflows/{id}',
+                    'App\Api\V1\Controllers\WorkflowsController@show'
+                );
+                $api->post(
+                    'workflows',
+                    'App\Api\V1\Controllers\WorkflowsController@store'
+                );
+                $api->put(
+                    'workflows/{id}',
+                    'App\Api\V1\Controllers\WorkflowsController@update'
+                );
+                $api->delete(
+                    'workflows/{id}',
+                    'App\Api\V1\Controllers\WorkflowsController@softDestroy'
+                );
+                $api->put(
+                    'workflows/{id}/restore',
+                    'App\Api\V1\Controllers\WorkflowsController@restore'
+                );
+                $api->delete(
+                    'workflows/{id}/permanently',
+                    'App\Api\V1\Controllers\WorkflowsController@destroyPermanently'
+                );
+            }
+        );
+
 
         $api->get('book', 'App\Api\V1\Controllers\BookController@index');
 

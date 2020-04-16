@@ -3,9 +3,10 @@
 namespace App\Api\V1\Controllers;
 
 use App\Api\V1\Requests\StoreStageRequest;
+use App\Api\V1\Requests\StoreWorkflowRequest;
 use App\Api\V1\Requests\UpdateStage;
+use App\Api\V1\Requests\UpdateWorkflow;
 use App\Http\Controllers\Controller;
-use App\Models\Stage;
 use App\Models\Organization;
 use App\Api\V1\Traits\CheckPermissionToOrganizationId;
 use App\Models\Workflow;
@@ -14,18 +15,17 @@ use App\Traits\GetOrganizations;
 use Illuminate\Http\JsonResponse;
 use Dingo\Api\Routing\Helpers;
 
-
 /**
- * Controller to operate with Stages
+ * Controller to operate with Workflows
  *
  * @category Controller
- * @package  Stages
+ * @package  Workflows
  * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     Controller
- * @group    Stages
+ * @group    Workflows
  */
-class StagesController extends Controller
+class WorkflowsController extends Controller
 {
     use Helpers;
     use Responses;
@@ -33,7 +33,7 @@ class StagesController extends Controller
     use GetOrganizations;
 
     /**
-     * StagesController constructor.
+     * WorkflowsController constructor.
      */
     public function __construct()
     {
@@ -69,10 +69,31 @@ class StagesController extends Controller
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03",
-     *    "organization": "object"
+     *    "organization": "object",
+     *    "stages": [{
+     *        "id": 1,
+     *        "organization_id": 2,
+     *        "name": "Documenting",
+     *        "workflow_type": "request",
+     *        "description": null,
+     *        "pivot": {
+     *              "order": 1
+     *          }
+     *      },
+     *      {
+     *        "id": 2,
+     *        "organization_id": 2,
+     *        "name": "Evaluation",
+     *        "workflow_type": "request",
+     *        "description": null,
+     *        "pivot": {
+     *              "order": 2
+     *          }
+     *      }
+     *    ]
      *   },
      *   {
-     *    "id": 2,
+     *    "id": 1,
      *    "name": "Website - CertainTeed",
      *    "organization_id": 2,
      *    "workflow_type": "request",
@@ -80,7 +101,28 @@ class StagesController extends Controller
      *    "deleted_at": null,
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03",
-     *    "organization": "object"
+     *    "organization": "object",
+     *    "stages": [{
+     *        "id": 1,
+     *        "organization_id": 2,
+     *        "name": "Documenting",
+     *        "workflow_type": "request",
+     *        "description": null,
+     *        "pivot": {
+     *              "order": 1
+     *          }
+     *      },
+     *      {
+     *        "id": 2,
+     *        "organization_id": 2,
+     *        "name": "Evaluation",
+     *        "workflow_type": "request",
+     *        "description": null,
+     *        "pivot": {
+     *              "order": 2
+     *          }
+     *      }
+     *    ]
      *   }]
      * }
      *
@@ -101,7 +143,7 @@ class StagesController extends Controller
     {
         $res = $this->_getDepartmentId();
         if ($res === true) {
-            $workflows = Stage::with(['organization'])->get();
+            $workflows = Workflow::with(['organization', 'stages'])->get();
             if ($workflows->count() === 0) {
                 return response()->json('', 204);
             }
@@ -110,7 +152,7 @@ class StagesController extends Controller
         } else {
             $organizations = Organization::all()->toArray();
             $collectedIds  = collectIds($organizations, $res);
-            $workflows        = Stage::with(['organization'])
+            $workflows     = Workflow::with(['organization', 'stages'])
                 ->whereIn('organization_id', $collectedIds)
                 ->get();
             if ($workflows->count() === 0) {
@@ -123,7 +165,7 @@ class StagesController extends Controller
         return response()->json(
             $this->resp(
                 200,
-                'Stages.index',
+                'Workflows.index',
                 $data
             ),
             200
@@ -133,12 +175,13 @@ class StagesController extends Controller
     /**
      * Store a newly created Stage in DB
      *
-     * @param StoreStageRequest $request Request
+     * @param StoreWorkflowRequest $request Request
      *
+     * @return JsonResponse
      * @response 200 {
      *  "success": true,
      *  "code": 200,
-     *  "message": "Stage.store. Result is successful."
+     *  "message": "Workflow.store. Result is successful."
      * }
      *
      * @response 422 {
@@ -165,28 +208,30 @@ class StagesController extends Controller
      *    }
      * }
      *
-     * @return JsonResponse
      */
-    public function store(StoreStageRequest $request)
+    public function store(StoreWorkflowRequest $request)
     {
-        $stage = new Stage();
+        $workflow = new Workflow();
 
-        $stage->name            = $request->get('name');
-        $stage->organization_id = $request->get('organization_id');
-        $stage->workflow_type   = $request->get('workflow_type');
-        $stage->description     = $request->get('description');
+        $workflow->name            = $request->get('name');
+        $workflow->organization_id = $request->get('organization_id');
+        $workflow->workflow_type   = $request->get('workflow_type');
+        $workflow->description     = $request->get('description');
 
         // check permission to organization_id from the request
-        $response = $this->_checkPermissionToOrganizationId($stage);
+        $response = $this->_checkPermissionToOrganizationId($workflow);
         if ($response !== true) {
             return response()->json($response, 454);
         }
 
-        if ($stage->save()) {
+        if ($workflow->save()) {
+            $stages = $request->stages;
+            $this->storeWorkflowStages($workflow->id, $stages);
+
             return response()->json(
                 $this->resp(
                     200,
-                    'Stages.store'
+                    'Workflows.store'
                 ),
                 200
             );
@@ -199,6 +244,53 @@ class StagesController extends Controller
     }
 
     /**
+     * Store data in pivot table
+     *
+     * @param $workflowId
+     * @param $stages
+     *
+     * @return bool
+     */
+    private function storeWorkflowStages($workflowId, $stages)
+    {
+        $arr      = $this->formatStages($stages);
+        $workflow = Workflow::find($workflowId);
+        $workflow->stages()->attach($arr);
+
+        return true;
+    }
+
+    /**
+     * @param $workflowId
+     * @param $stages
+     *
+     * @return bool
+     */
+    private function updateWorkflowStages($workflowId, $stages)
+    {
+        $arr      = $this->formatStages($stages);
+        $workflow = Workflow::find($workflowId);
+        $workflow->stages()->sync($arr);
+
+        return true;
+    }
+
+    /**
+     * @param $stages
+     *
+     * @return array
+     */
+    private function formatStages($stages)
+    {
+        $arr = [];
+        foreach ($stages as $stage) {
+            $arr[$stage['id']] = ['order' => $stage['order']];
+        }
+
+        return $arr;
+    }
+
+    /**
      * Show the specified Stage.
      *
      * @param int $id ID
@@ -206,15 +298,36 @@ class StagesController extends Controller
      * @response 200 {
      *  "success": true,
      *  "data": {
-     *       "id": 1,
-     *       "name": "Lead Status 1",
-     *       "organization_id": 2,
-     *       "workflow_type": "request",
-     *       "description": "",
-     *       "created_at": "2019-12-08 13:25:36",
-     *       "updated_at": "2019-12-08 13:25:36",
-     *       "organization": "object"
-     *     },
+     *    "id": 1,
+     *    "name": "Website - CertainTeed",
+     *    "organization_id": 2,
+     *    "workflow_type": "request",
+     *    "description": "",
+     *    "deleted_at": null,
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object",
+     *    "stages": [{
+     *        "id": 1,
+     *        "organization_id": 2,
+     *        "name": "Documenting",
+     *        "workflow_type": "request",
+     *        "description": null,
+     *        "pivot": {
+     *              "order": 1
+     *          }
+     *      },
+     *      {
+     *        "id": 2,
+     *        "organization_id": 2,
+     *        "name": "Evaluation",
+     *        "workflow_type": "request",
+     *        "description": null,
+     *        "pivot": {
+     *              "order": 2
+     *          }
+     *      }]
+     *  },
      *  "message": "Stages.show. Result is successful."
      * }
      *
@@ -239,26 +352,25 @@ class StagesController extends Controller
      */
     public function show($id)
     {
-        $workflow = Stage::whereId($id)->first();
+        $workflow = Workflow::with(['organization', 'stages'])
+            ->whereId($id)->first();
 
         if (!$workflow) {
             return response()->json(
                 $this->resp(
                     456,
-                    'Stages.show'
+                    'Workflows.show'
                 ),
                 456
             );
         }
-
-        $workflow['organization'] = $workflow->organization;
 
         $data = $workflow->toArray();
 
         return response()->json(
             $this->resp(
                 200,
-                'Stages.show',
+                'Workflows.show',
                 $data
             ),
             200
@@ -267,24 +379,45 @@ class StagesController extends Controller
 
 
     /**
-     * Update the specified Stage.
+     * Update the specified Workflow.
      *
-     * @param UpdateStage $request Request
-     * @param int         $id      ID
+     * @param UpdateWorkflow $request Request
+     * @param int            $id      ID
      *
+     * @return JsonResponse
      * @response 200 {
      *  "success": true,
      *  "data": {
-     *       "id": 1,
-     *       "name": "Stage Updated",
-     *       "organization_id": 2,
-     *       "workflow_type": "request",
-     *       "description": "",
-     *       "deleted_at": null,
-     *       "created_at": "2019-12-08 13:25:36",
-     *       "updated_at": "2019-12-09 13:25:36",
-     *       "organization": "object"
-     *     },
+     *    "id": 1,
+     *    "name": "Website - CertainTeed",
+     *    "organization_id": 2,
+     *    "workflow_type": "request",
+     *    "description": "",
+     *    "deleted_at": null,
+     *    "created_at": "2019-06-24 07:12:03",
+     *    "updated_at": "2019-06-24 07:12:03",
+     *    "organization": "object",
+     *    "stages": [{
+     *        "id": 1,
+     *        "organization_id": 2,
+     *        "name": "Documenting",
+     *        "workflow_type": "request",
+     *        "description": null,
+     *        "pivot": {
+     *              "order": 1
+     *          }
+     *      },
+     *      {
+     *        "id": 2,
+     *        "organization_id": 2,
+     *        "name": "Evaluation",
+     *        "workflow_type": "request",
+     *        "description": null,
+     *        "pivot": {
+     *              "order": 2
+     *          }
+     *      }]
+     *    },
      *  "message": "Stages.update. Result is successful."
      * }
      *
@@ -319,17 +452,17 @@ class StagesController extends Controller
      *    }
      * }
      *
-     * @return JsonResponse
      */
-    public function update(UpdateStage $request, $id)
+    public function update(UpdateWorkflow $request, $id)
     {
-        $workflow = Stage::whereId($id)->first();
+        $workflow = Workflow::with(['organization', 'stages'])
+            ->whereId($id)->first();
 
         if (!$workflow) {
             return response()->json(
                 $this->resp(
                     456,
-                    'Stages.update'
+                    'Workflows.update'
                 ),
                 456
             );
@@ -338,10 +471,16 @@ class StagesController extends Controller
         $workflow->fill($request->all());
 
         if ($workflow->save()) {
+            $stages = $request->stages;
+            $this->updateWorkflowStages($workflow->id, $stages);
+
+            $workflow = Workflow::with(['organization', 'stages'])
+                ->whereId($id)->first();
+
             return response()->json(
                 $this->resp(
                     200,
-                    'Stages.update',
+                    'Workflows.update',
                     $workflow
                 ),
                 200
@@ -391,13 +530,13 @@ class StagesController extends Controller
      */
     public function softDestroy($id)
     {
-        $workflow = Stage::whereId($id)->first();
+        $workflow = Workflow::whereId($id)->first();
 
         if (!$workflow) {
             return response()->json(
                 $this->resp(
                     456,
-                    'Stages.softDestroy'
+                    'Workflows.softDestroy'
                 ),
                 456
             );
@@ -407,20 +546,20 @@ class StagesController extends Controller
             return response()->json(
                 $this->resp(
                     200,
-                    'Stages.softDestroy'
+                    'Workflows.softDestroy'
                 ),
                 200
             );
         } else {
             return $this->response->error(
-                '"Could not delete Lead Status."',
+                '"Could not delete Workflow."',
                 500
             );
         }
     }
 
     /**
-     * Get index of soft-deleted Stages
+     * Get index of soft-deleted Workflows
      *
      * @response 200 {
      *  "success": true,
@@ -428,25 +567,65 @@ class StagesController extends Controller
      *  "message": "Stages.indexSoftDeleted. Result is successful.",
      *  "data": [{
      *    "id": 1,
-     *    "name": "blogging",
+     *    "name": "Website - CertainTeed",
      *    "organization_id": 2,
      *    "workflow_type": "request",
      *    "description": "",
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03",
-     *    "organization": "object"
+     *    "organization": "object",
+     *    "stages": [{
+     *        "id": 1,
+     *        "organization_id": 2,
+     *        "name": "Documenting",
+     *        "workflow_type": "request",
+     *        "description": null,
+     *        "pivot": {
+     *              "order": 1
+     *          }
+     *      },
+     *      {
+     *        "id": 2,
+     *        "organization_id": 2,
+     *        "name": "Evaluation",
+     *        "workflow_type": "request",
+     *        "description": null,
+     *        "pivot": {
+     *              "order": 2
+     *          }
+     *      }]
      *   },
      *   {
-     *    "id": 2,
-     *    "name": "blogging",
+     *    "id": 1,
+     *    "name": "Website - CertainTeed",
      *    "organization_id": 2,
      *    "workflow_type": "request",
      *    "description": "",
      *    "deleted_at": "2019-06-24 07:12:03",
      *    "created_at": "2019-06-24 07:12:03",
      *    "updated_at": "2019-06-24 07:12:03",
-     *    "organization": "object"
+     *    "organization": "object",
+     *    "stages": [{
+     *        "id": 1,
+     *        "organization_id": 2,
+     *        "name": "Documenting",
+     *        "workflow_type": "request",
+     *        "description": null,
+     *        "pivot": {
+     *              "order": 1
+     *          }
+     *      },
+     *      {
+     *        "id": 2,
+     *        "organization_id": 2,
+     *        "name": "Evaluation",
+     *        "workflow_type": "request",
+     *        "description": null,
+     *        "pivot": {
+     *              "order": 2
+     *          }
+     *      }]
      *   }]
      * }
      *
@@ -468,14 +647,14 @@ class StagesController extends Controller
      */
     public function indexSoftDeleted()
     {
-        $workflow = Stage::with(['organization'])
+        $workflows = Workflow::with(['organization', 'stages'])
             ->onlyTrashed()->get();
 
-        if (!$workflow->count()) {
+        if (!$workflows->count()) {
             return response()->json(
                 $this->resp(
                     204,
-                    'Stages.indexSoftDeleted'
+                    'Workflows.indexSoftDeleted'
                 ),
                 204
             );
@@ -484,32 +663,33 @@ class StagesController extends Controller
         return response()->json(
             $this->resp(
                 200,
-                'Stages.indexSoftDeleted',
-                $workflow
-            ), 200
+                'Workflows.indexSoftDeleted',
+                $workflows
+            ),
+            200
         );
     }
 
     /**
-     * Restore Stage
+     * Restore Workflow
      *
      * @param $id int ID
      *
-     * @queryParam id int required Stage ID
+     * @queryParam id int required Workflow ID
      *
-     * @response 200 {
+     * @response   200 {
      *  "success": true,
      *  "code": 200,
      *  "message": "Stages.restore. Result is successful.",
      *  "data": null
      * }
      *
-     * @response 453 {
+     * @response   453 {
      *  "success": false,
      *  "message": "You do not have permission."
      * }
      *
-     * @response 456 {
+     * @response   456 {
      *  "success": false,
      *  "code": 456,
      *  "message": "Stages.restore. Incorrect ID in the URL.",
@@ -520,13 +700,13 @@ class StagesController extends Controller
      */
     public function restore($id)
     {
-        $workflow = Stage::onlyTrashed()->whereId($id)->first();
+        $workflow = Workflow::onlyTrashed()->whereId($id)->first();
 
         if (!$workflow) {
             return response()->json(
                 $this->resp(
                     456,
-                    'Stages.restore'
+                    'Workflows.restore'
                 ),
                 456
             );
@@ -536,29 +716,29 @@ class StagesController extends Controller
         $workflow->restore();
 
         return response()->json(
-            $this->resp(200, 'Stages.restore'),
+            $this->resp(200, 'Workflows.restore'),
             200
         );
     }
 
     /**
-     * Destroy Stage permanently
+     * Destroy Workflow permanently
      *
      * @param $id int ID
      *
-     * @queryParam id int required Stage ID
+     * @queryParam id int required Workflow ID
      *
-     * @response 200 {
+     * @response   200 {
      *  "success": true,
-     *  "message": "Stages.destroyPermanently. Result is successful."
+     *  "message": "Workflows.destroyPermanently. Result is successful."
      * }
      *
-     * @response 453 {
+     * @response   453 {
      *  "success": false,
      *  "message": "You do not have permission."
      * }
      *
-     * @response 456 {
+     * @response   456 {
      *  "success": false,
      *  "code": 456,
      *  "message": "Incorrect the Entity ID in the URL.",
@@ -569,10 +749,10 @@ class StagesController extends Controller
      */
     public function destroyPermanently($id)
     {
-        $workflow = Stage::withTrashed()->whereId($id)->first();
+        $workflow = Workflow::withTrashed()->whereId($id)->first();
         if (!$workflow) {
             return response()->json(
-                $this->resp(456, 'Stages.destroyPermanently'),
+                $this->resp(456, 'Workflows.destroyPermanently'),
                 456
             );
         }
@@ -580,7 +760,7 @@ class StagesController extends Controller
         $workflow->forceDelete();
 
         return response()->json(
-            $this->resp(200, 'Stages.destroyPermanently'),
+            $this->resp(200, 'Workflows.destroyPermanently'),
             200
         );
     }

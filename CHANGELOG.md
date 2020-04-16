@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.28.0] - 2020-04-16
+### Added 
+- Module 'Workflows' is created
+    - Specification
+    - Migrations
+    - Seeders
+    - Tests
+    - Request validations
+    - Methods: index, store, update, softDestroy, show,
+      indexSoftDeleted, restore, permanentDelete. 
+
 ## [0.27.2] - 2020-04-13
 ### Changed
 - MenusController

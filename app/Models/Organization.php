@@ -14,24 +14,30 @@ use Illuminate\Database\Eloquent\Builder;
  * Model App\Models\Organization
  *
  * @category Model
- * @package LeadSourceCategoriess
- * @author Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
- * @license https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
- * @link Model
- * @property int                            $id
- * @property string|null                    $order
- * @property string                         $name
- * @property int|null                       $parent_id
- * @property Carbon|null                    $created_at
- * @property Carbon|null                    $updated_at
- * @property Carbon|null                    $deleted_at
- * @property int                            $level
+ * @package  Organization
+ * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link     Model
+ *
+ * @property int         $id
+ * @property string|null $order
+ * @property string      $name
+ * @property int|null    $parent_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property int         $level
+ *
  * @property-read Collection|LeadType[]     $leadType
  * @property-read Collection|Organization[] $childOrganizations
  * @property-read Organization              $parentOrganization
  * @property-read Collection|User_profile[] $user_profile
  * @property-read Collection|Customer[]     $customer
  * @property-read Collection|LeadSource[]   $leadSources
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\LeadStatus[] $leadStatuses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RwStage[] $rwStages
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Workflow[] $workflows
+ *
  * @method static Builder|Organization newModelQuery()
  * @method static Builder|Organization newQuery()
  * @method static Builder|Organization query()
@@ -48,9 +54,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static \Illuminate\Database\Query\Builder|Organization withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Organization withoutTrashed()
  * @method static Builder|Organization whereLevel($value)
+ *
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\LeadStatus[] $leadStatuses
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RwStage[] $rwStages
  */
 class Organization extends Model
 {
@@ -170,6 +175,22 @@ class Organization extends Model
     {
         return $this->hasMany(
             'App\Models\Stage',
+            'organization_id',
+            'id'
+        );
+    }
+
+    /**
+     * Organization - workflow: one-to-many
+     *
+     * Get the workflows of the Organization.
+     *
+     * @return HasMany
+     */
+    public function workflows()
+    {
+        return $this->hasMany(
+            'App\Models\Workflow',
             'organization_id',
             'id'
         );
