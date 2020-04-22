@@ -13,6 +13,7 @@ use App\Models\Organization;
 use App\Models\Stage;
 use App\Models\User_profile;
 use App\Models\UserCustomer;
+use App\Models\Workflow;
 use Dingo\Api\Routing\Helpers;
 use Auth;
 use Illuminate\Http\Request;
@@ -94,6 +95,7 @@ class MenusController extends Controller
         $res[] = $this->_getTrades();
         $res[] = $this->_getStatuses();
         $res[] = $this->_getStages();
+        $res[] = $this->_getWorkflows();
 
         $response = [
             "success" => true,
@@ -317,6 +319,25 @@ class MenusController extends Controller
             "name"  => 'Stages',
             "url"   => 'stages/soft-deleted',
             "count" => $stages
+        ];
+    }
+
+    /**
+     * Method to get soft-deleted Workflows
+     *
+     * @return array
+     */
+    private function _getWorkflows()
+    {
+        $workflows = Workflow::onlyTrashed()
+            ->select('id')
+            ->get()
+            ->count();
+
+        return [
+            "name"  => 'Workflows',
+            "url"   => 'workflows/soft-deleted',
+            "count" => $workflows
         ];
     }
 }

@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.28.1] - 2020-04-21
+### Changed
+- MenusController
+    - Soft Deleted Workflows are added
+    - MenusControllerTest is updated.
+
 ## [0.28.0] - 2020-04-16
 ### Added 
 - Module 'Workflows' is created
