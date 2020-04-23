@@ -38,5 +38,6 @@ class TestsSeeder extends Seeder
         $this->call(TestLeadStatusesSeeder::class);
         $this->call(TestWorkflowSeeder::class);
         $this->call(TestWorkflowStagesSeeder::class);
+        $this->call(TestRequestersSeeder::class);
     }
 }

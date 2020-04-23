@@ -52,6 +52,8 @@ use \Illuminate\Notifications\DatabaseNotificationCollection;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User withoutTrashed()
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\File[] $file
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Requester[] $requestersCreated
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Requester[] $requestersUpdated
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -186,5 +188,25 @@ class User extends Authenticatable implements JWTSubject
     public function file()
     {
         return $this->hasMany('App\Models\File', 'owner_user_id');
+    }
+
+    /**
+     * user <-> requester: one-to-many
+     *
+     * Get the requests associated with the user.
+     */
+    public function requestersCreated()
+    {
+        return $this->hasMany('App\Models\Requester', 'created_by');
+    }
+
+    /**
+     * user <-> requester: one-to-many
+     *
+     * Get the requests associated with the user.
+     */
+    public function requestersUpdated()
+    {
+        return $this->hasMany('App\Models\Requester', 'updated_by');
     }
 }

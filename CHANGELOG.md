@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.29.0] - 2020-04-23
+### Added 
+- Module 'Requesters' is created
+    - Specification
+    - Migrations
+    - Seeders
+    - Tests
+    - Request validations
+    - Methods: index, store, update, softDestroy, show,
+      indexSoftDeleted, restore, permanentDelete. 
+
 ## [0.28.1] - 2020-04-21
 ### Changed
 - MenusController

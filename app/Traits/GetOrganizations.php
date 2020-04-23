@@ -100,7 +100,8 @@ trait GetOrganizations
                 'developer',
                 'platform-superadmin',
                 'platform-admin'
-            ], $roleNamesArr
+            ],
+            $roleNamesArr
         )
         ) {
             return true;

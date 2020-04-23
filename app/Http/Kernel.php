@@ -84,5 +84,6 @@ class Kernel extends HttpKernel
         'create_file'                                   => \App\Http\Middleware\File_create::class,
         'file_owner'                                    => \App\Http\Middleware\File_owner::class,
         'index_file'                                    => \App\Http\Middleware\File_index::class,
+        'OrganizationUserWithOrganizationId'            => \App\Http\Middleware\OrganizationUserWithOrganizationId::class,
     );
 }

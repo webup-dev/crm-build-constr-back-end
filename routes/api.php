@@ -638,6 +638,52 @@ $api->version(
             }
         );
 
+        $api->group(
+            [
+                'middleware' => [
+                    'api.auth', 'activity'
+                ]
+            ],
+            function (Router $api) {
+                $api->get(
+                    'requesters',
+                    'App\Api\V1\Controllers\RequestersController@index'
+                );
+                $api->get(
+                    'requesters/soft-deleted',
+                    'App\Api\V1\Controllers\RequestersController@indexSoftDeleted'
+                );
+                $api->get(
+                    'requesters/organizations',
+                    'App\Api\V1\Controllers\RequestersController@getListOfOrganizations'
+                );
+                $api->get(
+                    'requesters/{id}',
+                    'App\Api\V1\Controllers\RequestersController@show'
+                );
+                $api->post(
+                    'requesters',
+                    'App\Api\V1\Controllers\RequestersController@store'
+                );
+                $api->put(
+                    'requesters/{id}',
+                    'App\Api\V1\Controllers\RequestersController@update'
+                );
+                $api->delete(
+                    'requesters/{id}',
+                    'App\Api\V1\Controllers\RequestersController@softDestroy'
+                );
+                $api->put(
+                    'requesters/{id}/restore',
+                    'App\Api\V1\Controllers\RequestersController@restore'
+                );
+                $api->delete(
+                    'requesters/{id}/permanently',
+                    'App\Api\V1\Controllers\RequestersController@destroyPermanently'
+                );
+            }
+        );
+
 
         $api->get('book', 'App\Api\V1\Controllers\BookController@index');
 

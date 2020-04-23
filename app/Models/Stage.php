@@ -13,11 +13,10 @@ use Illuminate\Support\Carbon;
  * Model App\Models\Stages
  *
  * @category Model
- * @package  Stages
- * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
- * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
- * @link     Model
- *
+ * @package Stages
+ * @author Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link Model
  * @property int         $id
  * @property string      $name
  * @property int         $organization_id
@@ -26,10 +25,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
  * @property-read Organization $organization
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Workflow[] $stages
- *
  * @method static bool|null forceDelete()
  * @method static Builder|\App\Models\Stage newModelQuery()
  * @method static Builder|\App\Models\Stage newQuery()
@@ -50,7 +47,6 @@ use Illuminate\Support\Carbon;
  *         whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Stage
  *         whereWorkflowType($value)
- *
  * @mixin \Eloquent
  */
 class   Stage extends Model

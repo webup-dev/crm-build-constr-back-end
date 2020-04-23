@@ -456,10 +456,7 @@ class UserDetailsController extends Controller
      *
      * @return Response
      */
-    public
-    function store(
-        StoreUserDetails $request
-    )
+    public function store(StoreUserDetails $request)
     {
         $data = $request->all();
 

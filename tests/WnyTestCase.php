@@ -43,6 +43,7 @@ abstract class WnyTestCase extends TestCase
         Schema::dropIfExists('workflow_stages');
         Schema::dropIfExists('stages');
         Schema::dropIfExists('workflows');
+        Schema::dropIfExists('requesters');
         Schema::dropIfExists('organizations');
         Schema::dropIfExists('activities');
         Schema::dropIfExists('users');
@@ -60,7 +61,8 @@ abstract class WnyTestCase extends TestCase
     {
         // Check login
         $response = $this->post(
-            'api/auth/login', [
+            'api/auth/login',
+            [
                 'email'    => $data['email'],
                 'password' => $data['password']
             ]
@@ -72,7 +74,8 @@ abstract class WnyTestCase extends TestCase
         $token        = $responseJSON['token'];
 
         $this->get(
-            'api/auth/me?token=' . $token, []
+            'api/auth/me?token=' . $token,
+            []
         )->assertJson(
             [
                 'name'  => $data['name'],

@@ -8,7 +8,7 @@ use Tymon\JWTAuth\JWTAuth;
 use Auth;
 
 /**
- * Middleware to operate permissions to organizations
+ * Middleware to operate permissions
  *
  * @category Middleware
  * @package  Organizations
@@ -16,14 +16,14 @@ use Auth;
  * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link     Middleware
  */
-class Organizations_OrganizationAdmin
+class OrganizationUserWithOrganizationId
 {
     /**
      * Middleware for routes with organization ID in URL.
      * Handle an incoming request.
      *     'developer', 'platform-superadmin', 'platform-admin' has permissions
      *     always
-     *     'organization-superadmin', 'organization-admin' has permissions
+     *     'organization-level' users have permissions
      *     to own organizations only
      *     other roles don't have permissions
      *
@@ -49,7 +49,17 @@ class Organizations_OrganizationAdmin
         }
 
         if (oneFromArrInOtherArr(
-            ['organization-superadmin', 'organization-admin'],
+            [
+                'organization-superadmin',
+                'organization-admin',
+                'organization-general-manager',
+                'organization-sales-manager',
+                'organization-production-manager',
+                'organization-administrative-leader',
+                'organization-estimator',
+                'organization-project-manager',
+                'organization-administrative-assistant'
+            ],
             $roleNamesArr
         )
         ) {
@@ -62,9 +72,7 @@ class Organizations_OrganizationAdmin
                 return $next($request);
             }
 
-            $organizations = Organization::withTrashed()
-                ->get()
-                ->toArray();
+            $organizations = Organization::get()->toArray();
 
             if (isOwn($organizations, $departmentId, $id)) {
                 return $next($request);

@@ -11,18 +11,16 @@ use Illuminate\Support\Carbon;
  * Model App\Models\WorkflowStage
  *
  * @category Model
- * @package  Workflow
- * @author   Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
- * @license  https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
- * @link     Model
- *
+ * @package Workflow
+ * @author Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
+ * @license https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
+ * @link Model
  * @property int $id
  * @property int $workflow_id
  * @property int $stage_id
  * @property Carbon|null $deleted_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
  * @method static bool|null forceDelete()
  * @method static Builder|WorkflowStage newModelQuery()
  * @method static Builder|WorkflowStage newQuery()
@@ -37,8 +35,9 @@ use Illuminate\Support\Carbon;
  * @method static Builder|WorkflowStage whereWorkflowId($value)
  * @method static \Illuminate\Database\Query\Builder|WorkflowStage withTrashed()
  * @method static \Illuminate\Database\Query\Builder|WorkflowStage withoutTrashed()
- *
  * @mixin \Eloquent
+ * @property int $order
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkflowStage whereOrder($value)
  */
 class WorkflowStage extends Model
 {

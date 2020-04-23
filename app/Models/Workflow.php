@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Carbon;
 
 /**
  * Model App\Models\Workflow
@@ -15,32 +17,32 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @author Volodymyr Vadiasov <vadiasov.volodymyr@gmail.com>
  * @license https://opensource.org/licenses/CDDL-1.0 CDDL-1.0
  * @link Model
- * @property int $id
- * @property int $organization_id
- * @property string $name
- * @property string $workflow_type
- * @property string|null $description
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Organization $organization
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Stage[] $stages
+ * @property int                                                   $id
+ * @property int                                                   $organization_id
+ * @property string                                                $name
+ * @property string                                                $workflow_type
+ * @property string|null                                           $description
+ * @property Carbon|null                                           $deleted_at
+ * @property Carbon|null                                           $created_at
+ * @property Carbon|null                                           $updated_at
+ * @property-read Organization                                     $organization
+ * @property-read \Illuminate\Database\Eloquent\Collection|Stage[] $stages
  * @method static bool|null forceDelete()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Workflow newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Workflow newQuery()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Workflow onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Workflow query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Workflow newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Workflow newQuery()
+ * @method static Builder|Workflow onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Workflow query()
  * @method static bool|null restore()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Workflow whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Workflow whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Workflow whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Workflow whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Workflow whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Workflow whereOrganizationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Workflow whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Workflow whereWorkflowType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Workflow withTrashed()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Workflow withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Workflow whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Workflow whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Workflow whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Workflow whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Workflow whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Workflow whereOrganizationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Workflow whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Workflow whereWorkflowType($value)
+ * @method static Builder|Workflow withTrashed()
+ * @method static Builder|Workflow withoutTrashed()
  * @mixin \Eloquent
  */
 class Workflow extends Model
