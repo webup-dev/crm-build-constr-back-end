@@ -25,7 +25,7 @@ class TestStagesSeeder extends Seeder
             [
                 'name'            => 'Documenting',
                 'organization_id' => 2,
-                'workflow_type' => 'request',
+                'workflow_type' => 'Request',
             ]
         );
 
@@ -34,7 +34,7 @@ class TestStagesSeeder extends Seeder
             [
                 'name'            => 'Review of plans and specifications',
                 'organization_id' => 2,
-                'workflow_type' => 'request',
+                'workflow_type' => 'Request',
             ]
         );
 
@@ -43,7 +43,7 @@ class TestStagesSeeder extends Seeder
             [
                 'name'            => 'Clarification',
                 'organization_id' => 2,
-                'workflow_type' => 'request',
+                'workflow_type' => 'Request',
             ]
         );
 
@@ -52,7 +52,7 @@ class TestStagesSeeder extends Seeder
             [
                 'name'            => 'Under review',
                 'organization_id' => 2,
-                'workflow_type' => 'request',
+                'workflow_type' => 'Request',
             ]
         );
 
@@ -61,7 +61,7 @@ class TestStagesSeeder extends Seeder
             [
                 'name'            => 'Determination',
                 'organization_id' => 2,
-                'workflow_type' => 'request',
+                'workflow_type' => 'Request',
             ]
         );
     }

@@ -25,7 +25,7 @@ class WorkflowSeeder extends Seeder
             [
                 'name'            => 'Simple',
                 'organization_id' => 2,
-                'workflow_type'   => 'request',
+                'workflow_type'   => 'Request',
             ]
         );
 
@@ -34,10 +34,8 @@ class WorkflowSeeder extends Seeder
             [
                 'name'            => 'Full',
                 'organization_id' => 2,
-                'workflow_type'   => 'request',
+                'workflow_type'   => 'Request',
             ]
         );
-
-
     }
 }

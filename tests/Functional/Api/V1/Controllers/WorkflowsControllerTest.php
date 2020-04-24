@@ -110,7 +110,7 @@ class WorkflowsControllerTest extends WnyTestCase
         $this->assertEquals(2, count($data));
         $this->assertEquals('Simple', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
-        $this->assertEquals('request', $data[0]['workflow_type']);
+        $this->assertEquals('Request', $data[0]['workflow_type']);
         $this->assertEquals('', $data[0]['description']);
         $this->assertEquals(null, $data[0]['deleted_at']);
         $this->assertEquals(
@@ -121,7 +121,7 @@ class WorkflowsControllerTest extends WnyTestCase
         $this->assertEquals(1, $data[0]['stages'][0]['id']);
         $this->assertEquals('Documenting', $data[0]['stages'][0]['name']);
         $this->assertEquals(2, $data[0]['stages'][0]['organization_id']);
-        $this->assertEquals('request', $data[0]['stages'][0]['workflow_type']);
+        $this->assertEquals('Request', $data[0]['stages'][0]['workflow_type']);
         $this->assertEquals('', $data[0]['stages'][0]['description']);
         $this->assertEquals(1, $data[0]['stages'][0]['pivot']['order']);
         $this->assertEquals("Workflows.index. Result is successful.", $message);
@@ -176,7 +176,7 @@ class WorkflowsControllerTest extends WnyTestCase
         $this->assertEquals(2, count($data));
         $this->assertEquals('Simple', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
-        $this->assertEquals('request', $data[0]['workflow_type']);
+        $this->assertEquals('Request', $data[0]['workflow_type']);
         $this->assertEquals('', $data[0]['description']);
         $this->assertEquals(null, $data[0]['deleted_at']);
         $this->assertEquals(
@@ -187,7 +187,7 @@ class WorkflowsControllerTest extends WnyTestCase
         $this->assertEquals(1, $data[0]['stages'][0]['id']);
         $this->assertEquals('Documenting', $data[0]['stages'][0]['name']);
         $this->assertEquals(2, $data[0]['stages'][0]['organization_id']);
-        $this->assertEquals('request', $data[0]['stages'][0]['workflow_type']);
+        $this->assertEquals('Request', $data[0]['stages'][0]['workflow_type']);
         $this->assertEquals('', $data[0]['stages'][0]['description']);
         $this->assertEquals(1, $data[0]['stages'][0]['pivot']['order']);
         $this->assertEquals("Workflows.index. Result is successful.", $message);
@@ -277,7 +277,7 @@ class WorkflowsControllerTest extends WnyTestCase
         $this->assertCount(1, $data);
         $this->assertEquals('Simple', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
-        $this->assertEquals('request', $data[0]['workflow_type']);
+        $this->assertEquals('Request', $data[0]['workflow_type']);
         $this->assertEquals('', $data[0]['description']);
         $this->assertNotEquals(null, $data[0]['deleted_at']);
         $this->assertEquals(
@@ -389,7 +389,7 @@ class WorkflowsControllerTest extends WnyTestCase
         $this->assertEquals(1, $data['id']);
         $this->assertEquals('Simple', $data['name']);
         $this->assertEquals(2, $data['organization_id']);
-        $this->assertEquals('request', $data['workflow_type']);
+        $this->assertEquals('Request', $data['workflow_type']);
         $this->assertEquals('', $data['description']);
         $this->assertEquals(null, $data['deleted_at']);
         $this->assertEquals(
@@ -514,7 +514,7 @@ class WorkflowsControllerTest extends WnyTestCase
         $data = [
             "name"            => 'Test Workflow',
             "organization_id" => 2,
-            "workflow_type"   => 'request',
+            "workflow_type"   => 'Request',
             "stages"          => [
                 ['id' => 1, 'order' => 1],
                 ['id' => 2, 'order' => 2],
@@ -557,7 +557,7 @@ class WorkflowsControllerTest extends WnyTestCase
             ->first();
         $this->assertEquals('Test Workflow', $workflow->name);
         $this->assertEquals(2, $workflow->organization_id);
-        $this->assertEquals('request', $workflow->workflow_type);
+        $this->assertEquals('Request', $workflow->workflow_type);
         $this->assertEquals('', $workflow->description);
         $this->assertEquals(null, $workflow->deleted_at);
 
@@ -582,7 +582,7 @@ class WorkflowsControllerTest extends WnyTestCase
         $data = [
             "name"            => 'Test Workflow',
             "organization_id" => 2,
-            "workflow_type"   => 'request',
+            "workflow_type"   => 'Request',
             "stages"          => []
         ];
 
@@ -620,7 +620,7 @@ class WorkflowsControllerTest extends WnyTestCase
             ->first();
         $this->assertEquals('Test Workflow', $workflow->name);
         $this->assertEquals(2, $workflow->organization_id);
-        $this->assertEquals('request', $workflow->workflow_type);
+        $this->assertEquals('Request', $workflow->workflow_type);
         $this->assertEquals('', $workflow->description);
         $this->assertEquals(null, $workflow->deleted_at);
 
@@ -641,7 +641,7 @@ class WorkflowsControllerTest extends WnyTestCase
         $data = [
             "name"            => 'Test Workflow',
             "organization_id" => 2,
-            "workflow_type"   => 'request',
+            "workflow_type"   => 'Request',
             "stages"          => [
                 ['id' => 1, 'order' => 1],
                 ['id' => 2, 'order' => 2],
@@ -686,7 +686,7 @@ class WorkflowsControllerTest extends WnyTestCase
         $data = [
             "name"            => 'Test Workflow',
             "organization_id" => 2,
-            "workflow_type"   => 'request',
+            "workflow_type"   => 'Request',
             "stages"          => [
                 ['id' => 1, 'order' => 1],
                 ['id' => 2, 'order' => 2],
@@ -794,7 +794,7 @@ class WorkflowsControllerTest extends WnyTestCase
         $this->assertEquals(1, $data['id']);
         $this->assertEquals("Name edited", $data['name']);
         $this->assertEquals(2, $data['organization_id']);
-        $this->assertEquals('request', $data['workflow_type']);
+        $this->assertEquals('Request', $data['workflow_type']);
         $this->assertEquals('', $data['description']);
 
         $this->assertEquals(
@@ -805,7 +805,7 @@ class WorkflowsControllerTest extends WnyTestCase
         $this->assertCount(3, $data['stages']);
         $this->assertEquals(1, $data['stages'][0]['id']);
         $this->assertEquals('Documenting', $data['stages'][0]['name']);
-        $this->assertEquals('request', $data['stages'][0]['workflow_type']);
+        $this->assertEquals('Request', $data['stages'][0]['workflow_type']);
         $this->assertEquals(null, $data['stages'][0]['description']);
         $this->assertEquals(null, $data['stages'][0]['deleted_at']);
 
@@ -844,7 +844,7 @@ class WorkflowsControllerTest extends WnyTestCase
         $this->assertEquals(1, $data['id']);
         $this->assertEquals("Name edited", $data['name']);
         $this->assertEquals(2, $data['organization_id']);
-        $this->assertEquals('request', $data['workflow_type']);
+        $this->assertEquals('Request', $data['workflow_type']);
         $this->assertEquals('', $data['description']);
 
         $this->assertEquals(

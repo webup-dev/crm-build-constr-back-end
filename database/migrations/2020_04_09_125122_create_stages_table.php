@@ -32,7 +32,7 @@ class CreateStagesTable extends Migration
                     ->on('organizations')
                     ->onDelete('cascade');
                 $table->string('name');
-                $table->enum('workflow_type', ['request', 'opportunity']);
+                $table->enum('workflow_type', ['Request', 'Opportunity']);
                 $table->string('description')->nullable();
                 $table->softDeletes();
                 $table->timestamps();
