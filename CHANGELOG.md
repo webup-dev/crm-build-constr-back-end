@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.29.1] - 2020-04-24
+### Changed
+- Workflow Types are changed: the first letter in the name 
+of the workflow type is capitalized
+    - migrations "stages", "workflows" are changed
+    - seeders "stages", "workflows" are changed
+    - tests for "stages" and "workflows" are changed.
+
 ## [0.29.0] - 2020-04-23
 ### Added 
 - Module 'Requesters' is created

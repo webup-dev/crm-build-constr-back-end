@@ -21,8 +21,7 @@ class CreateRequestersTable extends Migration
             $table->integer('organization_id')->unsigned()->index();
             $table->foreign('organization_id')->references('id')
                 ->on('organizations')->onDelete('cascade');
-            $table->enum('prefix', ['Mr', 'Mrs', 'Ms', 'Dr', 'Sir'])
-                ->nullable();
+            $table->string('prefix')->nullable();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('suffix')->nullable();
