@@ -10,6 +10,7 @@ use App\Models\LeadStatus;
 use App\Models\LeadType;
 use App\Models\LsCategory;
 use App\Models\Organization;
+use App\Models\Requester;
 use App\Models\Stage;
 use App\Models\User_profile;
 use App\Models\UserCustomer;
@@ -96,6 +97,7 @@ class MenusController extends Controller
         $res[] = $this->_getStatuses();
         $res[] = $this->_getStages();
         $res[] = $this->_getWorkflows();
+        $res[] = $this->_getRequesters();
 
         $response = [
             "success" => true,
@@ -338,6 +340,25 @@ class MenusController extends Controller
             "name"  => 'Workflows',
             "url"   => 'workflows/soft-deleted',
             "count" => $workflows
+        ];
+    }
+
+    /**
+     * Method to get soft-deleted Requesters
+     *
+     * @return array
+     */
+    private function _getRequesters()
+    {
+        $requesters = Requester::onlyTrashed()
+            ->select('id')
+            ->get()
+            ->count();
+
+        return [
+            "name"  => 'Requesters',
+            "url"   => 'requesters/soft-deleted',
+            "count" => $requesters
         ];
     }
 }

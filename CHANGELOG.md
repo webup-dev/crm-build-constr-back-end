@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.29.2] - 2020-04-27
+### Changed
+- Requester validation rules are changed
+    - select -> simple input
+    - migration
+    - requester validation.
+
 ## [0.29.1] - 2020-04-24
 ### Changed
 - Workflow Types are changed: the first letter in the name 
