@@ -78,6 +78,10 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Query\Builder|Requester withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Requester withoutTrashed()
  * @mixin \Eloquent
+ * @property int $created_by_id
+ * @property int|null $updated_by_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Requester whereCreatedById($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Requester whereUpdatedById($value)
  */
 class Requester extends Model
 {

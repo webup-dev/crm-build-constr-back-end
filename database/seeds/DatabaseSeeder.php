@@ -42,5 +42,6 @@ class DatabaseSeeder extends Seeder
         $this->call(WorkflowSeeder::class);
         $this->call(WorkflowStagesSeeder::class);
         $this->call(RequestersSeeder::class);
+        $this->call(LeadsSeeder::class);
     }
 }

@@ -2,6 +2,23 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.30.0] - 2020-05-01
+### Added
+- Module 'Leads' is created
+    - Specification
+    - Migrations
+    - Seeders
+    - Tests
+    - Request validations
+    - Methods: index, store, update, softDestroy, show,
+      indexSoftDeleted, restore, permanentDelete. 
+
+## [0.29.3] - 2020-04-28
+### Changed
+- MenusController
+    - Soft Deleted Requesters are added
+    - MenusControllerTest is updated.
+
 ## [0.29.2] - 2020-04-27
 ### Changed
 - Requester validation rules are changed

@@ -684,6 +684,52 @@ $api->version(
             }
         );
 
+        $api->group(
+            [
+                'middleware' => [
+                    'api.auth', 'activity'
+                ]
+            ],
+            function (Router $api) {
+                $api->get(
+                    'leads',
+                    'App\Api\V1\Controllers\LeadsController@index'
+                );
+                $api->get(
+                    'leads/soft-deleted',
+                    'App\Api\V1\Controllers\LeadsController@indexSoftDeleted'
+                );
+                $api->get(
+                    'leads/organizations',
+                    'App\Api\V1\Controllers\LeadsController@getListOfOrganizations'
+                );
+                $api->get(
+                    'leads/{id}',
+                    'App\Api\V1\Controllers\LeadsController@show'
+                );
+                $api->post(
+                    'leads',
+                    'App\Api\V1\Controllers\LeadsController@store'
+                );
+                $api->put(
+                    'leads/{id}',
+                    'App\Api\V1\Controllers\LeadsController@update'
+                );
+                $api->delete(
+                    'leads/{id}',
+                    'App\Api\V1\Controllers\LeadsController@softDestroy'
+                );
+                $api->put(
+                    'leads/{id}/restore',
+                    'App\Api\V1\Controllers\LeadsController@restore'
+                );
+                $api->delete(
+                    'leads/{id}/permanently',
+                    'App\Api\V1\Controllers\LeadsController@destroyPermanently'
+                );
+            }
+        );
+
 
         $api->get('book', 'App\Api\V1\Controllers\BookController@index');
 
