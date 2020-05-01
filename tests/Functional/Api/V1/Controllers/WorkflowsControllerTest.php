@@ -75,7 +75,7 @@ class WorkflowsControllerTest extends WnyTestCase
 
         // Check response status
         $response->assertStatus(200);
-
+       
         // Check response structure
         $response->assertJsonStructure(
             [
@@ -107,7 +107,7 @@ class WorkflowsControllerTest extends WnyTestCase
 
         $this->assertEquals(true, $success);
         $this->assertEquals(200, $code);
-        $this->assertEquals(2, count($data));
+        $this->assertCount(2, $data);
         $this->assertEquals('Simple', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
         $this->assertEquals('Request', $data[0]['workflow_type']);

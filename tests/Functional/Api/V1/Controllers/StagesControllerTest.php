@@ -105,7 +105,7 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals(5, count($data));
         $this->assertEquals('Documenting', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
-        $this->assertEquals('request', $data[0]['workflow_type']);
+        $this->assertEquals('Request', $data[0]['workflow_type']);
         $this->assertEquals('', $data[0]['description']);
         $this->assertEquals(null, $data[0]['deleted_at']);
         $this->assertEquals(
@@ -163,7 +163,7 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals(5, count($data));
         $this->assertEquals('Documenting', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
-        $this->assertEquals('request', $data[0]['workflow_type']);
+        $this->assertEquals('Request', $data[0]['workflow_type']);
         $this->assertEquals('', $data[0]['description']);
         $this->assertEquals(null, $data[0]['deleted_at']);
         $this->assertEquals(
@@ -258,7 +258,7 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals(2, count($data));
         $this->assertEquals('Under review', $data[0]['name']);
         $this->assertEquals(2, $data[0]['organization_id']);
-        $this->assertEquals('request', $data[0]['workflow_type']);
+        $this->assertEquals('Request', $data[0]['workflow_type']);
         $this->assertEquals('', $data[0]['description']);
         $this->assertNotEquals(null, $data[0]['deleted_at']);
         $this->assertEquals('Western New York Exteriors, LLC.', $data[0]['organization']['name']);
@@ -419,7 +419,7 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals(5, $data['id']);
         $this->assertEquals('Determination', $data['name']);
         $this->assertEquals(2, $data['organization_id']);
-        $this->assertEquals('request', $data['workflow_type']);
+        $this->assertEquals('Request', $data['workflow_type']);
         $this->assertEquals('', $data['description']);
         $this->assertEquals(null, $data['deleted_at']);
         $this->assertEquals('Western New York Exteriors, LLC.', $data['organization']['name']);
@@ -538,7 +538,7 @@ class StagesControllerTest extends WnyTestCase
         $data = [
             "name"            => 'Test Stages',
             "organization_id" => 2,
-            "workflow_type"   => 'request',
+            "workflow_type"   => 'Request',
         ];
 
         // Store the Lead Source
@@ -573,7 +573,7 @@ class StagesControllerTest extends WnyTestCase
         $stage = Stage::whereId(6)->first();
         $this->assertEquals('Test Stages', $stage->name);
         $this->assertEquals(2, $stage->organization_id);
-        $this->assertEquals('request', $stage->workflow_type);
+        $this->assertEquals('Request', $stage->workflow_type);
         $this->assertEquals('', $stage->description);
         $this->assertEquals(null, $stage->deleted_at);
     }
@@ -591,7 +591,7 @@ class StagesControllerTest extends WnyTestCase
         $data = [
             "name"            => 'Test Stages',
             "organization_id" => 2,
-            "workflow_type"   => 'request',
+            "workflow_type"   => 'Request',
         ];
 
         // Store the Lead Source
@@ -630,7 +630,7 @@ class StagesControllerTest extends WnyTestCase
         $data = [
             "name"            => 'Test Stage',
             "organization_id" => 2,
-            "workflow_type"   => 'request',
+            "workflow_type"   => 'Request',
         ];
 
         // Store the Lead Source
@@ -727,7 +727,7 @@ class StagesControllerTest extends WnyTestCase
         $this->assertEquals(1, $data['id']);
         $this->assertEquals("Name edited", $data['name']);
         $this->assertEquals(2, $data['organization_id']);
-        $this->assertEquals('request', $data['workflow_type']);
+        $this->assertEquals('Request', $data['workflow_type']);
         $this->assertEquals('', $data['description']);
     }
 

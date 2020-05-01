@@ -161,7 +161,6 @@ class WorkflowsController extends Controller
 
             $data = $workflows->toArray();
         }
-
         return response()->json(
             $this->resp(
                 200,
