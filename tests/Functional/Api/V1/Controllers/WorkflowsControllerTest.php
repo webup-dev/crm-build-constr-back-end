@@ -75,7 +75,7 @@ class WorkflowsControllerTest extends WnyTestCase
 
         // Check response status
         $response->assertStatus(200);
-       
+
         // Check response structure
         $response->assertJsonStructure(
             [

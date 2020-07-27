@@ -486,7 +486,8 @@ class StagesController extends Controller
                 200,
                 'Stages.indexSoftDeleted',
                 $workflow
-            ), 200
+            ),
+            200
         );
     }
 

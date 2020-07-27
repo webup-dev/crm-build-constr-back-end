@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
 ## [0.30.0] - 2020-05-01
 ### Added
 - Module 'Leads' is created

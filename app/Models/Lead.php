@@ -36,7 +36,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \App\Models\User           $creator
  * @property-read \App\Models\User|null      $editor
  * @property-read object                     $stage
- * @property-read \Colllection               $stages
  * @property-read \App\Models\Stage          $leadSource
  * @property-read \App\Models\LeadStatus     $leadStatus
  * @property-read \App\Models\LeadType       $leadType
@@ -193,20 +192,6 @@ class Lead extends Model
         );
     }
 
-//    /**
-//     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
-//     */
-//    public function lsCategory()
-//    {
-//        return $this->hasOneThrough(
-//            'App\Models\LsCategory',
-//            'App\Models\LeadSource',
-//            'category_id',
-//            'id',
-//            'id'
-//        );
-//    }
-
     /**
      * Lead <-> stage: many-to-one
      *
@@ -221,15 +206,6 @@ class Lead extends Model
             'stage_id',
             'id'
         );
-    }
-
-    /**
-     * Get the current workflow stages
-     *
-     * @return Colllection Stages
-     */
-    public function getStagesAttribute()
-    {
     }
 
     /**
